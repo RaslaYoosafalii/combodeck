@@ -31,7 +31,6 @@ router.post('/forgot-password-otp', userController.forgotResendOtp);
 router.get('/change-password', (req,res) => res.render('change-password'));
 router.post('/change-password', userController.forgotChangePassword);
 
-
 router.get('/logout', userAuth, userController.logout);
 
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'], prompt: 'select_account'}))

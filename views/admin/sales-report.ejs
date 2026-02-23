@@ -123,6 +123,34 @@ body{
   color:red;
   margin-bottom:15px;
 }
+.table-footer {
+  display:flex;
+  justify-content:flex-end;
+  margin-top:25px;
+}
+
+.pagination {
+  display:flex;
+  gap:8px;
+}
+
+.page-btn {
+  padding:8px 12px;
+  border:1px solid var(--soft-border);
+  background:#fff;
+  border-radius:8px;
+  cursor:pointer;
+  color:#7c7373;
+  text-decoration:none;
+}
+
+.page-btn.active {
+  background: #d5cdcd;
+  color:#7c7373;
+  font-weight:700;
+  text-decoration: underline;
+  border:1px solid var(--soft-border);
+}
 </style>
 </head>
 
@@ -271,7 +299,34 @@ if (!isNaN(discountValue) && discountValue > 0) {
 
 </tbody>
 </table>
+<% if (totalPages > 1) { %>
+<div class="table-footer">
+  <div class="pagination">
 
+    <% if (page > 1) { %>
+      <a class="page-btn"
+         href="?page=<%= page - 1 %>&filter=<%= filter || '' %>&from=<%= from || '' %>&to=<%= to || '' %>">
+        &lt;
+      </a>
+    <% } %>
+
+    <% for(let i=1;i<=totalPages;i++){ %>
+      <a class="page-btn <%= page===i?'active':'' %>"
+         href="?page=<%= i %>&filter=<%= filter || '' %>&from=<%= from || '' %>&to=<%= to || '' %>">
+        <%= i %>
+      </a>
+    <% } %>
+
+    <% if (page < totalPages) { %>
+      <a class="page-btn"
+         href="?page=<%= page + 1 %>&filter=<%= filter || '' %>&from=<%= from || '' %>&to=<%= to || '' %>">
+        &gt;
+      </a>
+    <% } %>
+
+  </div>
+</div>
+<% } %>
 </div>
 
 <%- include('../partials/admin/footer') %>

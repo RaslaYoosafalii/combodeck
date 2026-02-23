@@ -15,8 +15,8 @@ const alpha = /[a-zA-Z]/;
 
 const listCategories = async (req, res) => {
   try {
-    const { page, limit, q } = parsePaging(req);
-
+    const { page,  q } = parsePaging(req);
+    const limit = 3;
   
     const filter = { isDeleted: { $ne: true } };  
 

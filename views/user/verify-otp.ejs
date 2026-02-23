@@ -15,12 +15,10 @@
   font-family: "Poppins", sans-serif;
 }
 
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: #fff;
+body{
+  padding:0;
+  margin:0;
+  background:#fff;
 }
 
 .card {
@@ -118,10 +116,13 @@ body {
   text-decoration: underline;
 }
   </style>
+
 </head>
 
 <body>
-
+  <!-- Navbar -->
+  <%-include('../partials/user/header')%>
+  <div style="display:flex;justify-content:center;align-items:center; padding:60px 60px; margin-top: 170px;">
   <div class="card">
     <h2>Confirm with OTP</h2>
     <p>Please check your mail address for OTP</p>
@@ -142,7 +143,7 @@ body {
 
     <a href="/signup" class="back-link">Go back to Signup page</a>
   </div>
-
+</div>
 <script>
 const inputs = document.querySelectorAll('.otp-inputs input');
 const timerEl = document.getElementById('timer');

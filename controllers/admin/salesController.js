@@ -1,7 +1,8 @@
 import Order from "../../models/orderSchema.js";
 import ExcelJS from "exceljs";
 import PDFDocument from "pdfkit";
-
+import { Product } from '../../models/productSchema.js';
+import { Category, SubCategory } from '../../models/categorySchema.js';
 const allowedFilters = ["daily", "weekly", "monthly", "yearly", "custom"];
 
 const round = (val) => Number(Number(val || 0).toFixed(2));
@@ -26,11 +27,14 @@ function getDateRange(query) {
     endDate = new Date();
   }
 
-  if (filter === "weekly") {
-    startDate = new Date();
-    startDate.setDate(startDate.getDate() - 7);
-    endDate = new Date();
-  }
+if (filter === "weekly") {
+  startDate = new Date();
+  startDate.setDate(startDate.getDate() - 6);
+  startDate.setHours(0,0,0,0);
+
+  endDate = new Date();
+  endDate.setHours(23,59,59,999);
+}
 
   if (filter === "monthly") {
     startDate = new Date();
@@ -135,9 +139,19 @@ const loadSalesReport = async (req, res) => {
   try {
 
     const { startDate, endDate, filter } = getDateRange(req.query);
+   
+let page = parseInt(req.query.page, 10);
+
+if (isNaN(page) || page < 1) {
+  page = 1;
+}
+
+const limit = 5;
+
+    
 
     let query = {
-      orderStatus: { $nin: ["failed", "cancelled"] },
+      orderStatus: { $nin: ["failed", "cancelled", 'returned'] },
     //   paymentStatus: "completed"
     };
 
@@ -145,12 +159,25 @@ const loadSalesReport = async (req, res) => {
       query.orderDate = { $gte: startDate, $lte: endDate };
     }
 
-    const orders = await Order.find(query)
-      .populate("userId", "name")
-      .sort({ orderDate: -1 })
-      .lean();
 
-    const summary = calculateSummary(orders);
+const totalOrdersCount = await Order.countDocuments(query);
+
+const totalPages = Math.ceil(totalOrdersCount / limit);
+
+if (page > totalPages && totalPages > 0) {
+  page = totalPages;
+}
+
+const orders = await Order.find(query)
+  .populate("userId", "name")
+  .sort({ orderDate: -1 })
+  .skip((page - 1) * limit)
+  .limit(limit)
+  .lean();
+
+// summary must be calculated from full data
+const allOrders = await Order.find(query).lean();
+const summary = calculateSummary(allOrders);
 
     res.render("sales-report", {
       allowRender: true,
@@ -160,7 +187,9 @@ const loadSalesReport = async (req, res) => {
       from: req.query.from || "",
       to: req.query.to || "",
       applied: !!filter,
-      error: null
+      error: null,
+      page,
+      totalPages
     });
 
   } catch (err) {
@@ -179,7 +208,9 @@ const loadSalesReport = async (req, res) => {
       from: "",
       to: "",
       applied: false,
-      error: err.message
+      error: err.message,
+      page: 1,
+      totalPages: 0
     });
   }
 };
@@ -197,7 +228,7 @@ const downloadSalesReport = async (req, res) => {
     const { startDate, endDate } = getDateRange(req.query);
 
     const orders = await Order.find({
-      orderStatus: { $nin: ["failed", "cancelled"] },
+      orderStatus: { $nin: ["failed", "cancelled", 'returned'] },
     //   paymentStatus: "completed",
       orderDate: { $gte: startDate, $lte: endDate }
     }).populate("userId","name").lean();
@@ -631,8 +662,363 @@ mrpDiscount += (mrpTotal - discountedTotal);
     return res.status(400).send("Invalid request");
   }
 };
+const getDashboardData = async (req, res) => {
+  try {
+
+    if (!req.session.admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized access"
+      });
+    }
+
+   const { filter, from, to } = req.query;
+
+   const allowedFilters = ["yearly", "monthly", "weekly", "daily", "custom"];
+
+    if (!allowedFilters.includes(filter)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid filter type"
+      });
+    }
+
+  const now = new Date();
+let startDate;
+let endDate = new Date();
+
+if (filter === "yearly") {
+  startDate = new Date(now.getFullYear(), 0, 1);
+}
+
+else if (filter === "monthly") {
+  startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+}
+
+else if (filter === "weekly") {
+  startDate = new Date();
+  startDate.setDate(startDate.getDate() - 6);
+  startDate.setHours(0,0,0,0);
+
+  endDate = new Date();
+  endDate.setHours(23,59,59,999);
+}
+
+else if (filter === "daily") {
+  startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+
+else if (filter === "custom") {
+
+  if (!from || !to) {
+    return res.status(400).json({
+      success: false,
+      message: "Start date and end date are required"
+    });
+  }
+
+  const fromDate = new Date(from);
+  const toDate = new Date(to);
+
+  if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid date format"
+    });
+  }
+
+  if (fromDate > toDate) {
+    return res.status(400).json({
+      success: false,
+      message: "Start date cannot be greater than end date"
+    });
+  }
+
+const today = new Date();
+today.setHours(23,59,59,999);
+
+if (fromDate > today || toDate > today) {
+  return res.status(400).json({
+    success: false,
+    message: "Future dates are not allowed"
+  });
+}
+
+  startDate = new Date(fromDate.setHours(0,0,0,0));
+  endDate = new Date(toDate.setHours(23,59,59,999));
+}
+
+const orders = await Order.find({
+  orderDate: { $gte: startDate, $lte: endDate },
+  orderStatus: { $nin: ["failed", "cancelled"] }
+})
+      .populate("orderedItem.product")
+      .lean();
+// ================= SUMMARY CALCULATION =================
+
+let totalSales = 0;
+let totalOrders = 0;
+
+if (!Array.isArray(orders)) {
+  return res.status(500).json({
+    success: false,
+    message: "Invalid orders data"
+  });
+}
+
+for (const order of orders) {
+
+  if (!order || typeof order.finalPrice !== "number") {
+    continue;
+  }
+
+  totalSales += order.finalPrice;
+  totalOrders += 1;
+}
+
+totalSales = Number(totalSales.toFixed(2));
+
+let totalProductsSold = 0;
+
+for (const order of orders) {
+
+  if (!Array.isArray(order.orderedItem)) continue;
+
+  for (const item of order.orderedItem) {
+
+    if (!item || typeof item.quantity !== "number") continue;
+
+    // STRICT exclusion
+    if (["cancelled","returned","failed"].includes(item.orderStatus)) continue;
+
+    totalProductsSold += item.quantity;
+  }
+}
+// ================== SALES LINE GRAPH DATA ==================
+
+if (!startDate || !endDate) {
+  return res.status(400).json({
+    success: false,
+    message: "Invalid date range"
+  });
+}
+
+const salesMap = {};
+
+// STEP 1: Pre-fill all dates with 0
+let current = new Date(startDate);
+current.setHours(0,0,0,0);
+
+const lastDate = new Date(endDate);
+lastDate.setHours(0,0,0,0);
+
+while (current <= lastDate) {
+
+  let label;
+
+  if (filter === "yearly") {
+    label = current.toLocaleString("en-GB", { month: "short" });
+  }
+
+  else if (filter === "monthly") {
+    label = current.getDate().toString();
+  }
+
+  else {
+    label = current.toLocaleDateString("en-GB");
+  }
+
+  if (!salesMap[label]) {
+    salesMap[label] = 0;
+  }
+
+  current.setDate(current.getDate() + 1);
+}
+
+// STEP 2: Add order values
+for (const order of orders) {
+
+  if (!order || !order.orderDate || typeof order.finalPrice !== "number") {
+    continue;
+  }
+
+  const dateObj = new Date(order.orderDate);
+  dateObj.setHours(0,0,0,0);
+
+  let label;
+
+  if (filter === "yearly") {
+    label = dateObj.toLocaleString("en-GB", { month: "short" });
+  }
+
+  else if (filter === "monthly") {
+    label = dateObj.getDate().toString();
+  }
+
+  else {
+    label = dateObj.toLocaleDateString("en-GB");
+  }
+
+  if (salesMap[label] !== undefined) {
+    salesMap[label] += order.finalPrice;
+  }
+}
+
+// STEP 3: Convert to arrays (already in chronological order)
+const salesLabels = Object.keys(salesMap);
+const salesData = salesLabels.map(label =>
+  Number(salesMap[label].toFixed(2))
+);
+    // ================== AGGREGATION ==================
+
+    const productMap = {};
+    const categoryMap = {};
+    const subCategoryMap = {};
+
+for (const order of orders) {
+  if (!Array.isArray(order.orderedItem)) continue;
+
+  for (const item of order.orderedItem) {
+
+    if (!item || !item.product) continue;
+
+    if (!item.product._id || !item.product.categoryId || !item.product.subcategoryId) {
+      continue;
+    }
+
+    const productId = item.product._id.toString();
+    const categoryId = item.product.categoryId.toString();
+    const subCategoryId = item.product.subcategoryId.toString();
+
+    if (!productId || !categoryId || !subCategoryId) {
+      continue;
+    }
+
+    productMap[productId] = (productMap[productId] || 0) + item.quantity;
+
+    categoryMap[categoryId] = (categoryMap[categoryId] || 0) + item.quantity;
+
+    subCategoryMap[subCategoryId] = (subCategoryMap[subCategoryId] || 0) + item.quantity;
+  }
+}
+    // Convert to array + sort + top 10
+    const topProducts = Object.entries(productMap)
+      .sort((a,b)=>b[1]-a[1])
+      .slice(0,10);
+
+    const topCategories = Object.entries(categoryMap)
+      .sort((a,b)=>b[1]-a[1])
+      .slice(0,10);
+
+    const topSubCategories = Object.entries(subCategoryMap)
+       .sort((a,b)=>b[1]-a[1])
+       .slice(0,10);
+
+    // Fetch names
+    const productDocs = await Product.find({
+      _id: { $in: topProducts.map(p=>p[0]) }
+    }).lean();
+
+// Fetch categories for both:
+// 1. topCategories
+// 2. categories belonging to topSubCategories
+
+const subCategoryDocs = await SubCategory.find({
+  _id: { $in: topSubCategories.map(s => s[0]) }
+})
+.populate("Category")
+.lean();
+
+// Collect categoryIds from subcategories
+const subCategoryCategoryIds = subCategoryDocs
+  .map(s => s.categoryId?.toString())
+  .filter(Boolean);
+
+// Merge both category sources
+const allCategoryIds = [
+  ...new Set([
+    ...topCategories.map(c => c[0]),
+    ...subCategoryCategoryIds
+  ])
+];
+
+const categoryDocs = await Category.find({
+  _id: { $in: allCategoryIds }
+}).lean();
+
+    const productNameMap = Object.fromEntries(productDocs.map(p=>[p._id.toString(), p.productName]));
+    const categoryNameMap = Object.fromEntries(categoryDocs.map(c=>[c._id.toString(), c.name]));
+    const subCategoryNameMap = Object.fromEntries(subCategoryDocs.filter(s => s && s._id)
+    .map(s => [s._id.toString(),s.name || s.subCategoryName || s.fitName || null ]));
+
+
+    return res.json({
+      success: true,
+      summary: {
+         totalSales,
+         totalOrders,
+         totalProductsSold
+       },
+      products: topProducts.map(p=>({
+        name: productNameMap[p[0]] || "Unknown",
+        count: p[1]
+      })),
+      categories: topCategories.map(c=>({
+        name: categoryNameMap[c[0]] || "Unknown",
+        count: c[1]
+      })),
+      subcategories: topSubCategories.map(s => {
+
+      const subDoc = subCategoryDocs.find(
+        d => d._id.toString() === s[0]
+      );
+
+      if (!subDoc) {
+        return {
+          name: "Unknown Fit",
+          count: s[1]
+        };
+      }
+
+      const subName = subDoc.fitName.toUpperCase() || null;
+
+      if (!subName) {
+        return {
+          name: "Unknown Fit",
+          count: s[1]
+        };
+      }
+
+      if (!subDoc.Category || !subDoc.Category.name) {
+        return {
+          name: `${subName} - Unknown Category`,
+          count: s[1]
+        };
+      }
+
+      return {
+        name: `${subName} - ${subDoc.Category.name.toLowerCase()}`,
+        count: s[1]
+      };
+    }),
+    sales: {
+    labels: salesLabels,
+    data: salesData
+  }
+
+    });
+
+  } catch (error) {
+    console.error("Dashboard analytics error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to load dashboard data"
+    });
+  }
+};
 
 export default {
   loadSalesReport,
-  downloadSalesReport
+  downloadSalesReport,
+  getDashboardData
 };

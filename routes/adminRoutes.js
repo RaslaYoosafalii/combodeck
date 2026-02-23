@@ -106,4 +106,8 @@ router.post("/coupon/toggle/:id", couponController.toggleStatus);
 router.get('/sales-report', salesController.loadSalesReport);
 router.get('/sales-report/download', salesController.downloadSalesReport);
 
+
+//dashboard management
+router.get('/dashboard-data', adminAuth, salesController.getDashboardData);
+
 export default router;

@@ -65,9 +65,9 @@ Order total: ₹<%= order.finalPrice %>
   <span style="text-decoration:line-through;color:#888">
     ₹<%= i.offerPrice %>
   </span>
-  ₹<%= i.offerPrice - i.couponShare %><br>
+  ₹<%= i.offerPrice - i.couponShare.toFixed(2) %><br>
 <% } else { %>
-  Price: ₹<%= i.offerPrice %><br>
+  Price: ₹<%= i.offerPrice.toFixed(2) %><br>
 <% } %>
 
    <span class="badge">

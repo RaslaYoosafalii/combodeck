@@ -18,7 +18,7 @@ function parseQuery(req) {
     parseInt((req.query && req.query.page) ? req.query.page : '1', 10) || 1,
     1
   );
-  const limit = 9; // Always 9 (3x3 grid)
+  const limit = 12; // Always 9 (3x3 grid)
   return { search, sort, category, subcategory, minPrice, maxPrice, page, limit };
 }
 
@@ -45,9 +45,28 @@ const listProducts = async (req, res) => {
       matchStage.$or = [{ productName: re }, { description: re }];
     }
 
-    if (category && mongoose.Types.ObjectId.isValid(category)) {
-      matchStage.categoryId = new mongoose.Types.ObjectId(category);
-    }
+ if (category) {
+
+  if (!mongoose.Types.ObjectId.isValid(category)) {
+    return res.status(400).render('error-page', {
+      message: 'Invalid category selected'
+    });
+  }
+
+  const categoryExists = await Category.findOne({
+    _id: category,
+    isListed: true,
+    isDeleted: { $ne: true }
+  }).lean();
+
+  if (!categoryExists) {
+    return res.status(404).render('error-page', {
+      message: 'Category not found'
+    });
+  }
+
+  matchStage.categoryId = new mongoose.Types.ObjectId(category);
+}
    
 
 // subcategory filtering logic (single source of truth)
@@ -441,11 +460,26 @@ if (!category) {
 
 const isLoggedIn = !!req.session.user;
 
+let wishlistProductIds = [];
+
+if (req.session.user) {
+  const wishlist = await Wishlist.findOne({ userId: req.session.user })
+    .select('products.productId')
+    .lean();
+
+  if (wishlist && wishlist.products) {
+    wishlistProductIds = wishlist.products.map(p =>
+      String(p.productId)
+    );
+  }
+}
+
     return res.render('allProducts', {
       products,
       categories,
       subcategories: finalSubcategories,
-       isLoggedIn,
+      isLoggedIn,
+      wishlistProductIds,
       pagination: {
         search,
         sort,

@@ -11,6 +11,7 @@
       padding: 0;
       box-sizing: border-box;
       font-family: 'Arial', sans-serif;
+      
     }
 
     body {
@@ -25,9 +26,10 @@
       align-items: center;
       padding: 15px 60px;
       background: #fff;
+      
     }
 
-     .navbar .logo {
+    .navbar .logo {
       font-size: 40px;
       font-weight: 37;
       color: #B2A9A1;
@@ -37,6 +39,7 @@
       display: flex;
       list-style: none;
       gap: 25px;
+      
     }
 
     .navbar a {
@@ -48,7 +51,7 @@
     .navbar .btn {
       padding: 8px 15px;
       border-radius: 5px;
-      background: #4b403a;
+      background: #484848;
       color: #fff;
     }
 
@@ -56,13 +59,12 @@
     .hero {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      padding: 40px 60px;
+      gap: 10px;
     }
 
     .hero img {
       width: 100%;
-      border-radius: 8px;
+        border-radius: 5px;
     }
 
     .hero .center {
@@ -86,10 +88,12 @@
       margin-top: 15px;
     }
 
-    /* Categories */
+  /* Categories */
     .categories {
       text-align: center;
-      padding: 50px 60px;
+      margin-top: 30px;
+      padding-top: 10px;
+ 
     }
 
     .categories .btn {
@@ -99,20 +103,25 @@
     .category-list {
       display: flex;
       justify-content: center;
-      gap: 30px;
       margin-top: 20px;
+      
     }
 
     .category img {
-      width: 200px;
-      border-radius: 8px;
+      width: 100%;
     }
 
     .category p {
       margin-top: 10px;
       font-weight: bold;
+      text-align: left;
+       margin-bottom: 60px;
+       
     }
-
+    .category p:hover {
+     text-decoration: underline;
+       
+    }
     /* New Arrivals */
     .new-arrivals {
       text-align: center;
@@ -152,7 +161,11 @@
       padding: 40px 60px;
       color: #666;
     }
-  
+     .footer .logo {
+      font-size: 60px;
+      font-weight: 37;
+      color: #B2A9A1;
+    }
     .footer-top {
       display: flex;
       justify-content: space-between;
@@ -176,6 +189,19 @@
       margin-top: 20px;
       font-size: 12px;
     }
+        /* Home Video Section */
+.home-video {
+  width: 100%;
+  padding: 0;
+}
+
+.home-video video {
+  width: 100%;
+  
+  display: block;
+  pointer-events: none; /* disables interaction */
+}
+
   </style>
 </head>
 <body>
@@ -183,75 +209,79 @@
   <%-include('../partials/user/header')%>
 
   <!-- Hero Section -->
-  <section class="hero">
+  <section class="hero" style="margin-bottom: 30px; margin-left: 8px; margin-right: 8px;">
     <div class="hero-item">
-      <img src="/images/image1.png" alt="Hero Image 1">
+      <img src="/images/IMG_9763.png" alt="Hero Image 1">
     </div>
-    <div class="hero-item center">
-      <h2>ULTIMATE <br><span>SALE</span></h2>
-      <p>NEW COLLECTION</p>
-      <button class="btn">Shop Now</button>
-    </div>
+    <div class="hero-item center" style="padding-top: 0; ">
+     <img src="/images/image.png" alt="Hero Image 2">
+        <a href="/products" style="opacity: 90%; border-radius: 6px; background-color: #898078;padding: 20px; margin: 20px; position: absolute; color: #ffffff; font-size: 18px; font-weight: lighter;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">EXPLORE SHOP</a>
+     </div>
     <div class="hero-item">
-      <img src="/images/image2.png" alt="Hero Image 2">
+      <img src="/images/heroimage3.png" alt="Hero Image 3">
     </div>
   </section>
-
-  <!-- Explore by Category -->
-  <section class="categories">
-    <h2>EXPLORE BY CATEGORY</h2>
-    <button class="btn">Explore</button>
-    <div class="category-list">
-      <div class="category">
-        <img src="/images/catimage1.png" alt="Shirts&Blouses">
-        <p>Shirts&Blouses</p>
-      </div>
-          <div class="category">
-        <img src="/images/catimage2.png" alt="Tops">
-        <p>Tops</p>
-      </div>
-      <div class="category">
-        <img src="/images/catimage3.png" alt="Dresses">
-        <p>Dresses</p>
-      </div>
-      <div class="category">
-        <img src="/images/catimage4.png" alt="Jeans">
-        <p>Jeans</p>
-      </div>
-    </div>
-  </section>
+<!-- Auto Playing Video Section -->
+<section class="home-video">
+  <video 
+    autoplay 
+    muted 
+    loop 
+    playsinline 
+    preload="auto"
+    disablePictureInPicture
+    controlslist="nodownload nofullscreen noremoteplayback"
+    oncontextmenu="return false;"
+  >
+    <source src="/videos/home.webm" type="video/webm">
+    Your browser does not support the video tag.
+  </video>
+</section>
 
   <!-- New Arrivals -->
-  <section class="new-arrivals">
+  <section class="new-arrivals" >
     <h2>NEW ARRIVALS</h2>
-    <button class="btn">Explore</button>
-    <div class="products">
-      <div class="product">
-        <img src="/images/product1.png" alt="Sweatshirt">
-        <h3>PRINTED SWEATSHIRT</h3>
-        <p>Oversized<br>Navy Blue/Yale</p>
-        <span>Rs. 1,499.00</span>
+    <div class="products" style="gap: 2px; text-align: left; ">
+  <% if (latestProducts && latestProducts.length > 0) { %>
+    <% latestProducts.forEach(function(product) { %>
+      <div class="product" style="gap: 0;">
+        <a href="/product/<%= product._id %>" style="text-decoration:none; color:inherit;">
+          <img 
+            src="<%= product.images && product.images.length > 0 ? '/uploads/products/' + product.images[0] : '/images/product1.png' %>" 
+            alt="<%= product.productName %>" style="border-radius: 0px;">
+          <h3><%= product.productName %></h3>
+        
+          <span style=" font-weight:550; font-size: 15px;">Rs. <%= product.finalPrice ? product.finalPrice.toFixed(2) : '0.00' %></span>
+        </a>
       </div>
-      <div class="product">
-        <img src="/images/product2.png" alt="Shirt">
-        <h3>POPLIN SHIRT</h3>
-        <p>Slim Fit<br>Light Blue/Pinstriped</p>
-        <span>Rs. 1,499.00</span>
-      </div>
-      <div class="product">
-        <img src="/images/product3.png" alt="Dress">
-        <h3>PLEAT-DETAIL TWILL DRESS</h3>
-        <p>Slim Fit<br>White</p>
-        <span>Rs. 1,999.00</span>
-      </div>
-      <div class="product">
-        <img src="/images/product4.png" alt="Blazer">
-        <h3>CROPPED LINEN-BLEND BLAZER</h3>
-        <p>Regular Fit<br>Brown</p>
-        <span>Rs. 13,499.00</span>
-      </div>
-    </div>
+    <% }) %>
+  <% } else { %>
+    <p>No new arrivals available.</p>
+  <% } %>
+</div>
   </section>
+    <!-- Explore by Category -->
+<section class="categories" style="padding-left: 10px ; padding-right: 10px ;">
+  <h1>EXPLORE BY CATEGORY</h1>
+     <div class="category-list">
+  <% if (categories && categories.length > 0) { %>
+    <% categories.forEach(function(cat) { %>
+      <div class="category">
+        <a href="/products?category=<%= cat._id %>" style="text-decoration:none; color:inherit;">
+          <img 
+  src="<%= cat.image ? '/uploads/products/' + cat.image : '/images/catimage1.png' %>" 
+  alt="<%= cat.name %>">
+          <p style="margin-bottom: 0; text-decoration: none;"><%= cat.name.toUpperCase() %></p>
+          <p style=" margin-top: 2px; font-size: 14px; font-weight: lighter;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">EXPLORE</p>
+        </a>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p>No categories available</p>
+  <% } %>
+</div>
+  </section>
+
   <!-- Footer -->
   <%-include('../partials/user/footer')%>
 

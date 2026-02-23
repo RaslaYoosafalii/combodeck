@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>Admin - Categories</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     /* =========================
        PAGE LAYOUT
@@ -121,12 +121,13 @@
       vertical-align: top;
       color: #444;
     }
+    
 
     th {
       font-weight: 500;
       font-size: 13px;
       text-transform: capitalize;
-      color: #666;
+      color: #ffffff;
     }
 
     tbody tr:not(:last-child) {
@@ -141,10 +142,11 @@
     /* =========================
        SUBCATEGORIES
     ========================== */
-    .sub-list {
-      padding-left: 18px;
-      margin-bottom: 8px;
-    }
+.sub-list {
+  padding-left: 0;
+  margin: 0;
+  list-style: none;
+}
 
     .sub-list li {
       margin-bottom: 6px;
@@ -190,12 +192,16 @@
 
     .btn-list {
       background: #6c645c;
+      width: 60px;
       color: #fff;
+      
     }
 
     .btn-unlist {
-      background: #c0392b;
-      color: #fff;
+      background: #fff;
+      width: 60px;
+      border: solid 1px #444;
+      color: #0b0b0b;
     }
 
     /* =========================
@@ -215,6 +221,7 @@
       text-decoration: none;
       font-size: 13px;
       color: #555;
+      
     }
 
     .pagination-box a.active {
@@ -234,6 +241,45 @@
       border-left: 4px solid #aaa;
       font-size: 14px;
     }
+
+  .icon-btn {
+  border:1px solid #d0cdcd;
+  padding:8px;
+  border-radius:8px;
+  background:transparent;
+  cursor:pointer;
+  font-family:Arial, Helvetica, sans-serif;
+}
+/* Align subcategory name and icons inline */
+.sub-item {
+  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sub-name {
+  font-size: 13px;
+}
+
+/* modal ui */
+.swal-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e6e3e1;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.swal-label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #6f6766;
+  text-align: left;
+}
   </style>
 </head>
 
@@ -290,11 +336,7 @@
 
       <form method="GET" action="/admin/category" style="margin-left:auto;">
         <input type="hidden" name="q" value="<%= pagination.q || '' %>">
-        <select name="limit" onchange="this.form.submit()">
-          <option value="5" <%= pagination.limit==5?'selected':'' %>>5</option>
-          <option value="10" <%= pagination.limit==10?'selected':'' %>>10</option>
-          <option value="20" <%= pagination.limit==20?'selected':'' %>>20</option>
-        </select>
+ 
 
           <button
     type="button"
@@ -308,7 +350,7 @@
     <!-- TABLE -->
     <div class="category-table">
       <table>
-        <thead>
+        <thead style="background-color: #5a5252; ">
           <tr>
             <th>Name</th>
             <th>Description</th>
@@ -334,13 +376,19 @@
               <% if (cat.subcategories.length) { %>
                 <ul class="sub-list">
                   <% cat.subcategories.forEach(sc => { %>
-                    <li>
-                      <%= sc.fitName %>
-                      <div class="sub-actions">
-                        <button data-action="edit-sub" data-id="<%= sc._id %>" class="btn-edit">Edit</button>
-                        <button data-action="delete-sub" data-id="<%= sc._id %>" class="btn-delete">Delete</button>
-                      </div>
-                    </li>
+<li class="sub-item" >
+  <span class="sub-name">- <%= sc.fitName %></span>
+
+  <div class="sub-actions">
+    <button class="icon-btn" data-action="edit-sub" data-id="<%= sc._id %>">
+      <i class="bi bi-pencil"></i>
+    </button>
+
+    <button class="icon-btn" data-action="delete-sub" data-id="<%= sc._id %>">
+      <i class="bi bi-trash"></i>
+    </button>
+  </div>
+</li>
                   <% }) %>
                 </ul>
               <% } else { %>
@@ -354,29 +402,47 @@
               </form>
             </td>
 
-            <td><%= cat.productCount %></td>
+            <td style="text-align: center;"><%= cat.productCount %></td>
 
-            <td>
-              <% if (cat.offerPrice > 0) { %>
-                <strong>Offer value: <%= cat.offerIsPercent ? cat.offerPrice + '%' : '₹' + cat.offerPrice %></strong>
-                <div class="muted">valid till: <%= cat.offerValidDate ? new Date(cat.offerValidDate).toLocaleDateString() : '' %></div>
-            <form method="POST" action="/admin/category/offer/<%= cat._id %>">
-  <input type="hidden" name="offerValue" value="">
-  <input type="hidden" name="offerValidDate" value="">
-  <button class="btn-sm">Clear</button>
-</form>
+        
+<td>
+  <% if (cat.offerPrice > 0) { %>
+    <strong>
+      Offer value:
+      <%= cat.offerIsPercent ? cat.offerPrice + '%' : '₹' + cat.offerPrice %>
+    </strong>
+    <div class="muted">
+      valid till:
+      <%= cat.offerValidDate ? new Date(cat.offerValidDate).toLocaleDateString() : '' %>
+    </div>
 
-              <% } else { %>
-                <form method="POST" action="/admin/category/offer/<%= cat._id %>"  class="offer-form">
-                  <select name="offerType">
-                    <option value="fixed">Fixed</option>
-                    <option value="percent">Percent</option>
-                  </select>
-                  <input name="offerValue" placeholder="Value">
-                  <input type="date" name="offerValidDate" min="<%= new Date().toISOString().split('T')[0] %>">
-                  <button type="submit" class="btn-sm btn-edit">Set</button>
-                </form>
-              <% } %>
+    <button 
+      class="icon-btn"
+      data-action="set-offer"
+      data-id="<%= cat._id %>"
+      title="Edit Offer">
+      <i class="bi bi-pencil"></i>
+    </button>
+
+    <form method="POST" action="/admin/category/offer/<%= cat._id %>" style="display:inline;">
+      <input type="hidden" name="offerValue" value="">
+      <input type="hidden" name="offerValidDate" value="">
+      <button class="icon-btn" title="Clear Offer">
+        <i class="bi bi-trash"></i>
+      </button>
+    </form>
+
+  <% } else { %>
+
+    <button 
+      class="icon-btn"
+      data-action="set-offer"
+      data-id="<%= cat._id %>">
+      <i class="bi bi-tag" style="font-size: 12px;">set offer</i>
+    </button>
+
+  <% } %>
+</td>
             </td>
 
             <td><%= cat.isListed ? 'Yes' : 'No' %></td>
@@ -387,8 +453,13 @@
                   <%= cat.isListed ? 'Unlist' : 'List' %>
                 </button>
               </form>
-              <button data-action="edit-cat" data-id="<%= cat._id %>" class="btn-sm btn-edit">Edit</button>
-              <button data-action="delete-category" data-id="<%= cat._id %>" class="btn-sm btn-delete">Delete</button>
+<button class="icon-btn" data-action="edit-cat" data-id="<%= cat._id %>">
+  <i class="bi bi-pencil"></i>
+</button>
+
+<button class="icon-btn" data-action="delete-category" data-id="<%= cat._id %>">
+  <i class="bi bi-trash"></i>
+</button>
             </td>
           </tr>
         <% }) %>
@@ -397,10 +468,10 @@
     </div>
 
     <% if (pagination.totalPages > 1) { %>
-      <div class="pagination-box">
+      <div class="pagination-box" >
         <% for(let p=1;p<=pagination.totalPages;p++){ %>
           <a class="<%= p===pagination.page?'active':'' %>"
-             href="/admin/category?page=<%=p%>&limit=<%=pagination.limit%>&q=<%=pagination.q||''%>">
+             href="/admin/category?page=<%=p%>&limit=<%=pagination.limit%>&q=<%=pagination.q||''%>" >
              <%= p %>
           </a>
         <% } %>
@@ -411,7 +482,7 @@
 
   <%- include('../partials/admin/footer') %>
 
-  <!-- KEEP YOUR EXISTING JS (UNCHANGED) -->
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
@@ -503,12 +574,25 @@ async function sendJson(url, method, data) {
             // show modal with inputs for name, description, isListed
             Swal.fire({
               title: 'Edit Category',
-              html:
-                `<input id="sw-name" class="sw-input" placeholder="Name" value="${escapeHtml(cat.name)}" style="width:100%;padding:8px;margin-bottom:8px;" />` +
-                `<textarea id="sw-desc" class="sw-input" placeholder="Description" style="width:100%;padding:8px;">${escapeHtml(cat.description || '')}</textarea>` +
-                `<div style="margin-top:8px;">Listed: <select id="sw-listed"><option value="true">Yes</option><option value="false">No</option></select></div>`,
+html:
+  `<label class="swal-label">Category Name</label>
+   <input id="sw-name" class="swal-input" value="${escapeHtml(cat.name)}" />
+
+   <label class="swal-label">Description</label>
+   <textarea id="sw-desc" class="swal-input" rows="3">${escapeHtml(cat.description || '')}</textarea>
+
+   <label class="swal-label">Listed Status</label>
+   <select id="sw-listed" class="swal-input">
+     <option value="true">Listed</option>
+     <option value="false">Unlisted</option>
+   </select>`,
               didOpen: () => { document.getElementById('sw-listed').value = cat.isListed ? 'true' : 'false'; },
               showCancelButton: true,
+  customClass: {
+  confirmButton: 'btn-primary-custom',
+  cancelButton: 'btn-outline'
+},
+buttonsStyling: false,
               preConfirm: () => {
                 const name = document.getElementById('sw-name').value.trim();
                 const description = document.getElementById('sw-desc').value.trim();
@@ -548,16 +632,44 @@ async function sendJson(url, method, data) {
           .then(data => {
             if (!data.success) return Swal.fire('Error', data.message || 'Failed to fetch subcategory', 'error');
             const sub = data.subcategory;
-            Swal.fire({
-              title: 'Edit Subcategory',
-              html: `<input id="sw-subname" class="sw-input" placeholder="Subcategory name" value="${escapeHtml(sub.fitName)}" style="width:100%;padding:8px;" />`,
-              showCancelButton: true,
-              preConfirm: () => {
-                const fitName = document.getElementById('sw-subname').value.trim();
-                if (!fitName) { Swal.showValidationMessage('Name required'); return false; }
-                return { fitName };
-              }
-            }).then(async (result) => {
+       Swal.fire({
+  title: 'Edit Subcategory',
+  html:
+    `<label class="swal-label">Subcategory Name</label>
+     <input id="sw-subname"
+            class="swal-input"
+            value="${escapeHtml(sub.fitName)}"
+            placeholder="Enter subcategory name" />`,
+
+  showCancelButton: true,
+
+  customClass: {
+    confirmButton: 'btn-primary-custom',
+    cancelButton: 'btn-outline'
+  },
+  buttonsStyling: false,
+
+  preConfirm: () => {
+    const fitName = document.getElementById('sw-subname').value.trim();
+
+    if (!fitName) {
+      Swal.showValidationMessage('Subcategory name is required');
+      return false;
+    }
+
+    if (!/[a-zA-Z]/.test(fitName)) {
+      Swal.showValidationMessage('Please enter a valid subcategory name');
+      return false;
+    }
+
+    if (fitName.length < 2) {
+      Swal.showValidationMessage('Subcategory name must be at least 2 characters');
+      return false;
+    }
+
+    return { fitName };
+  }
+}).then(async (result) => {
               if (!result.isConfirmed) return;
               try {
           const json = await sendJson('/admin/category/subedit/' + id, 'PATCH', { fitName: result.value.fitName });
@@ -574,6 +686,82 @@ async function sendJson(url, method, data) {
         return;
       }
 
+
+// ----------------- SET OFFER (modal) -----------------
+if (action === 'set-offer') {
+
+  Swal.fire({
+    title: 'Set Category Offer',
+html:
+  `<label class="swal-label">Offer Type</label>
+   <select id="sw-offer-type" class="swal-input">
+     <option value="fixed">Fixed Amount</option>
+     <option value="percent">Percentage</option>
+   </select>
+
+   <label class="swal-label">Offer Value</label>
+   <input id="sw-offer-value" type="number" min="0" class="swal-input" placeholder="Enter value" />
+
+   <label class="swal-label">Valid Until</label>
+   <input id="sw-offer-date" type="date" class="swal-input"
+     min="${new Date().toISOString().split('T')[0]}" />`,
+    showCancelButton: true,
+    customClass: {
+  confirmButton: 'btn-primary-custom',
+  cancelButton: 'btn-outline'
+},
+buttonsStyling: false,
+    confirmButtonText: 'Save Offer',
+    preConfirm: () => {
+
+      const offerType = document.getElementById('sw-offer-type').value;
+      const offerValue = document.getElementById('sw-offer-value').value.trim();
+      const offerValidDate = document.getElementById('sw-offer-date').value.trim();
+
+      if (!offerValue || !offerValidDate) {
+        Swal.showValidationMessage('Offer value and valid date are required');
+        return false;
+      }
+
+      if (isNaN(offerValue) || Number(offerValue) < 0) {
+        Swal.showValidationMessage('Invalid offer value');
+        return false;
+      }
+
+      if (offerType === 'percent') {
+        if (Number(offerValue) <= 0 || Number(offerValue) > 100) {
+          Swal.showValidationMessage('Percentage must be between 1 and 100');
+          return false;
+        }
+      }
+
+      return { offerType, offerValue, offerValidDate };
+    },
+
+
+  }).then((result) => {
+
+    if (!result.isConfirmed) return;
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/admin/category/offer/' + id;
+
+    ['offerType','offerValue','offerValidDate'].forEach(key => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = result.value[key];
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+  });
+
+  return;
+}
+
     }); // document click
 
     // escape helper for strings in HTML (XSS safe)
@@ -581,7 +769,9 @@ async function sendJson(url, method, data) {
       if (!s) return '';
       return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
+
   </script>
+
   <script>
   const flash = document.getElementById('flashMessage');
   if (flash) {

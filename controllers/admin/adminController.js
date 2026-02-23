@@ -76,29 +76,6 @@ const loadDashboard = async (req, res) => {
   }
 };
 
-// logout
-const logout = async (req, res) => {
-  try {
-    
-    const adminId = req.session?.admin;
-
-     delete req.session.admin; 
-
-      res.set(
-        'Cache-Control',
-        'no-store, no-cache, must-revalidate, proxy-revalidate, private'
-      );
-      res.set('Pragma', 'no-cache');
-      res.set('Expires', '0');
-
-      console.log('admin logged out');
-     return res.redirect(303, '/admin/login');
-    
-  } catch (error) {
-    console.log('Error logging out', error);
-    return res.redirect('/errorPage');
-  }
-};
 
 const generateOTP = () => {
   return Math.floor(1000 + Math.random() * 9000).toString();
@@ -343,9 +320,34 @@ const adminResendOtp = async (req, res) => {
     });
   }
 };
+// ================= DASHBOARD ANALYTICS =================
 
 
 
+
+// logout
+const logout = async (req, res) => {
+  try {
+    
+    const adminId = req.session?.admin;
+
+     delete req.session.admin; 
+
+      res.set(
+        'Cache-Control',
+        'no-store, no-cache, must-revalidate, proxy-revalidate, private'
+      );
+      res.set('Pragma', 'no-cache');
+      res.set('Expires', '0');
+
+      console.log('admin logged out');
+     return res.redirect(303, '/admin/login');
+    
+  } catch (error) {
+    console.log('Error logging out', error);
+    return res.redirect('/errorPage');
+  }
+};
 
 export {
   loadLogin,
@@ -372,4 +374,5 @@ export default{
   adminVerifyOtp,
   adminChangePassword,
   adminResendOtp
+ 
 };

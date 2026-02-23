@@ -291,6 +291,24 @@ if (req.session.appliedCoupon) {
 
 const finalAmount = round2(Math.max(itemsTotal - couponDiscount, 0));
 
+//COD amount restriction validation (STRICT)
+if (paymentMethod === 'cod') {
+
+  if (typeof finalAmount !== 'number' || isNaN(finalAmount)) {
+    return res.json({
+      success: false,
+      message: "Invalid order amount. Please refresh and try again."
+    });
+  }
+
+  if (finalAmount >= 1000) {
+    return res.json({
+      success: false,
+      message: "Cash on Delivery is only available for orders below Rs.1000.<br>Please choose another payment method."
+    });
+  }
+}
+
 // proportional coupon share
 let distributed = 0;
 
@@ -378,7 +396,7 @@ wallet.transactions.push({
 
 
     //coupon discount
-   if (couponId) {
+  if (couponId) {
   const coupon = await Coupon.findById(couponId);
   
 if (!coupon) {

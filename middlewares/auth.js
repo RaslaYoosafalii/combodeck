@@ -34,7 +34,6 @@ if (user.isBlocked) {
   return res.redirect('/?blocked=1');
 }
 
-
       req.user = user;
       next();
     })

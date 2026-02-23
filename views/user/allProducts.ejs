@@ -184,7 +184,7 @@
     }
   
     :root{
-      --max-w: 1100px;
+      --max-w: 1400px;
       --muted: #808080;
       --accent: #111;
       --chip-border: #d3d3d3;
@@ -242,9 +242,9 @@
       transition:all .18s ease;
     }
     .chip.active{
-      background:#0f0f0f;
+      background:#3a3939;
       color:#fff;
-      border-color:#0f0f0f;
+      border-color:#3a3939;
     }
     .chip:hover{ transform:translateY(-2px); box-shadow:var(--shadow); }
 
@@ -285,7 +285,7 @@
       width:240px;
       min-width:190px;
       font-size:13px;
-      color:#222;
+      color:#3a3939;
     }
     .filters .heading{
       font-weight:700;
@@ -334,15 +334,15 @@
 
     /* Products grid */
     .products-wrap{ flex:1; min-width:0; }
-    .products-grid{
-      display:grid;
-      grid-template-columns:repeat(3, 1fr);
-      gap:34px 32px;
-    }
+.products-grid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:34px 20px;
+}
 
     .product-card{
       background:transparent;
-      border-radius:6px;
+      
       overflow:hidden;
     }
     .product-thumb{
@@ -350,7 +350,7 @@
       height:330px;
       background:#f7f7f7;
       display:block;
-      border-radius:4px;
+     
       overflow:hidden;
       box-shadow:0 6px 18px rgba(0,0,0,0.03);
     }
@@ -372,7 +372,7 @@
       font-size:13px;
       letter-spacing:0.4px;
       margin-bottom:6px;
-      color:#111;
+      color:#3a3939;
       text-transform:uppercase;
     }
   .product-desc{
@@ -410,9 +410,9 @@
       font-size:13px;
     }
     .pager a.active{
-      background:#0f0f0f;
+      background:#3a3939;
       color:#fff;
-      border-color:#0f0f0f;
+      border-color:#3a3939;
     }
     .pager a[aria-label="prev"], .pager a[aria-label="next"]{
       width:38px;
@@ -429,6 +429,8 @@
       color:var(--muted);
     }
 
+  
+
     /* Responsive */
     @media (max-width:1100px){
       .container{ margin:24px auto; }
@@ -436,11 +438,14 @@
       aside.filters{ display:none; } /* collapse sidebar for smaller screens */
       .controls-row{ justify-content:space-between; }
     }
-    @media (max-width:720px){
-      .products-grid{ grid-template-columns:1fr; }
-      .controls-row{ flex-wrap:wrap; gap:8px; }
-      .chip{ padding:7px 10px; font-size:13px; }
-    }
+@media (max-width:1200px){
+  .products-grid{
+    gap:22px;
+    grid-template-columns:repeat(3,1fr);
+  }
+  aside.filters{ display:none; }
+  .controls-row{ justify-content:space-between; }
+}
   </style>
 </head>
 <body>
@@ -521,7 +526,7 @@ category=<%= pagination.category || '' %>
       <aside class="filters" aria-label="filters">
         <div style="display:flex; align-items:center; margin-bottom:8px;">
           <div class="heading">FILTERS &amp; SORT</div>
-<div class="clear-filters">
+<div class="clear-filters" style="padding-bottom: 10px; padding-left: 5px;">
   <a href="/products?
 q=<%= encodeURIComponent(pagination?.q || '') %>
 &sort=<%= pagination?.sort || 'newest' %>">
@@ -612,7 +617,43 @@ q=<%= encodeURIComponent(pagination?.q || '') %>
                   <img src="/uploads/products/<%= img0 %>" alt="<%= p.productName %>" />
                 </a>
 
-                <div class="product-meta">
+                <div class="product-meta" style="position:relative;">
+
+<% if (isLoggedIn) { 
+     const isWishlisted = wishlistProductIds.includes(String(p._id));
+%>
+
+<div
+  class="wishlist-btn"
+  data-product="<%= p._id %>"
+  style="
+    position:absolute;
+    top:-40px;
+    right:0;
+    cursor:pointer;
+    margin-top: 5px;
+    margin-right: 20px;
+  "
+>
+  <svg
+    class="wishlist-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="<%= isWishlisted ? '#111' : 'none' %>"
+    stroke="#111"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M20.8 4.6c-1.8-1.8-4.7-1.8-6.5 0L12 6.9l-2.3-2.3c-1.8-1.8-4.7-1.8-6.5 0-1.8 1.8-1.8 4.7 0 6.5l8.8 8.8 8.8-8.8c1.8-1.8 1.8-4.7 0-6.5z"/>
+  </svg>
+</div>
+
+<% } %>
+
+
                   <div class="product-title"><%= p.productName %></div>
                   <div class="product-desc">
                      <% if (p.subcategoryName) { %>
@@ -711,6 +752,65 @@ q=<%= encodeURIComponent(pagination?.q || '') %>
     }
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.querySelectorAll(".wishlist-btn").forEach(btn => {
+
+  btn.addEventListener("click", async function(){
+
+    const productId = this.dataset.product;
+    const icon = this.querySelector(".wishlist-icon");
+
+    if (!productId) return;
+
+    const isActive = icon.getAttribute("fill") === "#111";
+
+    this.style.pointerEvents = "none";
+
+    try {
+
+  const url = isActive ? "/wishlist/remove" : "/wishlist/add";
+const method = isActive ? "DELETE" : "POST";
+
+const res = await fetch(url, {
+  method,
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ productId })
+});
+
+
+      if (res.status === 401) {
+        window.location.href = "/login";
+        return;
+      }
+
+      const data = await res.json();
+
+      if (!data.success && !isActive) {
+        Swal.fire({ icon:"error", title:data.message || "Error" });
+        return;
+      }
+
+      icon.setAttribute("fill", isActive ? "none" : "#111");
+
+      Swal.fire({
+        icon: "success",
+        title: isActive ? "Removed from wishlist" : "Added to wishlist",
+        timer: 1200,
+        showConfirmButton: false
+      });
+
+    } catch (err) {
+      Swal.fire({ icon:"error", title:"Server error" });
+    }
+
+    this.style.pointerEvents = "auto";
+  });
+
+});
+</script>
+
 
   <%- include('../partials/user/footer') %>
 </body>

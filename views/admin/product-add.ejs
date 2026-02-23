@@ -216,15 +216,30 @@
         Choose File
       </button>
 
-      <br>
 
-      <div class="cropper-wrapper">
+<div class="cropper-wrapper">
   <img id="imagePreview">
 </div>
 
+  <button type="button" id="addImageBtn" title="Add Image" 
+  style="margin-bottom: 2px;background:none;border: 1px solid #776e65;cursor:pointer; ">
 
-      <br>
-      <button type="button" id="addImageBtn">Add Image</button>
+  <svg xmlns="http://www.w3.org/2000/svg"
+       width="20"
+       height="20"
+       viewBox="0 0 24 24"
+       fill="none"
+       stroke="#776e65"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round">
+
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="17 8 12 3 7 8"/>
+    <line x1="12" y1="3" x2="12" y2="15"/>
+
+  </svg>
+</button>
 
       <div id="addedImages" class="mt-2"></div>
 
@@ -246,6 +261,7 @@
 <!-- ==============================
      CROP + VARIANT JS
 =============================== -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 <link
   href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"
   rel="stylesheet"
@@ -273,26 +289,40 @@
   ------------------------------*/
 input.addEventListener('change', (e) => {
 
-  document.querySelector('.cropper-wrapper').style.display = 'block';
-
   const file = e.target.files[0];
   if (!file) return;
+
+  const allowedTypes = ['image/jpeg', 'image/png'];
+  const allowedExt = ['.jpg', '.jpeg', '.png'];
+  const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+
+  if (!allowedTypes.includes(file.type) || !allowedExt.includes(ext)) {
+    alert('Only JPG and PNG images are allowed.');
+    input.value = '';
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    alert('File size must be less than 5MB.');
+    input.value = '';
+    return;
+  }
+
+  document.querySelector('.cropper-wrapper').style.display = 'block';
 
   const url = URL.createObjectURL(file);
 
   preview.onload = () => {
     if (cropper) cropper.destroy();
 
-cropper = new Cropper(preview, {
-  aspectRatio: 3/4,
-  viewMode: 1,
-  autoCropArea: 1,
-  responsive: false,
-  background: false,
-  center: true
-});
-
-
+    cropper = new Cropper(preview, {
+      aspectRatio: 3/4,
+      viewMode: 1,
+      autoCropArea: 1,
+      responsive: false,
+      background: false,
+      center: true
+    });
   };
 
   preview.src = url;

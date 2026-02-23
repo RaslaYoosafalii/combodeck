@@ -99,7 +99,19 @@ const categories = await Category.find({isDeleted: { $ne: true },isListed: true}
 
 const addProduct = [
   // multer middleware: accept up to 10 images (we require >=3)
-  upload.array('productImages', 10),
+  (req, res, next) => {
+  upload.array('productImages', 10)(req, res, function(err) {
+    if (err) {
+      return res.status(400).render('product-add', {
+        allowRender: true,
+        categories: [],
+        subcategories: [],
+        message: err.message
+      });
+    }
+    next();
+  });
+},
   async (req, res) => {
     try {
       const {
@@ -257,7 +269,19 @@ const loadEditProduct = async (req, res) => {
 
 
 const updateProduct = [
-  upload.array('productImages', 10),
+  (req, res, next) => {
+  upload.array('productImages', 10)(req, res, function(err) {
+    if (err) {
+      return res.status(400).render('product-add', {
+        allowRender: true,
+        categories: [],
+        subcategories: [],
+        message: err.message
+      });
+    }
+    next();
+  });
+},
   async (req, res) => {
     try {
       const id = req.params.id;

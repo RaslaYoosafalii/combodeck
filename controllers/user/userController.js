@@ -4,6 +4,8 @@ import Address from '../../models/addressSchema.js';
 import Order from '../../models/orderSchema.js';
 import { Coupon } from '../../models/couponSchema.js';
 import Wallet from '../../models/walletSchema.js';
+import { Category } from '../../models/categorySchema.js';
+import { Product } from '../../models/productSchema.js';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
@@ -32,23 +34,126 @@ const pageNotFound = async (req, res) => {
   }
 };
 
-// load home page
+
+
 const loadHome = async (req, res) => {
   try {
     const user = req.session.user;
 
+const categories = await Category.find({
+  isDeleted: { $ne: true },
+  isListed: true
+})
+  .sort({ name: 1 })
+  .lean();
+
+// Attach newest product image for each category
+for (const cat of categories) {
+  const latestProduct = await Product.findOne({
+    categoryId: cat._id,
+    isListed: true,
+    isDeleted: { $ne: true },
+    images: { $exists: true, $ne: [] }
+  })
+    .sort({ createdAt: -1 })
+    .select('images')
+    .lean();
+
+  cat.image = latestProduct?.images?.[0] || null;
+}
+// ===============================
+// FETCH LATEST 6 NEW ARRIVALS
+// ===============================
+
+const latestProducts = await Product.aggregate([
+  {
+    $match: {
+      isListed: true,
+      isDeleted: { $ne: true }
+    }
+  },
+  {
+    $lookup: {
+      from: 'variants',
+      let: { pid: '$_id' },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $and: [
+                { $eq: ['$productId', '$$pid'] },
+                { $eq: ['$isListed', true] }
+              ]
+            }
+          }
+        },
+        {
+          $project: {
+            price: 1,
+            discountPrice: 1,
+          }
+        }
+      ],
+      as: 'variants'
+    }
+  },
+  {
+    $match: {
+      variants: { $ne: [] }
+    }
+  },
+  {
+    $addFields: {
+      finalPrice: {
+        $min: {
+          $map: {
+            input: '$variants',
+            as: 'v',
+            in: {
+              $cond: [
+                {
+                  $and: [
+                    { $ne: ['$$v.discountPrice', null] },
+                    { $gt: ['$$v.discountPrice', 0] }
+                  ]
+                },
+                '$$v.discountPrice',
+                '$$v.price'
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    $sort: { createdAt: -1 }
+  },
+  {
+    $limit: 6
+  }
+]);
+
+
     if (user) {
       const userData = await User.findById(user);
-      res.render('loggedinHome', { user: userData });
+      return res.render('loggedinHome', {
+        user: userData,
+        categories,
+        latestProducts
+      });
     } else {
-      res.render('homepage', {
-  query: req.query
-});
-
+      return res.render('homepage', {
+        categories,
+        query: req.query,
+        latestProducts
+      });
     }
   } catch (error) {
-    console.log('home page not found');
-    res.status(500).send('server error');
+    console.log('home page error:', error);
+    return res.status(500).render('error-page', {
+      message: 'Unable to load homepage'
+    });
   }
 };
 
@@ -702,6 +807,48 @@ const updateProfile = async (req, res) => {
 
   const user = await User.findById(userId);
    const file = req.file;
+
+
+// Trim safely
+const trimmedName = typeof name === 'string' ? name.trim() : '';
+const trimmedMobile = typeof mobileNumber === 'string' ? mobileNumber.trim() : '';
+
+// if provided Validate Name 
+if (name !== undefined) {
+
+  if (trimmedName.length === 0) {
+    return res.render('edit-profile', {
+      user,
+      message: 'Name cannot be empty'
+    });
+  }
+
+  if (trimmedName.length < 3) {
+    return res.render('edit-profile', {
+      user,
+      message: 'Name must be at least 3 characters'
+    });
+  }
+
+  if (!/^[A-Za-z\s]+$/.test(trimmedName)) {
+    return res.render('edit-profile', {
+      user,
+      message: 'Name can contain only alphabets and spaces'
+    });
+  }
+}
+
+// Validate Mobile Number (only if provided)
+if (mobileNumber !== undefined && trimmedMobile !== '') {
+
+  if (!/^\d{10}$/.test(trimmedMobile)) {
+    return res.render('edit-profile', {
+      user,
+      message: 'Mobile number must be exactly 10 digits'
+    });
+  }
+
+}
     // email change detect -> otp flow
     if (email && email !== user.email) {
       const existing = await User.findOne({ email: email.toLowerCase() });
@@ -725,14 +872,15 @@ const updateProfile = async (req, res) => {
       await sendVerificationEmail(email, otp);
       const pendingUpdatedFields = new Set();
 
-if (name && name !== user.name) pendingUpdatedFields.add('name');
-if (
-  mobileNumber &&
-  String(mobileNumber) !== String(user.mobileNumber || '')
-) {
-  pendingUpdatedFields.add('number');
+if (trimmedName && trimmedName !== user.name) {
+  user.name = trimmedName;
 }
-
+if (
+  trimmedMobile &&
+  String(trimmedMobile) !== String(user.mobileNumber || '')
+) {
+  user.mobileNumber = Number(trimmedMobile);
+}
 
 req.session.pendingUpdatedFields = Array.from(pendingUpdatedFields);
 req.session.pendingProfileUpdates = {};
@@ -1396,91 +1544,117 @@ const editAddress = async (req, res) => {
       address
     } = req.body;
 
-const indianStates = [
-  "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh",
-  "Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand",
-  "Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur",
-  "Meghalaya","Mizoram","Nagaland","Odisha","Punjab",
-  "Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura",
-  "Uttar Pradesh","Uttarakhand","West Bengal",
-  "Andaman and Nicobar Islands","Chandigarh",
-  "Dadra and Nagar Haveli and Daman and Diu",
-  "Delhi","Jammu and Kashmir","Ladakh","Lakshadweep","Puducherry"
-];
+    const indianStates = [
+      "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh",
+      "Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand",
+      "Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur",
+      "Meghalaya","Mizoram","Nagaland","Odisha","Punjab",
+      "Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura",
+      "Uttar Pradesh","Uttarakhand","West Bengal",
+      "Andaman and Nicobar Islands","Chandigarh",
+      "Dadra and Nagar Haveli and Daman and Diu",
+      "Delhi","Jammu and Kashmir","Ladakh","Lakshadweep","Puducherry"
+    ];
 
-if (
-  !name || !mobileNumber || !pincode ||
-  !locality || !city || !state ||
-  !landmark || !addressType || !address
-) {
-  return res.redirect(`/address/edit/${index}?error=invalid`);
-}
+    // =========================
+    // STRICT SERVER VALIDATION
+    // =========================
 
-if (typeof name !== 'string' || name.trim().length < 3) {
-  return res.redirect(`/address/edit/${index}?error=invalid`);
-}
+    if (
+      !name || !mobileNumber || !pincode ||
+      !locality || !city || !state ||
+      !landmark || !addressType || !address
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'All required fields must be filled'
+      });
+    }
 
-if (!/^\d{10}$/.test(mobileNumber)) {
-  return res.redirect(`/address/edit/${index}?error=invalid`);
-}
+    if (typeof name !== 'string' || name.trim().length < 3) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name must be at least 3 characters'
+      });
+    }
 
-if (!/^\d{6}$/.test(String(pincode))) {
-  return res.redirect(`/address/edit/${index}?error=invalid`);
-}
+    if (!/^\d{10}$/.test(mobileNumber)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Mobile number must be exactly 10 digits'
+      });
+    }
 
-if (alternativeNumber) {
-  if (!/^\d{10}$/.test(alternativeNumber)) {
-    return res.redirect(`/address/edit/${index}?error=invalid`);
-  }
+    if (!/^\d{6}$/.test(String(pincode))) {
+      return res.status(400).json({
+        success: false,
+        message: 'Pincode must be exactly 6 digits'
+      });
+    }
 
-  if (alternativeNumber === mobileNumber) {
-    return res.redirect(`/address/edit/${index}?error=sameNumber`);
-  }
-}
+    if (alternativeNumber) {
+      if (!/^\d{10}$/.test(alternativeNumber)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Alternate number must be exactly 10 digits'
+        });
+      }
 
-if (!indianStates.includes(state)) {
-  return res.redirect(`/address/edit/${index}?error=invalid`);
-}
+      if (String(alternativeNumber) === String(mobileNumber)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Alternate number cannot be same as mobile number'
+        });
+      }
+    }
 
-if (!['Home', 'Work'].includes(addressType)) {
-  return res.redirect(`/address/edit/${index}?error=invalid`);
-}
+    if (!indianStates.includes(state)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid state selected'
+      });
+    }
 
+    if (!['Home', 'Work'].includes(addressType)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid address type'
+      });
+    }
 
     const addressDoc = await Address.findOne({ userId });
 
     if (!addressDoc || !addressDoc.address[index]) {
-      return res.redirect('/address');
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid address selected'
+      });
     }
-    if (
-  alternativeNumber &&
-  String(alternativeNumber) === String(mobileNumber)
-) {
-  return res.redirect('/address?error=sameNumber');
-}
 
-
-addressDoc.address[index] = {
-  ...addressDoc.address[index].toObject(),
-  name,
-  mobileNumber,
-  pincode,
-  locality,
-  city,
-  state,
-  landmark,
-  alternativeNumber: alternativeNumber || null,
-  addressType,
-  address
-};
-
+    addressDoc.address[index] = {
+      ...addressDoc.address[index].toObject(),
+      name: name.trim(),
+      mobileNumber,
+      pincode,
+      locality: locality.trim(),
+      city: city.trim(),
+      state,
+      landmark: landmark.trim(),
+      alternativeNumber: alternativeNumber || null,
+      addressType,
+      address: address.trim()
+    };
 
     await addressDoc.save();
 
-    res.redirect('/address?success=updated');
+    return res.json({ success: true });
+
   } catch (error) {
     console.error('editAddress error', error);
-    res.redirect('/address');
+    return res.status(500).json({
+      success: false,
+      message: 'Server error while updating address'
+    });
   }
 };
 
