@@ -469,7 +469,7 @@ if (category && mongoose.Types.ObjectId.isValid(category)) {
 
    let finalSubcategories = subcategories;
 
-// ✅ Only dedupe when category = ALL
+// Only dedupe when category = ALL
 if (!category) {
   const map = new Map();
   for (const s of subcategories) {
@@ -517,7 +517,7 @@ if (req.session.user) {
     });
 
   } catch (err) {
-    console.error('[USER] listProducts error:', err);
+    console.error('listProducts error:', err);
     return res.status(500).render('error-page', {
       message: 'Failed loading products'
     });

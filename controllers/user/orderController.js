@@ -24,19 +24,26 @@ async function resolveFinalPrice(variant) {
 
   let categoryPrice = variant.price;
 
-  if (
-    category &&
-    category.offerPrice > 0 &&
-    (!category.offerValidDate || category.offerValidDate > new Date())
-  ) {
-    if (category.offerIsPercent) {
-      categoryPrice =
-        variant.price - (variant.price * category.offerPrice / 100);
+if (
+  category &&
+  category.offerPrice > 0 &&
+  (!category.offerValidDate || category.offerValidDate > new Date())
+) {
+  if (category.offerIsPercent) {
+    categoryPrice =
+      variant.price -
+      (variant.price * category.offerPrice / 100);
+  } else {
+    if (
+      category.minProductPrice &&
+      variant.price >= category.minProductPrice
+    ) {
+      categoryPrice = variant.price - category.offerPrice;
     } else {
-      categoryPrice =
-        variant.price - category.offerPrice;
+      categoryPrice = variant.price;
     }
   }
+}
 
   const variantDiscount =
     variant.discountPrice && variant.discountPrice > 0
