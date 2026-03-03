@@ -12,7 +12,10 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL
+      callbackURL:
+      process.env.NODE_ENV === 'production'
+        ? 'https://www.xn--elfloreinveil-6jb.shop/auth/google/callback'
+        : 'http://localhost:5023/auth/google/callback'
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
