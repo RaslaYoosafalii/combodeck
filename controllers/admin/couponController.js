@@ -158,12 +158,15 @@ const addCoupon = async (req, res) => {
       }
     }
 
-    // ===== DISCOUNT TYPE =====
+  
     if (!['fixed', 'percentage'].includes(discountType)) {
       errors.discountType = "Invalid discount type";
     }
 
 const value = Number(discountValue);
+const min = Number(minimumPurchase);
+const max = Number(maximumDiscount);
+const limit = Number(usageLimit);
 
 if (isNaN(value) || value <= 0) {
   errors.discountValue = "Discount value must be greater than 0";
@@ -173,10 +176,20 @@ if (discountType === "percentage" && (value < 1 || value > 100)) {
   errors.discountValue = "Percentage discount must be between 1 and 100";
 }
 
+if (discountType === "fixed") {
+  if (!isNaN(min) && value >= min) {
+    errors.discountValue = 
+      "Fixed discount must be less than minimum purchase amount";
+  }
+}
 
-    const min = Number(minimumPurchase);
-    const max = Number(maximumDiscount);
-    const limit = Number(usageLimit);
+if (discountType === "fixed") {
+  if (!isNaN(max) && max > value) {
+    errors.maximumDiscount =
+      "For fixed coupons, maximum discount cannot exceed discount value";
+  }
+}
+
 
     if (isNaN(min) || min < 0) {
       errors.minimumPurchase = "Minimum purchase must be 0 or more";
@@ -303,7 +316,20 @@ if (discountType === "percentage" && (value < 1 || value > 100)) {
   errors.discountValue = "Percentage discount must be between 1 and 100";
 }
 
+if (discountType === "fixed") {
+  if (!isNaN(min) && value >= min) {
+    errors.discountValue = 
+      "Fixed discount must be less than minimum purchase amount";
+  }
+}
 
+
+if (discountType === "fixed") {
+  if (!isNaN(max) && max > value) {
+    errors.maximumDiscount =
+      "For fixed coupons, maximum discount cannot exceed discount value";
+  }
+}
     if (isNaN(min) || min < 0) {
       errors.minimumPurchase = "Minimum purchase must be 0 or more";
     }

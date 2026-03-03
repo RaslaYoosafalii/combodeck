@@ -27,9 +27,27 @@ const loadTransactions = async (req, res) => {
     const user = await User.findById(userId).lean();  
     const wallet = await Wallet.findOne({ userId }).lean();
 
+    const page = parseInt(req.query.page)||1;
+    const limit = 10;
+    
+    const transactions = wallet?.transactions ? [...wallet.transactions].reverse() : [];
+
+    const totalTransactions = transactions.length;
+    const totalPages = Math.ceil(totalTransactions / limit);
+
+
+    const paginatedTransactions = transactions.slice(
+      (page - 1) * limit,
+      page * limit
+    );
+
+
     res.render("wallet-transactions", {
-      user,      
-      wallet
+      user,
+      wallet,
+      transactions: paginatedTransactions,
+      currentPage: page,
+      totalPages
     });
 
   } catch (error) {

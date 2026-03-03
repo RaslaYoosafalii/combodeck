@@ -333,7 +333,39 @@
     window.location.href = "/admin/product?page=1";
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get('updated') === '1') {
+    Swal.fire({
+      icon: 'success',
+      title: 'Product Updated Successfully',
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true
+    }).then(() => {
+      // Remove query param after alert closes
+      const url = new URL(window.location);
+      url.searchParams.delete('updated');
+      window.history.replaceState({}, document.title, url.pathname);
+    });
+  } else if (params.get('created') === '1') {
+    Swal.fire({
+      icon: 'success',
+      title: 'Product Created Successfully',
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true
+    }).then(() => {
+      // Remove query param after alert closes
+      const url = new URL(window.location);
+      url.searchParams.delete('updated');
+      window.history.replaceState({}, document.title, url.pathname);
+    });
+  }
+</script>
 
 </body>
 </html>

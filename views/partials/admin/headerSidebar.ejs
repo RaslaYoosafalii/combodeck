@@ -74,7 +74,11 @@
   .sidebar a i {
     margin-right: 12px;
   }
-
+   .sidebar a.active {
+    background: #e9e2e0;
+    color: #000;
+    font-weight: 600;
+  }
   /* Main content moves down because header is fixed */
   .main-content {
     margin-left: 260px;
@@ -153,5 +157,43 @@
     if (event.persisted) {
       window.location.reload();
     }
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    const currentPath = window.location.pathname;
+
+    const sidebarLinks = document.querySelectorAll(".sidebar a[href]");
+
+    sidebarLinks.forEach(link => {
+
+      const linkPath = link.getAttribute("href");
+
+      if (!linkPath || linkPath === "javascript:void(0)") return;
+
+      // Exact match
+      if (currentPath === linkPath) {
+        link.classList.add("active");
+      }
+
+      // Handle nested routes (like /admin/product/edit/123)
+      else if (
+        currentPath.startsWith(linkPath) &&
+        linkPath !== "/admin"
+      ) {
+        link.classList.add("active");
+      }
+
+      // Special case for dashboard
+      else if (
+        linkPath === "/admin" &&
+        currentPath === "/admin"
+      ) {
+        link.classList.add("active");
+      }
+
+    });
+
   });
 </script>

@@ -25,6 +25,10 @@ function generateReferralCode() {
 }
 
 const OTP_COOLDOWN = 60 * 1000;
+
+
+
+
 // not found page
 const pageNotFound = async (req, res) => {
   try {
@@ -44,7 +48,8 @@ const categories = await Category.find({
   isDeleted: { $ne: true },
   isListed: true
 })
-  .sort({ name: 1 })
+  .sort({ createdAt: 1 })
+  .limit(4) 
   .lean();
 
 // Attach newest product image for each category
@@ -61,10 +66,8 @@ for (const cat of categories) {
 
   cat.image = latestProduct?.images?.[0] || null;
 }
-// ===============================
-// FETCH LATEST 6 NEW ARRIVALS
-// ===============================
 
+//latest 6 products(new arrivals)
 const latestProducts = await Product.aggregate([
   {
     $match: {
@@ -204,6 +207,7 @@ const login = async (req, res) => {
 
     req.session.user = user._id;
     res.redirect('/');
+    
   } catch (error) {
     console.error('Login Error', error);
     res.render('login', {
@@ -379,11 +383,20 @@ const forgotChangePassword = async (req, res) => {
       });
     }
 
-    if (newPassword.length < 6) {
-      return res.render('change-password', {
-        message: 'Password too short'
-      });
-    }
+if (newPassword.length < 8) {
+  return res.render('change-password', {
+    message: 'Password must be at least 8 characters long'
+  });
+}
+
+const alpha = /[A-Za-z]/;
+const digit = /\d/;
+
+if (!alpha.test(newPassword) || !digit.test(newPassword)) {
+  return res.render('change-password', {
+    message: 'Password must contain at least one alphabet and one digit'
+  });
+}
 
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
@@ -447,6 +460,8 @@ function generateOTP() {
 
 async function sendVerificationEmail(email, otp) {
   try {
+
+    //create a transporter object using nodemailer
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       port: 587,
@@ -457,6 +472,7 @@ async function sendVerificationEmail(email, otp) {
       }
     });
 
+    //verify connection before sending, checks if credentials are valid
     await transporter.verify();
 
     const info = await transporter.sendMail({
@@ -467,6 +483,7 @@ async function sendVerificationEmail(email, otp) {
     });
 
     return {
+      //check if email was accepted by SMTP server
       ok: Array.isArray(info.accepted) && info.accepted.length > 0,
       info,
       rejected: info.rejected
@@ -483,11 +500,11 @@ const signup = async (req, res) => {
    email = email.trim();
    password = password.trim()
    confirmPassword = confirmPassword.trim()
+
   const alpha = /[a-zA-Z]/;
   const digit = /\d/;
   try {
  
-
     if (!email || !password || !confirmPassword) {
       return res.render('signup', {
         message: 'Fill all required fields',
@@ -528,7 +545,7 @@ const signup = async (req, res) => {
     
 if (
   req.session.otpLastSentAt &&
-  Date.now() - req.session.otpLastSentAt < 60 * 1000
+  Date.now() - req.session.otpLastSentAt < 30 * 1000
 ) {
   return res.render('signup', {
     message: 'Please wait before requesting another OTP',
@@ -541,6 +558,7 @@ if (
     const otp = generateOTP();
     const emailResult = await sendVerificationEmail(email, otp);
     console.log(`signup otp`, otp)
+
     if (!emailResult || !emailResult.ok) {
       return res.render('signup', {
         message:
@@ -573,11 +591,14 @@ const securePassword = async (password) => {
   return bcrypt.hash(password, 10);
 };
 
+
 const verifyOtp = async (req, res) => {
   try {
     const { otp } = req.body;
-    const email = req.session?.userData?.email || '';
+    const email = req.session?.userData?.email || '';//get email stored earlier in session during signup
+    
 
+    //check if user exists in session
     if (!req.session.userOtp) {
       return res.render('verify-otp', {
         email,
@@ -586,37 +607,37 @@ const verifyOtp = async (req, res) => {
     }
 
     const TEN_MIN = 10 * 60 * 1000;
+
+    //check if otp expired
     if (Date.now() - req.session.otpCreatedAt > TEN_MIN) {
-      req.session.userOtp = null;
+      req.session.userOtp = null;//clear expired otp from session
       return res.render('verify-otp', {
         email,
         message: 'OTP expired. Please resend.'
       });
     }
+     
 
-    if (otp === req.session.userOtp) {
-      const userData = req.session.userData;
-      const passwordHash = await securePassword(userData.password);
+   //if session otp and entered otp is correct  
+  if (otp === req.session.userOtp) {
+      const userData = req.session.userData; //get temporary session user data stored during signup
+      const passwordHash = await securePassword(userData.password); //hashing password 
 
-    // Generate unique referral code for new user
-let newReferralCode;
-let existingCode;
+    //generate unique referral code for new user
+    let newReferralCode;
+    let existingCode;
+    do {
+        newReferralCode = generateReferralCode();
+        existingCode = await User.findOne({ refferalcode: newReferralCode }); //keep generating until code is unique
+     } while (existingCode);
 
-do {
-  newReferralCode = generateReferralCode();
-  existingCode = await User.findOne({ refferalcode: newReferralCode });
-} while (existingCode);
-
-// ==========================
-// REFERRAL VALIDATION + WALLET CREDIT
-// ==========================
-
-let referredByUser = null;
+// ------validate refferal ---------------
+let referredByUser = null;//default
 
 if (userData.referralCode && userData.referralCode.trim() !== ''){
   const referralInput = userData.referralCode.trim();
 
-  // Strict format validation (8 char alphanumeric)
+  //must be 8 alphanumeric characters
   if (!/^[A-Za-z0-9]{8}$/.test(referralInput)) {
     return res.json({
       success: false,
@@ -624,12 +645,14 @@ if (userData.referralCode && userData.referralCode.trim() !== ''){
     });
   }
 
+  //check if referral code exists and belongs to active user
   referredByUser = await User.findOne({
     refferalcode: referralInput,
     isBlocked: false,
     isDeleted: false
   });
 
+ //if that refferal code doesn't blong to any user
   if (!referredByUser) {
     return res.json({
       success: false,
@@ -637,7 +660,7 @@ if (userData.referralCode && userData.referralCode.trim() !== ''){
     });
   }
 
-  // Prevent self-referral
+  //no self-referral
 if (referredByUser.email.toLowerCase() === userData.email.toLowerCase()){
     return res.json({
       success: false,
@@ -645,7 +668,7 @@ if (referredByUser.email.toLowerCase() === userData.email.toLowerCase()){
     });
   }
 
-  // Prevent duplicate referral (same email reused)
+  //no duplicate referral(same email existing user)
   const existingUser = await User.findOne({ email: userData.email });
   if (existingUser) {
     return res.json({
@@ -655,7 +678,7 @@ if (referredByUser.email.toLowerCase() === userData.email.toLowerCase()){
   }
 }
 
-// Save new user
+//save new user to database
 const saveUserData = new User({
   email: userData.email,
   password: passwordHash,
@@ -665,25 +688,23 @@ const saveUserData = new User({
 
 await saveUserData.save();
 
-// ==========================
-// CREDIT WALLET TO REFERRER
-// ==========================
 
+//credit reward to reffered user
 if (referredByUser) {
+  const REFERRAL_REWARD = 200;
 
-  const REFERRAL_REWARD = 200; // amount to credit
-
-  // Track redeemed user
+//add redeemed user to refarrer's array
 await User.updateOne(
   { _id: referredByUser._id },
   { $addToSet: { redeemedUsers: saveUserData._id } }
 );
 
 
-  // Find or create wallet
-// Ensure wallet exists
+
+//ensure wallet exists
 let wallet = await Wallet.findOne({ userId: referredByUser._id });
 
+//if not create
 if (!wallet) {
   wallet = await Wallet.create({
     userId: referredByUser._id,
@@ -692,12 +713,12 @@ if (!wallet) {
   });
 }
 
-// Atomic update
+//update wallet 
 await Wallet.updateOne(
   { userId: referredByUser._id },
   {
-    $inc: { balance: REFERRAL_REWARD },
-    $push: {
+    $inc: { balance: REFERRAL_REWARD },//add reward
+    $push: { // add transaction info
       transactions: {
         type: "credit",
         amount: REFERRAL_REWARD,
@@ -707,24 +728,26 @@ await Wallet.updateOne(
   }
 );
 
-
   await wallet.save();
 }
 
-
-  req.session.user = saveUserData._id;
-
+      //stores user id in session
+      req.session.user = saveUserData._id;
+      
+      //clear tempsession data
       req.session.userOtp = null;
       req.session.userData = null;
       req.session.otpCreatedAt = null;
-
+     
       return res.json({ success: true, redirectUrl: '/login' });
-    } else {
+
+    } else { //if otp doesnt match
       return res.json({
         success: false,
         message: 'Invalid OTP, please try again'
       });
-    }
+  }
+
   } catch (error) {
     console.error('verifyOtp error', error);
     return res.render('verify-otp', {
@@ -734,10 +757,12 @@ await Wallet.updateOne(
   }
 };
 
+//signup resend OTP 
 const resendOtp = async (req, res) => {
   try {
     const { email } = req.body;
-
+     
+    //check if session userData exists or session email match equest email
     if (!req.session.userData || req.session.userData.email !== email) {
       return res.render('verify-otp', {
         email: email || '',
@@ -745,11 +770,15 @@ const resendOtp = async (req, res) => {
       });
     }
 
+    //generate new otp
     const otp = generateOTP();
-    req.session.userOtp = otp;
-    req.session.otpCreatedAt = Date.now();
 
-    const emailSent = await sendVerificationEmail(email, otp);
+    req.session.userOtp = otp;//save new otp in session
+    req.session.otpCreatedAt = Date.now();//new otp created time
+
+    const emailSent = await sendVerificationEmail(email, otp);//send new otp to request user's email
+
+
     if (!emailSent) {
       return res.render('verify-otp', {
         email,
@@ -758,6 +787,7 @@ const resendOtp = async (req, res) => {
     }
 
     return res.json({ success: true, message: 'OTP resent successfully' });
+
   } catch (error) {
     console.error('resendOtp error', error);
     return res.render('verify-otp', {
@@ -767,26 +797,32 @@ const resendOtp = async (req, res) => {
   }
 };
 
+
 const loadUserprofile = async (req, res) => {
   try {
     const userId = req.session.user;
+    //user._id from session
 
+    //etch userdate, useraddress, userorders from database
     const user = await User.findById(userId).lean();
     const addressData = await Address.findOne({ userId }).lean();
     const orders = await Order.find({ userId }).sort({ createdAt: -1 }).lean();
 
-   res.render('profile', {
-  user,
-  addresses: addressData?.address || [],
-  orders,
-  passwordChanged: req.query.passwordChanged === '1'
-});
+    res.render('profile', {
+       user,
+       addresses: addressData?.address || [],
+       orders,
+       passwordChanged: req.query.passwordChanged === '1'
+       //if url is /profile?passwordChanged=1, then this becomes true used to show success
+     });
 
   } catch (error) {
     console.error('loadUserprofile error', error);
     res.redirect('/pageNotFound');
   }
 };
+
+
 const loadEditProfile = async (req, res) => {
   try {
     const user = await User.findById(req.session.user).lean();
@@ -802,18 +838,17 @@ const updateProfile = async (req, res) => {
   try {
     const { name, mobileNumber, email } = req.body || {};
     const userId = req.session.user;
-    const deleteImage = req.body?.deleteImage;
+    const deleteImage = req.body?.deleteImage; //checkif frontend requested profile image deletion
+     
+
+   const user = await User.findById(userId);
+   const file = req.file;//if user uploaded image, multer stores it in req.file
 
 
-  const user = await User.findById(userId);
-   const file = req.file;
-
-
-// Trim safely
 const trimmedName = typeof name === 'string' ? name.trim() : '';
 const trimmedMobile = typeof mobileNumber === 'string' ? mobileNumber.trim() : '';
 
-// if provided Validate Name 
+//if name there validate 
 if (name !== undefined) {
 
   if (trimmedName.length === 0) {
@@ -833,24 +868,38 @@ if (name !== undefined) {
   if (!/^[A-Za-z\s]+$/.test(trimmedName)) {
     return res.render('edit-profile', {
       user,
-      message: 'Name can contain only alphabets and spaces'
+      message: 'Name can only contain alphabets and spaces'
     });
   }
 }
 
-// Validate Mobile Number (only if provided)
+//if nnumber there validate Mobile Number
 if (mobileNumber !== undefined && trimmedMobile !== '') {
 
-  if (!/^\d{10}$/.test(trimmedMobile)) {
+  if (!/^\d+$/.test(trimmedMobile)) {
+    return res.render('edit-profile', {
+      user,
+      message: 'Mobile number must contain digits only'
+    });
+  }
+
+  if (trimmedMobile.length !== 10) {
     return res.render('edit-profile', {
       user,
       message: 'Mobile number must be exactly 10 digits'
     });
   }
 
+  if (/^0+$/.test(trimmedMobile)) {
+    return res.render('edit-profile', {
+      user,
+      message: 'Mobile number cannot be all zeros'
+    });
+  }
+
 }
-    // email change detect -> otp flow
-    if (email && email !== user.email) {
+    //email change detect -> otp flow
+      if (email && email !== user.email) {
       const existing = await User.findOne({ email: email.toLowerCase() });
       if (existing) {
         return res.render('edit-profile', {
@@ -870,7 +919,8 @@ if (mobileNumber !== undefined && trimmedMobile !== '') {
       console.log('Send to ', email);
 
       await sendVerificationEmail(email, otp);
-      const pendingUpdatedFields = new Set();
+
+  const pendingUpdatedFields = new Set();
 
 if (trimmedName && trimmedName !== user.name) {
   user.name = trimmedName;
@@ -902,7 +952,7 @@ if (
         otpSent: true,
         message: 'OTP sent to your new email'
       });
-    }
+}
 
 // profile image handling
 let imageUpdated = false;
@@ -922,7 +972,7 @@ if (file) {
   imageUpdated = true;
 }
 
-// delete image request
+//delete image request
 if (deleteImage === 'true' && user.profileImage) {
 
   const oldPath = path.join(
@@ -936,35 +986,37 @@ if (deleteImage === 'true' && user.profileImage) {
   imageUpdated = true;
 }    
 
+//updated fields tracking
 const updatedFields = new Set();
 if (imageUpdated) updatedFields.add('profile photo');
 
 
 if (name && name !== user.name) updatedFields.add('name');
 if (
-  mobileNumber &&
-  String(mobileNumber) !== String(user.mobileNumber || '')
+  trimmedMobile &&
+  String(trimmedMobile) !== String(user.mobileNumber || '')
 ) {
   updatedFields.add('number');
 }
+
 // apply changes
 if (name && name !== user.name) {
   user.name = name;
 }
 
 if (
-  mobileNumber &&
-  String(mobileNumber) !== String(user.mobileNumber || '')
+  trimmedMobile &&
+  String(trimmedMobile) !== String(user.mobileNumber || '')
 ) {
-  user.mobileNumber = mobileNumber;
+  user.mobileNumber = Number(trimmedMobile);
 }
 
 
 
 
-// EMAIL change already handled by OTP flow → do NOT include here
-
+//email change already handled by OTP flow 
 await user.save();
+
 if (updatedFields.size === 0) {
   updatedFields.add('profile');
 }
@@ -995,6 +1047,9 @@ return res.render('edit-profile', {
     res.redirect('/pageNotFound');
   }
 };
+
+
+
 const deleteProfileImage = async (req, res) => {
   try {
     const userId = req.session.user;
@@ -1045,7 +1100,7 @@ const changeProfilePassword = async (req, res) => {
     const { currentPassword, newPassword, confirmPassword } = req.body;
     const user = await User.findById(req.session.user).lean();
 
-    // 1️⃣ Current password empty
+
     if (!currentPassword) {
       return res.render('profile-change-password', {
         user,
@@ -1060,7 +1115,7 @@ const changeProfilePassword = async (req, res) => {
       userWithPassword.password
     );
 
-    // 2️⃣ Old password incorrect
+
     if (!isMatch) {
       return res.render('profile-change-password', {
         user,
@@ -1068,26 +1123,50 @@ const changeProfilePassword = async (req, res) => {
       });
     }
 
-    // New password mismatch
-    if (!newPassword || newPassword !== confirmPassword) {
-      return res.render('profile-change-password', {
-        user,
-        message: 'Passwords do not match'
-      });
-    }
+if (!newPassword || !confirmPassword) {
+  return res.render('profile-change-password', {
+    user,
+    message: 'Fill all required fields'
+  });
+}
+
+if (newPassword !== confirmPassword) {
+  return res.render('profile-change-password', {
+    user,
+    message: 'Passwords do not match'
+  });
+}
+
+if (newPassword.length < 8) {
+  return res.render('profile-change-password', {
+    user,
+    message: 'Password must be at least 8 characters long'
+  });
+}
+
+const alpha = /[A-Za-z]/;
+const digit = /\d/;
+
+if (!alpha.test(newPassword) || !digit.test(newPassword)) {
+  return res.render('profile-change-password', {
+    user,
+    message: 'Password must contain at least one alphabet and one digit'
+  });
+}
 
     userWithPassword.password = await bcrypt.hash(newPassword, 10);
     await userWithPassword.save();
 
-    // 4️⃣ Success → SweetAlert trigger
+
     res.render('profile-change-password', {
       user,
       success: true
     });
+
   } catch (error) {
     console.error('changeProfilePassword error', error);
 
-    // 3️⃣ Unexpected error
+
     res.render('profile-change-password', {
       user: null,
       fatalError: true
@@ -1133,11 +1212,13 @@ const requestEmailChange = async (req, res) => {
       email,
       message: 'OTP sent to your new email'
     });
+
   } catch (error) {
     console.error('requestEmailChange error', error);
     res.redirect('/pageNotFound');
   }
 };
+
 
 const verifyEmailChangeOtp = async (req, res) => {
   try {
@@ -1201,10 +1282,14 @@ return res.render('verify-email-otp', {
   }
 };
 
-// load email page
+
+
+
 const loadProfileForgotPassword = (req,res)=>{
   res.render('profile-forgot-password',{message:null})
 };
+
+
 
 // after email submit
 const profileForgotPasswordRequest = async (req, res) => {
@@ -1216,14 +1301,14 @@ const profileForgotPasswordRequest = async (req, res) => {
       return res.redirect('/login');
     }
 
-    // ✅ REQUIRED VALIDATION
+
     if (!email || email.toLowerCase() !== user.email.toLowerCase()) {
       return res.render('profile-forgot-password', {
         message: 'Please enter your registered email address'
       });
     }
 
-    // OTP cooldown check
+
     if (
       req.session.profileReset?.otpLastSentAt &&
       Date.now() - req.session.profileReset.otpLastSentAt < OTP_COOLDOWN
@@ -1251,6 +1336,7 @@ req.session.profileReset = {
       email: user.email,
       message: 'OTP sent to your email'
     });
+
   } catch (err) {
     console.error('profileForgotPasswordRequest error', err);
     return res.render('profile-forgot-password', {
@@ -1260,7 +1346,7 @@ req.session.profileReset = {
 };
 
 
-// OTP page
+
 const profileForgotVerifyOtp = async (req, res) => {
   const { otp } = req.body;
   const reset = req.session.profileReset;
@@ -1287,7 +1373,7 @@ const profileForgotVerifyOtp = async (req, res) => {
 };
 
 
-// reset password
+//reset password
 const profileForgotResetPassword = async (req, res) => {
   const { newPassword, confirmPassword } = req.body;
   const reset = req.session.profileReset;
@@ -1302,11 +1388,33 @@ const profileForgotResetPassword = async (req, res) => {
     });
   }
 
-  if (!newPassword || newPassword !== confirmPassword) {
-    return res.render('profile-reset-password', {
-      message: 'Passwords do not match'
-    });
-  }
+
+if (!newPassword || !confirmPassword) {
+  return res.render('profile-reset-password', {
+    message: 'Fill all required fields'
+  });
+}
+
+if (newPassword !== confirmPassword) {
+  return res.render('profile-reset-password', {
+    message: 'Passwords do not match'
+  });
+}
+
+if (newPassword.length < 8) {
+  return res.render('profile-reset-password', {
+    message: 'Password must be at least 8 characters long'
+  });
+}
+
+const alpha = /[A-Za-z]/;
+const digit = /\d/;
+
+if (!alpha.test(newPassword) || !digit.test(newPassword)) {
+  return res.render('profile-reset-password', {
+    message: 'Password must contain at least one alphabet and one digit'
+  });
+}
 
   await User.findOneAndUpdate(
     { email: reset.email },
@@ -1337,6 +1445,7 @@ const loadManageAddress = async (req, res) => {
     res.redirect('/pageNotFound');
   }
 };
+
 const loadAddAddress = async (req, res) => {
   try {
     const user = await User.findById(req.session.user).lean();
@@ -1346,6 +1455,7 @@ const loadAddAddress = async (req, res) => {
     res.redirect('/pageNotFound');
   }
 };
+
 const addAddress = async (req, res) => {
   try {
     const userId = req.session.user;
@@ -1364,10 +1474,7 @@ const addAddress = async (req, res) => {
       address
     } = req.body;
 
-    // =========================
-    // STRICT SERVER VALIDATION
-    // =========================
-
+  
     const indianStates = [
       "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh",
       "Goa","Gujarat","Haryana","Himachal Pradesh","Jharkhand",
@@ -1489,10 +1596,10 @@ const setDefaultAddress = async (req, res) => {
       return res.json({ success: false });
     }
 
-    // 🔁 Clear previous default
+    //clear previous default
     addressDoc.address.forEach(a => (a.isDefault = false));
 
-    // ✅ Set new default
+    //set new default
     addressDoc.address[index].isDefault = true;
 
     await addressDoc.save();
@@ -1520,12 +1627,14 @@ const loadEditAddress = async (req, res) => {
       user,
       address: addressDoc.address[index],
       index
+
     });
   } catch (error) {
     console.error('loadEditAddress error', error);
     res.redirect('/pageNotFound');
   }
 };
+
 const editAddress = async (req, res) => {
   try {
     const userId = req.session.user;
@@ -1556,9 +1665,6 @@ const editAddress = async (req, res) => {
       "Delhi","Jammu and Kashmir","Ladakh","Lakshadweep","Puducherry"
     ];
 
-    // =========================
-    // STRICT SERVER VALIDATION
-    // =========================
 
     if (
       !name || !mobileNumber || !pincode ||
@@ -1748,8 +1854,8 @@ export {
 };
 
 export default{
-  loadHome,
   pageNotFound,
+  loadHome,
   loadSignupPage,
   forgotPasswordRequest,
   forgotVerifyOtp,

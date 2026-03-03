@@ -465,7 +465,7 @@
     <div class="chips" role="tablist" aria-label="categories">
 <a class="chip <%= (!pagination || !pagination.category) ? 'active' : '' %>"
    href="/products?
-q=<%= encodeURIComponent(pagination?.q || '') %>
+q=<%= encodeURIComponent(pagination?.search || '') %>
 &sort=<%= pagination?.sort || 'newest' %>
 &minPrice=<%= pagination?.minPrice || '' %>
 &maxPrice=<%= pagination?.maxPrice || '' %>
@@ -477,7 +477,7 @@ q=<%= encodeURIComponent(pagination?.q || '') %>
 <a class="chip <%= (pagination && String(pagination.category) === String(cat._id)) ? 'active' : '' %>"
    href="/products?
 category=<%= cat._id %>
-&q=<%= encodeURIComponent(pagination?.q || '') %>
+&q=<%= encodeURIComponent(pagination?.search || '') %>
 &sort=<%= pagination?.sort || 'newest' %>
 &minPrice=<%= pagination?.minPrice || '' %>
 &maxPrice=<%= pagination?.maxPrice || '' %>
@@ -489,7 +489,7 @@ category=<%= cat._id %>
     </div>
 
     <form method="GET" action="/products" class="controls-row" style="margin-bottom:8px;">
-      <input type="text" name="q" placeholder="Search..." value="<%= (pagination && pagination.q) ? pagination.q : '' %>" />
+    <input type="text" name="q" placeholder="Search..." value="<%= pagination?.search || '' %>" />      
 
       <button type="submit">Search</button>
       <% if (pagination && pagination.search) { %>
@@ -528,7 +528,7 @@ category=<%= pagination.category || '' %>
           <div class="heading">FILTERS &amp; SORT</div>
 <div class="clear-filters" style="padding-bottom: 10px; padding-left: 5px;">
   <a href="/products?
-q=<%= encodeURIComponent(pagination?.q || '') %>
+q=<%= encodeURIComponent(pagination?.search || '') %>
 &sort=<%= pagination?.sort || 'newest' %>">
     Clear filters
   </a>
@@ -537,7 +537,7 @@ q=<%= encodeURIComponent(pagination?.q || '') %>
 
         <div class="filter-block">
           <form id="categoryFilter" method="GET" action="/products">
-            <input type="hidden" name="q" value="<%= (pagination && pagination.q) ? pagination.q : '' %>" />
+            <input type="hidden" name="q" value="<%= pagination?.search || '' %>" />
             <input type="hidden" name="sort" value="<%= (pagination && pagination.sort) ? pagination.sort : '' %>" />
             <input type="hidden" name="limit" value="<%= (pagination && pagination.limit) ? pagination.limit : 9 %>" />
 
@@ -558,7 +558,7 @@ q=<%= encodeURIComponent(pagination?.q || '') %>
        <div class="filter-block">
 
   <form id="subcategoryFilter" method="GET" action="/products">
-    <input type="hidden" name="q" value="<%= pagination?.q || '' %>" />
+    <input type="hidden" name="q" value="<%= pagination?.search || '' %>" />
     <input type="hidden" name="sort" value="<%= pagination?.sort || '' %>" />
     <input type="hidden" name="category" value="<%= pagination?.category || '' %>" />
     <input type="hidden" name="limit" value="<%= pagination?.limit || 9 %>" />
@@ -588,7 +588,7 @@ q=<%= encodeURIComponent(pagination?.q || '') %>
 
         <div class="filter-block">
           <form id="priceFilter" method="GET" action="/products">
-            <input type="hidden" name="q" value="<%= (pagination && pagination.q) ? pagination.q : '' %>" />
+            <input type="hidden" name="q" value="<%= pagination?.search || '' %>" />            
             <input type="hidden" name="sort" value="<%= (pagination && pagination.sort) ? pagination.sort : '' %>" />
             <input type="hidden" name="category" value="<%= (pagination && pagination.category) ? pagination.category : '' %>" />
             <input type="hidden" name="subcategory" value="<%= pagination?.subcategory || '' %>" />
@@ -698,7 +698,7 @@ q=<%= encodeURIComponent(pagination?.q || '') %>
     <a aria-label="prev"
        href="/products?page=<%= pagination.page - 1 %>
 &limit=<%= pagination.limit %>
-&q=<%= encodeURIComponent(String(pagination.q || '')) %>
+&q=<%= encodeURIComponent(String(pagination.search || '')) %>
 &sort=<%= pagination.sort || '' %>
 &category=<%= pagination.category || '' %>
 &subcategory=<%= pagination.subcategory || '' %>
@@ -712,7 +712,7 @@ q=<%= encodeURIComponent(pagination?.q || '') %>
     <a class="<%= (i === pagination.page) ? 'active' : '' %>"
        href="/products?page=<%= i %>
 &limit=<%= pagination.limit %>
-&q=<%= encodeURIComponent(String(pagination.q || '')) %>
+&q=<%= encodeURIComponent(String(pagination.search || '')) %>
 &sort=<%= pagination.sort || '' %>
 &category=<%= pagination.category || '' %>
 &subcategory=<%= pagination.subcategory || '' %>
@@ -726,7 +726,7 @@ q=<%= encodeURIComponent(pagination?.q || '') %>
     <a aria-label="next"
        href="/products?page=<%= pagination.page + 1 %>
 &limit=<%= pagination.limit %>
-&q=<%= encodeURIComponent(String(pagination.q || '')) %>
+&q=<%= encodeURIComponent(String(pagination.search || '')) %>
 &sort=<%= pagination.sort || '' %>
 &category=<%= pagination.category || '' %>
 &subcategory=<%= pagination.subcategory || '' %>

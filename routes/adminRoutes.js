@@ -80,7 +80,7 @@ router.get('/product',noCache, adminAuth, productController.listProducts);
 router.get('/product/add',noCache, adminAuth, productController.loadAddProduct);    
 router.post('/product/add', adminAuth, productController.addProduct);    
 router.get('/product/edit/:id',noCache, adminAuth, productController.loadEditProduct);
-router.put('/product/edit/:id', adminAuth, productController.updateProduct);
+router.post('/product/edit/:id', adminAuth, productController.updateProduct);
 router.delete('/product/delete/:id', adminAuth, productController.deleteProduct);
 router.post('/product/restore/:id',adminAuth,productController.restoreProduct);
 router.get('/product/deleted',noCache,adminAuth,productController.listDeletedProducts);

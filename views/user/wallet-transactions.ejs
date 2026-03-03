@@ -111,6 +111,31 @@ body {
     right: 25px;
   }
 }
+/* ===== PAGINATION ===== */
+.pagination {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.page-btn {
+  display: inline-block;
+  margin: 0 5px;
+  padding: 8px 14px;
+  background: #eee;
+  color: #000;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.page-btn:hover {
+  background: #ddd;
+}
+
+.page-btn.active {
+  background: #333;
+  color: #fff;
+}
 </style>
 </head>
 
@@ -137,7 +162,7 @@ body {
         <span>Amount</span>
       </div>
 
-      <% wallet.transactions.slice().reverse().forEach(t => { %>
+     <% transactions.forEach(t => { %>
         <div class="transaction-row">
           <span><%= new Date(t.createdAt).toLocaleString() %></span>
           <span><%= t.description %></span>
@@ -151,6 +176,30 @@ body {
       <p style="text-align:center;color:#777;">No transactions found</p>
     <% } %>
 
+  <% if (totalPages > 1) { %>
+  <div class="pagination">
+
+    <% if (currentPage > 1) { %>
+      <a href="/wallet/history?page=<%= currentPage - 1 %>" class="page-btn">
+        &lt;
+      </a>
+    <% } %>
+
+    <% for (let i = 1; i <= totalPages; i++) { %>
+      <a href="/wallet/history?page=<%= i %>" 
+         class="page-btn <%= i === currentPage ? 'active' : '' %>">
+        <%= i %>
+      </a>
+    <% } %>
+
+    <% if (currentPage < totalPages) { %>
+      <a href="/wallet/history?page=<%= currentPage + 1 %>" class="page-btn">
+        &gt;
+      </a>
+    <% } %>
+
+  </div>
+<% } %>
   </section>
 
 </div>

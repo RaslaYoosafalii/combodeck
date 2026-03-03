@@ -97,7 +97,7 @@ order.orderedItem.forEach(item => {
     throw new Error("Invalid order item data");
   }
 
-  // EXCLUDE cancelled /returned/ failed items
+  //eclude cancelled /returned/ failed items
   if (["cancelled", "returned",  "failed"].includes(item.orderStatus)) {
     return;
   }
@@ -136,17 +136,16 @@ if (!isNaN(discountValue) && discountValue > 0) {
 
 const loadSalesReport = async (req, res) => {
 
-  try {
+    try {
 
     const { startDate, endDate, filter } = getDateRange(req.query);
    
-let page = parseInt(req.query.page, 10);
+     let page = parseInt(req.query.page, 10);
+     if (isNaN(page) || page < 1) {
+     page = 1;
+     }
 
-if (isNaN(page) || page < 1) {
-  page = 1;
-}
-
-const limit = 5;
+     const limit = 5;
 
     
 
@@ -537,7 +536,7 @@ if (type === "pdf") {
   // Total printable width
   const totalTableWidth = usableWidth;
 
-  // Relative width ratios (adjusted proportionally)
+  
   const ratios = [
     5,   // No
     18,  // OrderId
@@ -754,8 +753,8 @@ const orders = await Order.find({
 })
       .populate("orderedItem.product")
       .lean();
-// ================= SUMMARY CALCULATION =================
 
+//summary calculation
 let totalSales = 0;
 let totalOrders = 0;
 
@@ -788,14 +787,14 @@ for (const order of orders) {
 
     if (!item || typeof item.quantity !== "number") continue;
 
-    // STRICT exclusion
+    //excluding 
     if (["cancelled","returned","failed"].includes(item.orderStatus)) continue;
 
     totalProductsSold += item.quantity;
   }
 }
-// ================== SALES LINE GRAPH DATA ==================
 
+//sales line graph
 if (!startDate || !endDate) {
   return res.status(400).json({
     success: false,
@@ -805,7 +804,7 @@ if (!startDate || !endDate) {
 
 const salesMap = {};
 
-// STEP 1: Pre-fill all dates with 0
+//Pre-fill all dates with 0
 let current = new Date(startDate);
 current.setHours(0,0,0,0);
 
@@ -835,7 +834,7 @@ while (current <= lastDate) {
   current.setDate(current.getDate() + 1);
 }
 
-// STEP 2: Add order values
+//add order values
 for (const order of orders) {
 
   if (!order || !order.orderDate || typeof order.finalPrice !== "number") {

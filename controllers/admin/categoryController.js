@@ -136,16 +136,25 @@ const editCategory = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Category not found' });
     }
 
-    // check unique name (if changed)
-    if (cat.name !== name.trim()) {
-      const exists = await Category.findOne({ name: name.trim(), _id: { $ne: id } });
-      if (exists) {
-        return res.status(400).json({
-          success: false,
-          message: 'Another category with this name exists'
-        });
-      }
-    }
+// check unique name (if changed)
+if (cat.name.toLowerCase() !== name.trim().toLowerCase()) {
+
+  const escaped = name.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  const exists = await Category.findOne({
+    name: { $regex: new RegExp(`^${escaped}$`, 'i') },
+    _id: { $ne: id },
+    isDeleted: { $ne: true }
+  });
+
+  if (exists) {
+    return res.status(400).json({
+      success: false,
+      message: 'Another category with this name already exists'
+    });
+  }
+}
+
   const newStatus =
   isListed === 'true' ||
   isListed === true ||
@@ -192,19 +201,22 @@ const editSubCategory = async (req, res) => {
     }
 
     // unique fitName check
-    if (String(sub.fitName) !== String(fitName.trim())) {
-      const exists = await SubCategory.findOne({
-        Category: sub.Category,
-        fitName: fitName.trim(),
-        _id: { $ne: id }
-      });
-      if (exists) {
-        return res.status(400).json({
-          success: false,
-          message: 'Another subcategory with this name already exists'
-        });
-      }
-    }
+if (sub.fitName.toLowerCase() !== fitName.trim().toLowerCase()) {
+
+  const escaped = fitName.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const exists = await SubCategory.findOne({
+    Category: sub.Category,
+    fitName: { $regex: new RegExp(`^${escaped}$`, 'i') },
+    _id: { $ne: id }
+  });
+
+  if (exists) {
+    return res.status(400).json({
+      success: false,
+      message: 'Another subcategory with this name already exists'
+    });
+  }
+}
 
     sub.fitName = fitName.trim();
     await sub.save();
@@ -229,7 +241,12 @@ const createCategory = async (req, res) => {
     return res.redirect('/admin/category');
     }
 
-    const exists = await Category.findOne({ name: name.trim() });
+const escaped = name.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const exists = await Category.findOne({
+  name: { $regex: new RegExp(`^${escaped}$`, 'i') },
+  isDeleted: { $ne: true }
+});
+
     if (exists) {
       console.log('createCategory failed: category exists named', name);
       req.session.message = 'category already exists with same name';
@@ -264,8 +281,13 @@ const createSubCategory = async (req, res) => {
       return res.redirect('/admin/category');
     }
 
-    const exists = await SubCategory.findOne({ Category: categoryId, fitName: fitName.trim() });
-    if (exists) {
+const escaped = fitName.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const exists = await SubCategory.findOne({
+  Category: categoryId,
+  fitName: { $regex: new RegExp(`^${escaped}$`, 'i') }
+});
+
+if (exists) {
       console.log('createSubCategory failed: subcategory exists', fitName);
       req.session.message = 'subcategory already exists with same name';
       return res.redirect('/admin/category');
@@ -325,7 +347,7 @@ const setCategoryOffer = async (req, res) => {
       return res.redirect('/admin/category');
     }
 
-    const { offerType, offerValue, offerValidDate } = req.body;
+    const { offerType, offerValue, offerValidDate, minProductPrice } = req.body;
 
 if (offerType && !['fixed', 'percent'].includes(offerType)) {
 req.session.message = 'Invalid offer type';
@@ -345,7 +367,8 @@ if (!valueTrim && !dateTrim) {
   cat.offerPrice = 0;
   cat.offerIsPercent = false;
   cat.offerValidDate = undefined;
-
+  cat.minProductPrice = null;
+  
   await cat.save();
 
   req.session.message = 'Offer cleared successfully';
@@ -360,22 +383,49 @@ if (!valueTrim || !dateTrim) {
 
 
     const numericValue = Number(valueTrim);
-    if (Number.isNaN(numericValue) || numericValue < 0) {
-req.session.message = 'Invalid offer value';
-return res.redirect('/admin/category');
-    }
 
-    if (offerType === 'percent') {
-      if (numericValue <= 0 || numericValue > 100) {
- req.session.message = 'Percentage value must be between 1 and 100';
-return res.redirect('/admin/category');
-      }
-      cat.offerIsPercent = true;
-      cat.offerPrice = numericValue;
-    } else {
-      cat.offerIsPercent = false;
-      cat.offerPrice = numericValue;
-    }
+if (Number.isNaN(numericValue) || numericValue < 0) {
+     req.session.message = 'Invalid offer value';
+     return res.redirect('/admin/category');
+}
+
+if (offerType === 'percent') {
+
+  if (numericValue > 100) {
+    req.session.message = 'Percentage value must be between 1 and 100';
+    return res.redirect('/admin/category');
+  }
+
+  cat.offerIsPercent = true;
+  cat.offerPrice = numericValue;
+  cat.minProductPrice = null; // not required for percent
+
+} else {
+
+  //fixed
+  const minTrim = (minProductPrice || '').toString().trim();
+
+  if (!minTrim) {
+    req.session.message = 'Minimum product price is required for fixed offers';
+    return res.redirect('/admin/category');
+  }
+
+  const numericMin = Number(minTrim);
+
+  if (Number.isNaN(numericMin) || numericMin <= 0) {
+    req.session.message = 'Minimum product price must be greater than 0';
+    return res.redirect('/admin/category');
+  }
+
+  if (numericMin <= numericValue) {
+    req.session.message = 'Minimum product price must be greater than offer value';
+    return res.redirect('/admin/category');
+  }
+
+  cat.offerIsPercent = false;
+  cat.offerPrice = numericValue;
+  cat.minProductPrice = numericMin;
+}
 
 if (offerValidDate) {
   const d = new Date(offerValidDate);

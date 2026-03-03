@@ -16,6 +16,10 @@ const categorySchema = new Schema({
         required: false,
         default: 0
     },
+    minProductPrice: {
+      type: Number,
+      default: null
+    },
     offerIsPercent: {           
         type: Boolean,
         default: false

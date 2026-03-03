@@ -14,7 +14,11 @@
       max-width: 1100px;
       margin: auto;
     }
-
+    .add-container::after {
+  content: "";
+  display: block;
+  clear: both;
+}
     .page-title {
       font-size: 26px;
       font-weight: 600;
@@ -140,6 +144,28 @@
     #addVariantBtn:hover {
       background: #9e958d;
     }
+    .button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.cancel-btn {
+  background: #e9e4df;
+  padding: 12px 26px;
+  border: none;
+  border-radius: 12px;
+  color: #5f5751;
+  font-size: 17px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.cancel-btn:hover {
+  background: #d5cec8;
+}
 
     .submit-btn {
       background: #776e65;
@@ -148,8 +174,7 @@
       border-radius: 12px;
       color: #fff;
       font-size: 17px;
-      float: right;
-      margin-top: 25px;
+
     }
 
     .submit-btn:hover {
@@ -162,34 +187,33 @@
 
     <h2 class="page-title">Add Product</h2>
 
-    <% if (message) { %>
-      <div class="alert alert-danger"><%= message %></div>
-    <% } %>
 
     <form id="productForm" action="/admin/product/add" method="POST">
 
       <!-- PRODUCT NAME -->
       <div class="mb-3">
         <label class="form-label">Product Name</label>
-        <input type="text" name="productName" class="form-control" required>
+       <input type="text" name="productName" class="form-control" value="<%= typeof productName !== 'undefined' ? productName : '' %>" required>
       </div>
 
       <!-- DESCRIPTION -->
-      <div class="mb-3">
+      <div class="mb-3">.
         <label class="form-label">Description</label>
-        <textarea name="description" class="form-control" required></textarea>
+        <textarea name="description" class="form-control" required><%= typeof description !== 'undefined' ? description : '' %></textarea>
       </div>
 
       <div class="row">
         <!-- CATEGORY -->
         <div class="col-md-6 mb-3">
           <label class="form-label">Category</label>
-          <select name="categoryId" id="categorySelect" class="form-control" required>
-            <option value="">Select</option>
-            <% categories.forEach(c => { %>
-              <option value="<%= c._id %>"><%= c.name %></option>
-            <% }) %>
-          </select>
+<select name="categoryId" id="categorySelect" class="form-control" required>
+  <option value="">Select</option>
+  <% categories.forEach(c => { %>
+    <option value="<%= c._id %>" <%= String(c._id) === String(categoryId) ? 'selected' : '' %>>
+      <%= c.name %>
+    </option>
+  <% }) %>
+</select>
         </div>
 
         <!-- SUBCATEGORY -->
@@ -247,10 +271,36 @@
       <div class="variant-title">Variants</div>
 
       <div id="variantsWrap"></div>
+<% if (typeof variantsData !== 'undefined' && variantsData.length) { %>
+<script>
+  const existingVariants = <%- JSON.stringify(variantsData) %>;
 
-      <button type="button" id="addVariantBtn">Add Variant</button>
+  document.addEventListener('DOMContentLoaded', function() {
+    existingVariants.forEach(v => {
+      addVariantRow();
+      const rows = document.querySelectorAll('.variant-row');
+      const lastRow = rows[rows.length - 1];
 
-      <button class="submit-btn" type="submit">Create Product</button>
+      lastRow.querySelector('.v-size').value = v.size || '';
+      lastRow.querySelector('.v-color').value = v.color || '';
+      lastRow.querySelector('.v-price').value = v.price || '';
+      lastRow.querySelector('.v-discount').value = v.discountPrice ?? '';
+      lastRow.querySelector('.v-stock').value = v.stock || '';
+    });
+  })
+</script>
+<% } %>
+
+<button type="button" id="addVariantBtn">Add Variant</button>
+
+<% if (message) { %>
+  <div class="alert alert-danger mt-3"><%= message %></div>
+<% } %>
+
+<div class="button-group">
+  <a href="/admin/product" class="cancel-btn">Cancel</a>
+  <button id="createBtn" class="submit-btn" type="submit">Create Product</button>
+</div>
 
     </form>
   </div>
@@ -372,7 +422,7 @@ document.querySelector('.cropper-wrapper').style.display = 'none';
       <input class="form-control v-color" placeholder="Color" />
       <input class="form-control v-price" placeholder="Price" type="number" />
       <input class="form-control v-discount" placeholder="Discount (opt)" type="number" />
-      <input class="form-control v-stock" placeholder="Stock" type="number" value="0" />
+      <input class="form-control v-stock" placeholder="Stock" type="number" />
       <button type="button" class="remove-variant">Remove</button>
     `;
 
@@ -388,7 +438,9 @@ document.querySelector('.cropper-wrapper').style.display = 'none';
   ------------------------------*/
   document.getElementById('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-
+   const submitBtn = document.getElementById('createBtn');
+submitBtn.disabled = true;
+submitBtn.innerText = 'Creating...';
     const fd = new FormData();
     const form = e.target;
 
@@ -413,12 +465,19 @@ document.querySelector('.cropper-wrapper').style.display = 'none';
         stock: Number(r.querySelector('.v-stock').value)
       });
     });
-
-    if (variants.length === 0) return alert('Please add at least one variant');
+if (variants.length === 0) {
+  submitBtn.disabled = false;
+  submitBtn.innerText = 'Create Product';
+  return alert('Please add at least one variant');
+}
     fd.append('variants', JSON.stringify(variants));
 
     // images
-    if (imagesBlobs.length < 3) return alert('Please add at least 3 images');
+  if (imagesBlobs.length < 3) {
+  submitBtn.disabled = false;
+  submitBtn.innerText = 'Create Product';
+  return alert('Please add at least 3 images');
+}
     imagesBlobs.forEach(obj => fd.append('productImages', obj.blob, obj.name));
 
     const res = await fetch(form.action, {
@@ -431,10 +490,29 @@ document.querySelector('.cropper-wrapper').style.display = 'none';
       return;
     }
 
-    const text = await res.text();
-    document.open();
-    document.write(text);
-    document.close();
+const text = await res.text();
+
+if (res.status === 400) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, 'text/html');
+  const error = doc.querySelector('.alert-danger');
+
+  if (error) {
+    const existingAlert = document.querySelector('.alert-danger');
+    if (existingAlert) existingAlert.remove();
+
+    document.querySelector('#addVariantBtn')
+      .insertAdjacentHTML('afterend', error.outerHTML);
+  }
+  submitBtn.disabled = false;
+  submitBtn.innerText = 'Create Product';
+
+  return; // DO NOT reload page
+}
+
+document.open();
+document.write(text);
+document.close();
   });
 
 </script>
@@ -465,6 +543,38 @@ document.querySelector('.cropper-wrapper').style.display = 'none';
       subcategorySelect.appendChild(opt);
     });
   });
+
+
+// Preserve selected subcategory after validation error
+(function () {
+const serverCategoryId = "<%= categoryId ? String(categoryId) : '' %>";
+const serverSubcategoryId = "<%= subcategoryId ? String(subcategoryId) : '' %>";
+
+  if (!serverCategoryId) return;
+
+  // force category selection from server
+  categorySelect.value = serverCategoryId;
+
+  // rebuild subcategory dropdown
+  subcategorySelect.innerHTML = '<option value="">Select</option>';
+
+  const filtered = ALL_SUBCATEGORIES.filter(
+    s => String(s.Category) === String(serverCategoryId)
+  );
+
+  filtered.forEach(sub => {
+    const opt = document.createElement('option');
+    opt.value = sub._id;
+    opt.textContent = sub.fitName;
+
+    if (serverSubcategoryId && String(sub._id) === String(serverSubcategoryId)) {
+      opt.selected = true;
+    }
+
+    subcategorySelect.appendChild(opt);
+  });
+})();
+
 </script>
 
 

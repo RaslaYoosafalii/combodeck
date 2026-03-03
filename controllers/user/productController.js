@@ -244,7 +244,18 @@ _finalPrice: {
                             }
                           ]
                         },
-                        { $subtract: ['$$v.price', '$categoryData.offerPrice'] }
+                        {
+  $cond: [
+    {
+      $and: [
+        { $ne: ['$categoryData.minProductPrice', null] },
+        { $gte: ['$$v.price', '$categoryData.minProductPrice'] }
+      ]
+    },
+    { $subtract: ['$$v.price', '$categoryData.offerPrice'] },
+    '$$v.price'
+  ]
+}
                       ]
                     },
                     '$$v.price'
@@ -393,7 +404,18 @@ const countPipeline = [
                                 }
                               ]
                             },
-                            { $subtract: ['$$v.price', '$categoryData.offerPrice'] }
+                            {
+  $cond: [
+    {
+      $and: [
+        { $ne: ['$categoryData.minProductPrice', null] },
+        { $gte: ['$$v.price', '$categoryData.minProductPrice'] }
+      ]
+    },
+    { $subtract: ['$$v.price', '$categoryData.offerPrice'] },
+    '$$v.price'
+  ]
+}
                           ]
                         },
                         '$$v.price'
@@ -561,8 +583,17 @@ const updatedVariants = variants.map(v => {
     if (categoryOffer.offerIsPercent) {
       categoryPrice = v.price - (v.price * categoryOffer.offerPrice / 100);
     } else {
-      categoryPrice = v.price - categoryOffer.offerPrice;
-    }
+
+  if (
+    categoryOffer.minProductPrice &&
+    v.price >= categoryOffer.minProductPrice
+  ) {
+    categoryPrice = v.price - categoryOffer.offerPrice;
+  } else {
+    categoryPrice = v.price;
+  }
+
+}
 
     finalPrice = Math.min(finalPrice, categoryPrice);
   }
@@ -688,7 +719,18 @@ const recommendations = await Product.aggregate([
                                 }
                               ]
                             },
-                            { $subtract: ['$$v.price', '$categoryData.offerPrice'] }
+                            {
+  $cond: [
+    {
+      $and: [
+        { $ne: ['$categoryData.minProductPrice', null] },
+        { $gte: ['$$v.price', '$categoryData.minProductPrice'] }
+      ]
+    },
+    { $subtract: ['$$v.price', '$categoryData.offerPrice'] },
+    '$$v.price'
+  ]
+}
                           ]
                         },
                         '$$v.price'

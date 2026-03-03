@@ -98,15 +98,17 @@ const loadCheckout = async (req, res) => {
 
  
 
-    const addresses = await Address.findOne({ userId }).lean();
-    if (!addresses || addresses.address.length === 0) {
-      return res.render('checkout', {
-        cart,
-        addresses: null,
-        summary: null
-      });
-    }
-
+const addresses = await Address.findOne({ userId }).lean();
+if (!addresses || addresses.address.length === 0) {
+  return res.render('checkout', {
+    cart,
+    addresses: null,
+    summary: null,
+    availableCoupons: [],
+    couponInvalidMessage: null,
+    cartTotalBeforeCoupon: 0
+  });
+}
     let baseTotal = 0;
     let finalTotal = 0;
 
@@ -135,13 +137,45 @@ if (req.session.appliedCoupon) {
     sessionCoupon.startingDate > now ||
     sessionCoupon.validUntil < now
   ) {
-    // Coupon no longer valid
     req.session.appliedCoupon = null;
     req.session.couponInvalidMessage = "Coupon is no longer available";
   } else {
-    couponDiscount = req.session.appliedCoupon.discount;
-    appliedCoupon = req.session.appliedCoupon.code;
-    finalTotal = Number(Math.max(finalTotal - couponDiscount, 0).toFixed(2));
+
+    //rcalculate if coupon qualifies
+    if (cartTotalBeforeCoupon < sessionCoupon.minimumPurchase) {
+
+      req.session.appliedCoupon = null;
+      req.session.couponInvalidMessage = `Minimum purchase of Rs.${sessionCoupon.minimumPurchase} required to avail the coupon.`;
+
+    } else {
+
+      let recalculatedDiscount = 0;
+
+      if (sessionCoupon.discountType === "percentage") {
+
+        recalculatedDiscount =
+          (cartTotalBeforeCoupon * sessionCoupon.discountValue) / 100;
+
+        if (recalculatedDiscount > sessionCoupon.maximumDiscount) {
+          recalculatedDiscount = sessionCoupon.maximumDiscount;
+        }
+
+      } else {
+        recalculatedDiscount = sessionCoupon.discountValue;
+      }
+
+      recalculatedDiscount = round2(recalculatedDiscount);
+
+      couponDiscount = recalculatedDiscount;
+      appliedCoupon = sessionCoupon.code;
+
+      finalTotal = round2(
+        Math.max(cartTotalBeforeCoupon - recalculatedDiscount, 0)
+      );
+
+      //update session discount 
+      req.session.appliedCoupon.discount = recalculatedDiscount;
+    }
   }
 }
 
@@ -166,9 +200,6 @@ const availableCoupons = await Coupon.find({
 const filteredCoupons = [];
 
 for (const coupon of availableCoupons) {
-
-// if (cartTotalBeforeCoupon < coupon.minimumPurchase) continue;
-
 
   const userUsage = coupon.redeemedUsers.find(
     u => u.userId.toString() === userId.toString()
@@ -210,6 +241,7 @@ couponDiscount = Number(couponDiscount.toFixed(2));
   }
 };
 
+
 const placeOrder = async (req, res) => {
   try {
     const userId = req.session.user;
@@ -228,7 +260,7 @@ const placeOrder = async (req, res) => {
       return res.json({ success: false, message: 'Invalid address' });
     }
 
-    // 🔒 Stock validation (STRICT)
+    //stock validation
     for (const item of cart.items) {
 
      const product = await Product.findOne({
@@ -237,13 +269,14 @@ const placeOrder = async (req, res) => {
     isListed: true
   }).lean();
 
+
   if (!product) {
     return res.json({
       success: false,
       message: `${item.productId.productName} is unavailable<br>Please remove unavailable product from the cart continue`
     });
   }
-
+       //check varient still available
       const variant = await Variant.findOne({
         productId: item.productId,
         size: item.size,
@@ -259,6 +292,9 @@ const placeOrder = async (req, res) => {
       }
     }
     
+
+
+//mrp price calculation    
 let itemsTotal = 0;
 
 for (const item of cart.items) {
@@ -280,18 +316,68 @@ itemsTotal = round2(itemsTotal + item.totalPrice);
 
 }
 
-
+//apply coupon
 let couponDiscount = 0;
 let couponId = null;
 
 if (req.session.appliedCoupon) {
-  couponDiscount = req.session.appliedCoupon.discount;
-  couponId = req.session.appliedCoupon.couponId;
+
+  const sessionCoupon = await Coupon.findById(
+    req.session.appliedCoupon.couponId
+  );
+
+  const now = new Date();
+
+  if (
+    !sessionCoupon ||
+    sessionCoupon.isDeleted ||
+    !sessionCoupon.isActive ||
+    sessionCoupon.startingDate > now ||
+    sessionCoupon.validUntil < now
+  ) {
+
+    req.session.appliedCoupon = null;
+
+    return res.json({
+      success: false,
+      message: "Coupon is no longer valid. Please review your cart."
+    });
+  }
+
+  //recalculate if coupon qualifies
+  if (itemsTotal < sessionCoupon.minimumPurchase) {
+
+    req.session.appliedCoupon = null;
+
+    return res.json({
+      success: false,
+      message: `Minimum purchase of Rs.${sessionCoupon.minimumPurchase} required to avail the coupon.`
+    });
+  }
+
+  //recalculate discount
+  if (sessionCoupon.discountType === "percentage") {
+
+    couponDiscount =
+      (itemsTotal * sessionCoupon.discountValue) / 100;
+
+    if (couponDiscount > sessionCoupon.maximumDiscount) {
+      couponDiscount = sessionCoupon.maximumDiscount;
+    }
+
+  } else {
+    couponDiscount = sessionCoupon.discountValue;
+  }
+
+  couponDiscount = round2(couponDiscount);
+  couponId = sessionCoupon._id;
+
+  req.session.appliedCoupon.discount = couponDiscount;
 }
 
 const finalAmount = round2(Math.max(itemsTotal - couponDiscount, 0));
 
-//COD amount restriction validation (STRICT)
+//COD amount restriction validation
 if (paymentMethod === 'cod') {
 
   if (typeof finalAmount !== 'number' || isNaN(finalAmount)) {
@@ -309,7 +395,8 @@ if (paymentMethod === 'cod') {
   }
 }
 
-// proportional coupon share
+
+//give proportional coupon share
 let distributed = 0;
 
 const orderedItem = cart.items.map((i, index) => {
@@ -345,10 +432,10 @@ const orderedItem = cart.items.map((i, index) => {
 
 
 
-
+//order placing wallet
 if (paymentMethod === 'wallet') {
 
-  const wallet = await Wallet.findOne({ userId });
+const wallet = await Wallet.findOne({ userId });
 
 if (!wallet || wallet.balance < finalAmount) {
   return res.json({
@@ -533,9 +620,12 @@ res.json({
   }
 };
 
+
 const orderSuccess = async (req, res) => {
   res.render('order-success', { orderId: req.params.orderId });
 };
+
+
 
 const orderFailure = async (req, res) => {
   res.setHeader("Cache-Control", "no-store");
@@ -560,7 +650,7 @@ const orderFailure = async (req, res) => {
 
   let message = req.query.msg || null;
 
-  // 🔥 Auto-set correct message if retry not allowed
+  //message if retry not allowed
   if (!retryAllowed) {
 
     if (isExpired) {
@@ -577,6 +667,8 @@ const orderFailure = async (req, res) => {
     retryAllowed
   });
 };
+
+
 const loadOrders = async (req, res) => {
   try {
     const userId = req.session.user;
@@ -586,7 +678,7 @@ const loadOrders = async (req, res) => {
 
 
 
-// auto mark expired razorpay pending orders as failed (10 min)
+//mark expired razorpay pending orders as failed
 const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
 
 await Order.updateMany(
@@ -627,6 +719,7 @@ await Order.updateMany(
   }
 };
 
+
 const getOrderDetails = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -645,6 +738,7 @@ const getOrderDetails = async (req, res) => {
     res.status(500).send('Something went wrong');
   }
 };
+
 
 const cancelOrder = async (req, res) => {
   try {
@@ -694,7 +788,7 @@ const cancelOrder = async (req, res) => {
   { $inc: { stock: item.quantity } }
 );
 
- // refund single item amount (non-COD only)
+ // refund single item amount 
 if (order.paymentMethod !== "cod") {
 
 const refundAmount = round2(item.offerPrice - (item.couponShare || 0));
@@ -724,22 +818,22 @@ wallet.balance = round2(wallet.balance + refundAmount);
 //recalculate order status
 const items = order.orderedItem;
 
-// 1️⃣ All cancelled
+//all cancelled
 if (items.every(i => i.orderStatus === 'cancelled')) {
   order.orderStatus = 'cancelled';
 }
 
-// 2️⃣ All returned
+//allreturned
 else if (items.every(i => i.orderStatus === 'returned')) {
   order.orderStatus = 'returned';
 }
 
-// 3️⃣ If ANY delivered exists → delivered
+//if any delivered exists → delivered
 else if (items.some(i => i.orderStatus === 'delivered')) {
   order.orderStatus = 'delivered';
 }
 
-// 4️⃣ Mixed returned + cancelled (and no delivered)
+//returned + cancelled
 else if (
   items.every(i =>
     ['returned', 'cancelled'].includes(i.orderStatus)
@@ -748,7 +842,7 @@ else if (
   order.orderStatus = 'returned';
 }
 
-// 5️⃣ Otherwise keep flow statuses
+
 else if (items.some(i => i.orderStatus === 'out for delivery')) {
   order.orderStatus = 'out for delivery';
 }
@@ -809,8 +903,8 @@ order.finalPrice = round2(
       }
     }
 
-    //refund amount after cancellation
-    if (order.paymentMethod !== "cod") {
+//refund amount after cancellation
+if (order.paymentMethod !== "cod") {
   let wallet = await Wallet.findOne({ userId });
   if (!wallet) wallet = await Wallet.create({ userId });
 
@@ -830,6 +924,7 @@ if (order.paymentMethod !== "cod") {
 
   await wallet.save();
 }
+
 if (order.coupenId && order.discount > 0) {
 
   const coupon = await Coupon.findById(order.coupenId);
@@ -942,7 +1037,7 @@ const itemX = pageMargin;
      //customer details
     const addr = order.address;
 
-  doc.font('Helvetica').fontSize(11);
+doc.font('Helvetica').fontSize(11);
 doc.text(`Order ID: ${order.orderId}`, itemX, doc.y);
 doc.text(`Date: ${new Date(order.orderDate).toLocaleDateString()}`, itemX);
 doc.text(`Customer: ${addr.name}`, itemX);
@@ -957,8 +1052,7 @@ doc.text(
 
     doc.moveDown(2);
 
-    //table header
-   // ===== TABLE HEADER =====
+//table header
 const tableTop = doc.y;
 const rowHeight = 32;
 
@@ -1001,7 +1095,7 @@ doc.font('Helvetica');
 
 
 
-// ===== TABLE ROWS =====
+//rows
 const capitalize = (v) => v ? v.charAt(0).toUpperCase() + v.slice(1) : v;
 
   const getInvoiceItemStatus = (status) => {
@@ -1076,12 +1170,12 @@ const isFullyCancelledOrReturned =
     ['cancelled', 'returned'].includes(i.orderStatus)
   );
 
-// For full cancel/return → use all items
-// For partial → exclude cancelled/returned
+
+
 const payableItems = isFullyCancelledOrReturned
-  ? order.orderedItem
+  ? order.orderedItem // For full cancel/return, use all items
   : order.orderedItem.filter(
-      i => !['cancelled', 'returned'].includes(i.orderStatus)
+      i => !['cancelled', 'returned'].includes(i.orderStatus)// For partial, exclude cancelled/returned
     );
 
 //mrp
@@ -1147,7 +1241,7 @@ doc
     { align: 'center' }
   );
 
-// Website (light)
+// Website
 doc
   .moveDown(0.5)
   .font('Helvetica')
@@ -1214,8 +1308,6 @@ const verifyPayment = async (req, res) => {
       return res.json({ success: false });
     }
 
-
-
  if (
   order.paymentMethod !== 'razorpay' ||
   order.paymentStatus === 'completed'
@@ -1226,7 +1318,7 @@ const verifyPayment = async (req, res) => {
     //Mark payment completed
     order.paymentStatus = 'completed';
  
-// If order was previously failed, restore it
+// If order was previously failed
 if ( order.paymentMethod === 'razorpay' && order.paymentStatus === 'completed') {
 
   if (order.orderStatus === 'failed') {
@@ -1307,34 +1399,34 @@ const retryPayment = async (req, res) => {
       return res.redirect('/orders');
     }
 
-    // Must be Razorpay
+    //check if Razorpay
     if (order.paymentMethod !== 'razorpay') {
       return res.redirect('/orders');
     }
 
-    // Must be failed
+    //must be failed
     if (order.paymentStatus !== 'failed' || order.orderStatus !== 'failed') {
       return res.redirect('/orders');
     }
 
-    // Expire after 10 minutes
+    //xpire after 10 minutes
     const tenMinutes = 10 * 60 * 1000;
     if (Date.now() - new Date(order.createdAt).getTime() > tenMinutes) {
-return res.render('order-failure', {
-  orderId,
-  message: "Payment session expired. Please place a new order.",
-  retryAllowed: false
-});
+         return res.render('order-failure', {
+           orderId,
+           message: "Payment session expired. Please place a new order.",
+           retryAllowed: false
+         });
     }
 
-    // Retry limit
-    if (order.retryCount >= 3 || order.retryLocked) {
-return res.render('order-failure', {
-  orderId,
-  message: "Maximum retry attempts reached. Please place a new order.",
-  retryAllowed: false
-});
-    }
+//retry limit
+if (order.retryCount >= 3 || order.retryLocked) {
+        return res.render('order-failure', {
+          orderId,
+          message: "Maximum retry attempts reached. Please place a new order.",
+          retryAllowed: false
+        });
+}        
 
     // Increment retry count
     order.retryCount += 1;

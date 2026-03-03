@@ -115,6 +115,27 @@
       cursor: pointer;
     }
 
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.cancel-btn {
+  background: #e9e4df;
+  padding: 12px 26px;
+  border: none;
+  border-radius: 12px;
+  color: #5f5751;
+  font-size: 17px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.cancel-btn:hover {
+  background: #d5cec8;
+}
     .submit-btn {
       background: #776e65;
       padding: 12px 26px;
@@ -122,23 +143,19 @@
       border-radius: 12px;
       color: #fff;
       font-size: 17px;
-      float: right;
-      margin-top: 25px;
     }
   </style>
 
   <div class="edit-container">
 
     <h2 class="page-title">Edit Product</h2>
+   
+<% if (message) { %>
+  <div class="alert alert-danger mt-3"><%= message %></div>
+<% } %>
 
-    <% if (message) { %>
-      <div class="alert alert-danger"><%= message %></div>
-    <% } %>
-
-    <form id="editForm" action="/admin/product/edit/<%= product._id %>" method="POST">
-         <input type="hidden" name="_method" value="PUT">
-
-
+<form id="editForm" action="/admin/product/edit/<%= product._id %>" method="POST" enctype="multipart/form-data">
+        
       <!-- NAME -->
       <div class="mb-3">
         <label class="form-label">Product Name</label>
@@ -228,9 +245,9 @@
             <input type="hidden" class="v-id" value="<%= v._id %>">
             <input class="form-control v-size" value="<%= v.size %>" placeholder="Size">
             <input class="form-control v-color" value="<%= v.color %>" placeholder="Color">
-            <input class="form-control v-price" value="<%= v.price %>" type="number">
-            <input class="form-control v-discount" value="<%= v.discountPrice ?? '' %>" type="number">
-            <input class="form-control v-stock" value="<%= v.stock %>" type="number">
+            <input class="form-control v-price" value="<%= v.price %>"  placeholder="price" type="number">
+            <input class="form-control v-discount" value="<%= v.discountPrice ?? '' %>"  placeholder="discount" type="number">
+            <input class="form-control v-stock" value="<%= v.stock %>"  placeholder="stock" type="number">
             <label><input type="checkbox" class="v-delete"> Delete</label>
           </div>
         <% }) %>
@@ -239,7 +256,11 @@
 
       <button type="button" id="addVariantBtn">Add Variant</button>
 
-      <button class="submit-btn" type="submit">Save Changes</button>
+<div class="button-group">
+  <a href="/admin/product" class="cancel-btn">Cancel</a>
+  <button class="submit-btn" type="submit">Save Changes</button>
+</div>
+      
     </form>
   </div>
 </div>
@@ -307,81 +328,116 @@ input.onchange = e => {
     row.innerHTML = `
       <input class="form-control v-size" placeholder="Size">
       <input class="form-control v-color" placeholder="Color">
-      <input class="form-control v-price" type="number">
-      <input class="form-control v-discount" type="number">
-      <input class="form-control v-stock" type="number">
+      <input class="form-control v-price"  placeholder="price" type="number">
+      <input class="form-control v-discount"  placeholder="discount" type="number">
+      <input class="form-control v-stock"   placeholder="stock" type="number">
       <button type="button" class="remove-variant">Remove</button>
     `;
     row.querySelector('.remove-variant').onclick = () => row.remove();
     document.getElementById('variantsWrap').appendChild(row);
   };
 
-  document.getElementById('editForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
+document.getElementById('editForm').addEventListener('submit', function (e) {
 
-    const keep = [];
-    document.querySelectorAll('.keep-img:checked').forEach(cb => keep.push(cb.value));
-    fd.append('existingImagesKeep', JSON.stringify(keep));
+  const form = this;
 
-    const variants = [];
-    document.querySelectorAll('.variant-row').forEach(r => {
-      const data = {
-        _id: r.querySelector('.v-id')?.value,
-        size: r.querySelector('.v-size')?.value,
-        color: r.querySelector('.v-color')?.value,
-        price: r.querySelector('.v-price')?.value,
-        discountPrice: r.querySelector('.v-discount')?.value,
-        stock: r.querySelector('.v-stock')?.value,
-        _delete: r.querySelector('.v-delete')?.checked
-      };
-      variants.push(data);
+  // Build hidden inputs before submit
+  const keep = [];
+  document.querySelectorAll('.keep-img:checked').forEach(cb => keep.push(cb.value));
+
+  let keepInput = document.querySelector('input[name="existingImagesKeep"]');
+  if (!keepInput) {
+    keepInput = document.createElement('input');
+    keepInput.type = 'hidden';
+    keepInput.name = 'existingImagesKeep';
+    form.appendChild(keepInput);
+  }
+  keepInput.value = JSON.stringify(keep);
+
+  const variants = [];
+  document.querySelectorAll('.variant-row').forEach(r => {
+    variants.push({
+      _id: r.querySelector('.v-id')?.value,
+      size: r.querySelector('.v-size')?.value,
+      color: r.querySelector('.v-color')?.value,
+      price: r.querySelector('.v-price')?.value,
+      discountPrice: r.querySelector('.v-discount')?.value,
+      stock: r.querySelector('.v-stock')?.value,
+      _delete: r.querySelector('.v-delete')?.checked
     });
-    fd.append('variants', JSON.stringify(variants));
-
-    imagesBlobs.forEach(o => fd.append('productImages', o.blob, o.name));
-
-   const res = await fetch(e.target.action, { method: 'PUT', body: fd });
-    if (res.redirected) location.href = res.url;
-    else document.write(await res.text());
   });
+
+  let variantsInput = document.querySelector('input[name="variants"]');
+  if (!variantsInput) {
+    variantsInput = document.createElement('input');
+    variantsInput.type = 'hidden';
+    variantsInput.name = 'variants';
+    form.appendChild(variantsInput);
+  }
+  variantsInput.value = JSON.stringify(variants);
+
+  // Append cropped images
+  imagesBlobs.forEach(o => {
+    const dt = new DataTransfer();
+    dt.items.add(new File([o.blob], o.name, { type: 'image/jpeg' }));
+    document.getElementById('imageInput').files = dt.files;
+  });
+
+  // Disable submit button immediately (prevents double click)
+  const btn = form.querySelector('.submit-btn');
+  btn.disabled = true;
+  btn.innerText = 'Saving...';
+});
 </script>
+
 <script>
-  const ALL_SUBCATEGORIES = <%- JSON.stringify(subcategories) %>;
-  const CURRENT_CATEGORY_ID = "<%= product.categoryId %>";
-  const CURRENT_SUBCATEGORY_ID = "<%= product.subcategoryId %>";
+const ALL_SUBCATEGORIES = <%- JSON.stringify(subcategories) %>;
+const CURRENT_CATEGORY_ID = "<%= product.categoryId ? String(product.categoryId) : '' %>";
+const CURRENT_SUBCATEGORY_ID = "<%= product.subcategoryId ? String(product.subcategoryId) : '' %>";
 </script>
+
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+
   const categorySelect = document.getElementById('categorySelect');
   const subcategorySelect = document.getElementById('subcategorySelect');
 
-  function populateSubcategories(categoryId, selectedSubId = null) {
+  function populateSubcategories(categoryId, selectedSubId) {
+
     subcategorySelect.innerHTML = '<option value="">Select</option>';
 
-    ALL_SUBCATEGORIES
-      .filter(s => String(s.Category) === String(categoryId))
-      .forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s._id;
-        opt.textContent = s.fitName;
+    if (!categoryId) return;
 
-        if (selectedSubId && String(s._id) === String(selectedSubId)) {
-          opt.selected = true;
-        }
+    const normalizedCategoryId = String(categoryId);
 
-        subcategorySelect.appendChild(opt);
-      });
+    const filtered = ALL_SUBCATEGORIES.filter(sub => {
+      const parent = sub.Category;
+      return String(parent) === normalizedCategoryId ||
+             String(parent?._id) === normalizedCategoryId;
+    });
+
+    filtered.forEach(sub => {
+      const option = document.createElement('option');
+      option.value = String(sub._id);
+      option.textContent = sub.fitName;
+
+      if (selectedSubId && String(sub._id) === String(selectedSubId)) {
+        option.selected = true;
+      }
+
+      subcategorySelect.appendChild(option);
+    });
   }
 
-  // 🔹 initial load (important!)
-  if (CURRENT_CATEGORY_ID) {
-    populateSubcategories(CURRENT_CATEGORY_ID, CURRENT_SUBCATEGORY_ID);
-  }
+  // ALWAYS rebuild on load
+  populateSubcategories(CURRENT_CATEGORY_ID, CURRENT_SUBCATEGORY_ID);
 
-  // 🔹 when category changes
+  // On change
   categorySelect.addEventListener('change', function () {
     populateSubcategories(this.value, null);
   });
+
+});
 </script>
 
 

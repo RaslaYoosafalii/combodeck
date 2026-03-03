@@ -687,77 +687,152 @@ buttonsStyling: false,
       }
 
 
+
 // ----------------- SET OFFER (modal) -----------------
 if (action === 'set-offer') {
 
-  Swal.fire({
-    title: 'Set Category Offer',
-html:
-  `<label class="swal-label">Offer Type</label>
-   <select id="sw-offer-type" class="swal-input">
-     <option value="fixed">Fixed Amount</option>
-     <option value="percent">Percentage</option>
-   </select>
+  fetch('/admin/category/data/' + id)
+    .then(r => r.json())
+    .then(data => {
 
-   <label class="swal-label">Offer Value</label>
-   <input id="sw-offer-value" type="number" min="0" class="swal-input" placeholder="Enter value" />
-
-   <label class="swal-label">Valid Until</label>
-   <input id="sw-offer-date" type="date" class="swal-input"
-     min="${new Date().toISOString().split('T')[0]}" />`,
-    showCancelButton: true,
-    customClass: {
-  confirmButton: 'btn-primary-custom',
-  cancelButton: 'btn-outline'
-},
-buttonsStyling: false,
-    confirmButtonText: 'Save Offer',
-    preConfirm: () => {
-
-      const offerType = document.getElementById('sw-offer-type').value;
-      const offerValue = document.getElementById('sw-offer-value').value.trim();
-      const offerValidDate = document.getElementById('sw-offer-date').value.trim();
-
-      if (!offerValue || !offerValidDate) {
-        Swal.showValidationMessage('Offer value and valid date are required');
-        return false;
+      if (!data.success) {
+        return Swal.fire('Error', data.message || 'Failed to fetch category', 'error');
       }
 
-      if (isNaN(offerValue) || Number(offerValue) < 0) {
-        Swal.showValidationMessage('Invalid offer value');
-        return false;
-      }
+      const cat = data.category;
 
-      if (offerType === 'percent') {
-        if (Number(offerValue) <= 0 || Number(offerValue) > 100) {
-          Swal.showValidationMessage('Percentage must be between 1 and 100');
-          return false;
+      const todayStr = new Date().toISOString().split('T')[0];
+
+      Swal.fire({
+        title: 'Set Category Offer',
+        html:
+          `<label class="swal-label">Offer Type</label>
+           <select id="sw-offer-type" class="swal-input">
+             <option value="fixed">Fixed Amount</option>
+             <option value="percent">Percentage</option>
+           </select>
+
+           <label class="swal-label">Offer Value</label>
+           <input id="sw-offer-value" type="number" min="1" class="swal-input" />
+
+           <div id="min-price-wrapper" style="display:none;">
+             <label class="swal-label">Minimum Product Price Requirement</label>
+             <input id="sw-min-price" type="number" min="1" class="swal-input" />
+           </div>
+
+           <label class="swal-label">Valid Until</label>
+           <input id="sw-offer-date" type="date" class="swal-input"
+             min="${todayStr}" />`,
+
+        showCancelButton: true,
+        customClass: {
+          confirmButton: 'btn-primary-custom',
+          cancelButton: 'btn-outline'
+        },
+        buttonsStyling: false,
+        confirmButtonText: 'Save Offer',
+
+        didOpen: () => {
+
+          const typeSelect = document.getElementById('sw-offer-type');
+          const minWrapper = document.getElementById('min-price-wrapper');
+          const valueInput = document.getElementById('sw-offer-value');
+          const dateInput  = document.getElementById('sw-offer-date');
+          const minInput   = document.getElementById('sw-min-price');
+
+          // 🔥 PREFILL EXISTING VALUES
+          if (cat.offerPrice > 0) {
+
+            typeSelect.value = cat.offerIsPercent ? 'percent' : 'fixed';
+            valueInput.value = cat.offerPrice;
+
+            if (cat.offerValidDate) {
+              const d = new Date(cat.offerValidDate);
+              dateInput.value = d.toISOString().split('T')[0];
+            }
+
+            if (!cat.offerIsPercent && cat.minProductPrice) {
+              minInput.value = cat.minProductPrice;
+            }
+
+          }
+
+          // Toggle min price visibility
+          function toggleMin() {
+            if (typeSelect.value === 'fixed') {
+              minWrapper.style.display = 'block';
+            } else {
+              minWrapper.style.display = 'none';
+            }
+          }
+
+          typeSelect.addEventListener('change', toggleMin);
+          toggleMin(); // initialize
+        },
+
+        preConfirm: () => {
+
+          const offerType = document.getElementById('sw-offer-type').value;
+          const offerValue = document.getElementById('sw-offer-value').value.trim();
+          const offerValidDate = document.getElementById('sw-offer-date').value.trim();
+          const minPrice = document.getElementById('sw-min-price')?.value.trim();
+
+          if (!offerValue || !offerValidDate) {
+            Swal.showValidationMessage('Offer value and valid date are required');
+            return false;
+          }
+
+          if (isNaN(offerValue) || Number(offerValue) <= 0) {
+            Swal.showValidationMessage('Offer value must be greater than 0');
+            return false;
+          }
+
+          if (offerType === 'percent') {
+            if (Number(offerValue) > 100) {
+              Swal.showValidationMessage('Percentage must be between 1 and 100');
+              return false;
+            }
+          }
+
+          if (offerType === 'fixed') {
+            if (!minPrice) {
+              Swal.showValidationMessage('Minimum product price is required');
+              return false;
+            }
+
+            if (Number(minPrice) <= Number(offerValue)) {
+              Swal.showValidationMessage('Minimum product price must be greater than offer value');
+              return false;
+            }
+          }
+
+          return { offerType, offerValue, offerValidDate, minProductPrice: minPrice };
         }
-      }
 
-      return { offerType, offerValue, offerValidDate };
-    },
+      }).then((result) => {
 
+        if (!result.isConfirmed) return;
 
-  }).then((result) => {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/admin/category/offer/' + id;
 
-    if (!result.isConfirmed) return;
+        ['offerType','offerValue','offerValidDate','minProductPrice'].forEach(key => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = key;
+          input.value = result.value[key];
+          form.appendChild(input);
+        });
 
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = '/admin/category/offer/' + id;
+        document.body.appendChild(form);
+        form.submit();
+      });
 
-    ['offerType','offerValue','offerValidDate'].forEach(key => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = result.value[key];
-      form.appendChild(input);
+    })
+    .catch(() => {
+      Swal.fire('Error', 'Failed to fetch category', 'error');
     });
-
-    document.body.appendChild(form);
-    form.submit();
-  });
 
   return;
 }

@@ -63,7 +63,7 @@
       </div>
 
       <ul class="sidebar-menu">
-        <li><a class="active" href="/profile">Profile</a></li>
+        <li><a href="/profile">Profile</a></li>
         <li><a href="/profile/referral">Referral Code</a></li>
         <li><a href="/orders">My Orders</a></li>
         <li><a href="/wallet">Wallet</a></li>
@@ -71,6 +71,38 @@
         <li><a href="/logout" class="btn logout-btn">Logout</a></li>
       </ul>
     </aside>
+    <script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+    const currentPath = window.location.pathname;
+
+    const sidebarLinks = document.querySelectorAll(".sidebar-menu a[href]");
+
+    sidebarLinks.forEach(link => {
+
+      const linkPath = link.getAttribute("href");
+
+      if (!linkPath || linkPath === "/logout") return;
+
+      // Exact match
+      if (currentPath === linkPath) {
+        link.classList.add("active");
+      }
+
+      // Handle nested routes
+      else if (currentPath.startsWith(linkPath) && linkPath !== "/profile") {
+        link.classList.add("active");
+      }
+
+      // Special case for profile root
+      else if (linkPath === "/profile" && currentPath === "/profile") {
+        link.classList.add("active");
+      }
+
+    });
+
+  });
+</script>
 
  
 

@@ -104,7 +104,7 @@ const statusFlow = [
     if (!order) {
       return res.json({ success: false, message: "Order not found" });
     }
-//prevent manual change TO returned
+//prevent manual change to returned
 if (status === "returned") {
   return res.json({
     success: false,
@@ -188,22 +188,22 @@ if (currentStatusIndex !== -1 && nextStatusIndex !== -1) {
 
 const items = order.orderedItem;
 
-// 1️⃣ All cancelled
+//all cancelled
 if (items.every(i => i.orderStatus === "cancelled")) {
   order.orderStatus = "cancelled";
 }
 
-// 2️⃣ All returned
+// all returned
 else if (items.every(i => i.orderStatus === "returned")) {
   order.orderStatus = "returned";
 }
 
-// 3️⃣ If ANY delivered exists → delivered
+//if any delivered exists → delivered
 else if (items.some(i => i.orderStatus === "delivered")) {
   order.orderStatus = "delivered";
 }
 
-// 4️⃣ Mixed returned + cancelled (no delivered)
+//returned + cancelled 
 else if (
   items.every(i =>
     ["returned", "cancelled"].includes(i.orderStatus)
@@ -212,7 +212,7 @@ else if (
   order.orderStatus = "returned";
 }
 
-// 5️⃣ Flow statuses
+
 else if (items.some(i => i.orderStatus === "out for delivery")) {
   order.orderStatus = "out for delivery";
 }
@@ -359,22 +359,22 @@ const handleReturnAction = async (req, res) => {
     //orderstatus calculate
 const items = order.orderedItem;
 
-// 1️⃣ All cancelled
+//if cancelled
 if (items.every(i => i.orderStatus === "cancelled")) {
   order.orderStatus = "cancelled";
 }
 
-// 2️⃣ All returned
+//all returned
 else if (items.every(i => i.orderStatus === "returned")) {
   order.orderStatus = "returned";
 }
 
-// 3️⃣ If ANY delivered exists → delivered
+//if any delivered exists → delivered
 else if (items.some(i => i.orderStatus === "delivered")) {
   order.orderStatus = "delivered";
 }
 
-// 4️⃣ Mixed returned + cancelled (no delivered)
+// returned + cancelled
 else if (
   items.every(i =>
     ["returned", "cancelled"].includes(i.orderStatus)

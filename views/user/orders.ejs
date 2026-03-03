@@ -401,10 +401,10 @@ function searchOrder() {
 
   clearBtn.style.display = val ? 'inline-block' : 'none';
 
-  // ✅ Show search-specific empty message
+  // Show search-specific empty message
   noResults.style.display = val && visibleCount === 0 ? 'block' : 'none';
 
-  // ✅ Disable pagination only when search has no results
+  // Disable pagination only when search has no results
   togglePagination(!(val && visibleCount === 0));
 }
 
@@ -416,7 +416,7 @@ function clearSearch() {
   document.getElementById('clearSearch').style.display = 'none';
   document.getElementById('noResultsMsg').style.display = 'none';
 
-  togglePagination(true); // ✅ re-enable pagination
+  togglePagination(true); //re-enable pagination
 }
 
 
