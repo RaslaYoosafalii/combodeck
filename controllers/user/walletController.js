@@ -58,19 +58,36 @@ const loadTransactions = async (req, res) => {
 
 
 const createWalletOrder = async (req, res) => {
-  const { amount } = req.body;
+  try {
+    const amount = Number(req.body.amount);
 
-  const razorpayOrder = await razorpayInstance.orders.create({
-    amount: amount * 100,
-    currency: "INR",
-    receipt: "wallet_" + Date.now()
-  });
+    if (!amount || amount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid amount. Amount must be greater than 0."
+      });
+    }
 
-  res.json({
-    key: process.env.RAZORPAY_KEY_ID,
-    amount: amount * 100,
-    razorpayOrderId: razorpayOrder.id
-  });
+    const razorpayOrder = await razorpayInstance.orders.create({
+      amount: amount * 100,
+      currency: "INR",
+      receipt: "wallet_" + Date.now()
+    });
+
+    res.json({
+      success: true,
+      key: process.env.RAZORPAY_KEY_ID,
+      amount: amount * 100,
+      razorpayOrderId: razorpayOrder.id
+    });
+
+  } catch (error) {
+    console.error("Create wallet add error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Unable to process wallet order"
+    });
+  }
 };
 
 const verifyWalletPayment = async (req, res) => {

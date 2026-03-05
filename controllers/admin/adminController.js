@@ -6,10 +6,12 @@ import nodemailer from 'nodemailer';
 
 
 const OTP_COOLDOWN = 60 * 1000;
+
 // error page
 const errorPage = async (req, res) => {
-  res.render('admin/error-page');
+  res.render('error-page');
 };
+
 const isValidString = v => typeof v === 'string' && v.trim().length > 0;
 
 // load login page

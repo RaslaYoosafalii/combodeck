@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Elfè Lorienveil</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elfé Lorienveil</title>
   <style>
     /* General Reset */
     * {
@@ -14,10 +20,17 @@
       
     }
 
-    body {
-      color: #615A5A;
-      background: #fff;
-    }
+ body {
+  color: #615A5A;
+  background: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
 
     /* Navbar */
     .navbar {
@@ -26,7 +39,9 @@
       align-items: center;
       padding: 15px 60px;
       background: #fff;
-      
+      position: sticky;
+     top: 0;
+     z-index: 1000;
     }
 
     .navbar .logo {
@@ -59,13 +74,21 @@
     .hero {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-     
       gap: 10px;
     }
+    @media (max-width: 992px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero img {
+    border-radius: 0;
+  }
+}
 
     .hero img {
       width: 100%;
-       border-radius: 5px;
+        border-radius: 5px;
     }
 
     .hero .center {
@@ -96,6 +119,22 @@
       padding-top: 10px;
  
     }
+    @media (max-width: 992px) {
+  .category-list {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .category {
+    width: 45%;
+  }
+}
+
+@media (max-width: 576px) {
+  .category {
+    width: 100%;
+  }
+}
 
     .categories .btn {
       margin: 15px 0;
@@ -135,7 +174,17 @@
       gap: 30px;
       margin-top: 20px;
     }
+   @media (max-width: 992px) {
+  .products {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
 
+  .product img {
+    width: 100%;
+    max-width: 260px;
+  }
+}
     .product img {
       width: 220px;
       border-radius: 8px;
@@ -201,6 +250,20 @@
   
   display: block;
   pointer-events: none; /* disables interaction */
+}
+@media (max-width: 768px) {
+  footer {
+    padding: 30px 20px;
+  }
+
+  .footer-top {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .footer .logo {
+    font-size: 40px;
+  }
 }
 
   </style>

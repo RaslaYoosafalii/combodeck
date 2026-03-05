@@ -84,12 +84,29 @@ app.use((req, res, next) => {
 app.use('/', userRouter);
 app.use('/admin', adminRouter);
 
+//fallback handler 
+app.use((req, res) => {
+
+  // admin route
+  if (req.originalUrl.startsWith('/admin')) {
+    return res.status(404).render('error-page'); 
+  }
+
+  // user routes
+  return res.status(404).render('page-404', {
+    message: 'Page not found'
+  });
+
+});
+
+
 //error halndler
 app.use((err, req, res, next) => {
   console.error('Unhandled error for', req.method, req.originalUrl, err);
   if (res.headersSent) return next(err);
   return res.status(500).render('page-404', { message: 'Something went wrong', user: null });
 });
+
 
 //Start server 
 const port = process.env.PORT || 3000;

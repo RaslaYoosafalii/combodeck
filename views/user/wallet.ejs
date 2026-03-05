@@ -197,6 +197,17 @@ function setAmount(val){
 function addMoney(){
   const amount = document.getElementById('walletAmount').value;
 
+  if (!amount || amount <= 0) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Amount',
+      text: 'You cannot add money less than or equal to 0.',
+      showConfirmButton: false,
+      timer: 1800
+    });
+    return;
+  }
+
   fetch('/wallet/create-order',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
@@ -204,6 +215,18 @@ function addMoney(){
   })
   .then(res=>res.json())
   .then(data=>{
+
+      if (!data.success) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Invalid Amount',
+      text: data.message || 'Invalid wallet amount.',
+      showConfirmButton: false,
+      timer: 1800
+    });
+    return;
+  }
+  
     const options = {
       key: data.key,
       amount: data.amount,
