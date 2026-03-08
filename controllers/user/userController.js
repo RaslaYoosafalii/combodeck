@@ -11,6 +11,7 @@ import bcrypt from 'bcrypt';
 import path from 'path';
 import fs from 'fs';
 import logger from '../../config/logger.js';
+import { uploadToS3 } from '../../utils/s3Upload.js';
 dotenv.config();
 
 
@@ -969,21 +970,22 @@ const updateProfile = async (req, res) => {
       });
     }
 
+   
     // profile image handling
     let imageUpdated = false;
 
     if (file) {
-      // delete old image if exists
-      if (user.profileImage) {
-        const oldPath = path.join(
-          process.cwd(),
-          'public',
-          user.profileImage
-        );
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
-      }
 
-      user.profileImage = `/uploads/products/${file.filename}`;
+      const filePath = file.path;
+      const fileName = `profile-${Date.now()}-${file.filename}`;
+
+      // upload to S3
+      const imageUrl = await uploadToS3(filePath, fileName);
+
+      // delete local temp file
+      try { fs.unlinkSync(filePath); } catch (e) { logger.error(`update-image Profile error: ${e.message}`);}
+
+      user.profileImage = imageUrl;
       imageUpdated = true;
     }
 
@@ -1075,14 +1077,17 @@ const deleteProfileImage = async (req, res) => {
       return res.json({ success: false, message: 'No image to delete' });
     }
 
-    const imagePath = path.join(
-      process.cwd(),
-      'public',
-      user.profileImage
-    );
+    // skip local delete if image is from S3
+    if (!user.profileImage.startsWith('http')) {
+      const imagePath = path.join(
+        process.cwd(),
+        'public',
+        user.profileImage
+      );
 
-    if (fs.existsSync(imagePath)) {
-      fs.unlinkSync(imagePath);
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
     }
 
     user.profileImage = null;
