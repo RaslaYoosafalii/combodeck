@@ -492,7 +492,7 @@ async function sendVerificationEmail(email, otp) {
     const info = await transporter.sendMail({
       from: process.env.NODEMAILER_EMAIL,
       to: email,
-      subject: 'Verify your account',
+      subject: 'Verify your account - combodeck',
       html: `<b>Your OTP is ${otp}</b>`
     });
 

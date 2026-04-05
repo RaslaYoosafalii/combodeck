@@ -12,14 +12,15 @@
 
 body {
   margin: 0;
-  background: #ffffff;
-  color: #333;
+  background: #0a0e11;
+  color: white;
 }
 
 /* ===== LAYOUT (same as profile page) ===== */
 .profile-wrapper {
   display: flex;
   padding: 40px 60px;
+  margin-top: 110px;
   gap: 40px;
   align-items: flex-start;
 }
@@ -27,11 +28,14 @@ body {
 /* ===== MAIN CARD ===== */
 .profile-card {
   flex: 1;
-  background: #fff;
-  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
   padding: 40px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-  position: relative;  
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
 }
 
 /* Title */
@@ -44,7 +48,8 @@ body {
 
 /* ===== BALANCE BOX ===== */
 .balance-box {
-  background: #f5f3f1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
   padding: 30px;
   border-radius: 12px;
   text-align: center;
@@ -58,26 +63,27 @@ body {
 
 .balance-box strong {
   font-size: 32px;
-  color: #5a5553;
+  color: white;
 }
 
 .history-btn {
-  position: absolute;   
-  top: 40px;          
-  right: 40px;       
-  background: rgb(90, 85, 83);
-  color: #fff;
-  border: none;
   padding: 10px 16px;
   border-radius: 6px;
   font-size: 13px;
   cursor: pointer;
+  position: absolute;   
+  top: 40px;          
+  right: 40px;       
+  background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
 
 /* ===== ADD MONEY SECTION ===== */
 .add-money-box {
-  background: #eeeded;
+   background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
   padding: 25px;
   border-radius: 12px;
   max-width: 450px;    
@@ -89,12 +95,14 @@ body {
 }
 
 .add-money-box input {
+  margin-bottom: 20px;
+  font-size: 16px;
   width: 100%;
   padding: 12px;
   border-radius: 6px;
-  border: 1px solid #ccc;
-  margin-bottom: 20px;
-  font-size: 16px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  color: white;
 }
 
 .quick-buttons {
@@ -106,30 +114,31 @@ body {
 .quick-buttons button {
   flex: 1;
   padding: 10px;
-  border: 1px solid #5a5553;
-  background: #fff;
   cursor: pointer;
   border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  color: white;
 }
 
 .quick-buttons button:hover {
-  background: #5a5553;
-  color: #fff;
+  background: rgba(255,255,255,0.08);
+  color: white;
 }
 
 .add-btn {
-  width: 100%;
-  padding: 12px;
-  background: #5a5553;
-  color: #fff;
-  border: none;
   border-radius: 6px;
   font-size: 16px;
   cursor: pointer;
+  width: 100%;
+  padding: 12px;
+  background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
 .add-btn:hover {
-  background: #3f3b39;
+   background: rgba(255,255,255,0.08);
 }
 
 /* ===== RESPONSIVE ===== */

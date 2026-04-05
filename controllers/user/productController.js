@@ -519,7 +519,7 @@ const listProducts = async (req, res) => {
   } catch (err) {
     console.error('listProducts error:', err);
     logger.error(`listProducts error: ${err.message}`);
-    return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).render('error-page', {
+    return res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).render('page-404', {
       message: 'Failed loading products'
     });
   }

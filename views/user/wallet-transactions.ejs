@@ -12,14 +12,15 @@
 
 body {
   margin: 0;
-  background-color: #ffffff;
-  color: #333;
+  background: #0a0e11;
+  color: white;
 }
 
 /* ===== LAYOUT ===== */
 .profile-wrapper {
   display: flex;
   padding: 40px 60px;
+  margin-top: 110px;
   gap: 40px;
   align-items: flex-start;
 }
@@ -27,10 +28,13 @@ body {
 /* ===== MAIN CARD ===== */
 .profile-card {
   flex: 1;
-  background: #fff;
-  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
   padding: 40px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   position: relative;
   min-height: 615.5px;
 }
@@ -48,9 +52,9 @@ body {
   position: absolute;
   top: 40px;
   right: 40px;
-  background: rgb(90, 85, 83);
-  color: #fff;
-  border: none;
+  background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
   padding: 10px 16px;
   border-radius: 6px;
   font-size: 13px;
@@ -59,7 +63,8 @@ body {
 
 .transaction-header {
   display: flex;
-  background: #f3f3f3;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
   padding: 14px 28px;
   border-radius: 8px;
   font-weight: 600;
@@ -69,9 +74,10 @@ body {
 .transaction-row {
   display: flex;
   padding: 14px 28px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   font-size: 14px;
 }
+
 .transaction-header span:nth-child(2),
 .transaction-row span:nth-child(2) {
   flex: 0.4;   /* middle column wider */
@@ -121,20 +127,20 @@ body {
   display: inline-block;
   margin: 0 5px;
   padding: 8px 14px;
-  background: #eee;
-  color: #000;
+  background: rgba(255,255,255,0.04);
+  color: white;
   text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 6px;
   font-size: 14px;
 }
-
 .page-btn:hover {
-  background: #ddd;
+  background: rgba(255,255,255,0.08);
 }
 
 .page-btn.active {
-  background: #333;
-  color: #fff;
+  background: rgba(255,255,255,0.12);
+  color: white;
 }
 </style>
 </head>
@@ -166,14 +172,14 @@ body {
         <div class="transaction-row">
           <span><%= new Date(t.createdAt).toLocaleString() %></span>
           <span><%= t.description %></span>
-          <span style="color:<%= t.type==='credit'?'green':'red' %>">
+          <span style="color:<%= t.type==='credit' ? '#97cc7a' : '#cf4846' %>; text-shadow: 0 0 8px rgba(255,255,255,0.08)">
             <%= t.type==='credit'?'+':'-' %>Rs. <%= t.amount %>
           </span>
         </div>
       <% }) %>
 
     <% } else { %>
-      <p style="text-align:center;color:#777;">No transactions found</p>
+      <p style="text-align:center;color:rgba(255,255,255,0.6);">No transactions found</p>
     <% } %>
 
   <% if (totalPages > 1) { %>

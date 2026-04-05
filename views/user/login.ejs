@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
+  <title>Combodeck Login</title>
   <style>
     /* Reset */
 * {
@@ -14,25 +14,27 @@
 }
 
 body {
+  min-height: 100vh;
+  background: #0a0e11;
+  color: white;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: #fff;
+  flex-direction: column;
 }
 
 .wrapper {
-  width: 350px;
+  margin: auto;
+  margin-top:110px;
+  width: 400px;
   text-align: center;
+  padding: 35px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
 /* Google login button */
 .google-btn {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -41,11 +43,22 @@ body {
   justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  color: white;
 }
 
 .google-btn img {
   width: 18px;
   height: 18px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+.google-btn:hover{
+  background-color: #d0a65c42;
 }
 
 /* Divider */
@@ -54,7 +67,7 @@ body {
   align-items: center;
   text-align: center;
   margin: 15px 0;
-  color: #777;
+  color: rgba(255,255,255,0.6);
   font-size: 14px;
 }
 
@@ -63,17 +76,16 @@ body {
   content: "";
   flex: 1;
   height: 1px;
-  background: #ccc;
+  background: rgba(255,255,255,0.08);
   margin: 0 10px;
 }
 
 /* Brand */
 .brand {
-  font-family: "Georgia", serif;
   font-size: 26px;
-  color: #8c7c72;
+  color: rgba(255, 255, 255, 0.79);
   margin: 15px 0 25px;
-  font-weight: normal;
+  font-weight: bold;
 }
 
 /* Input fields */
@@ -81,9 +93,11 @@ form input {
   width: 100%;
   padding: 12px;
   margin: 8px 0;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 8px;
   font-size: 14px;
+  background: rgba(255,255,255,0.04);
+  color: white;
 }
 
 /* Password with toggle */
@@ -97,17 +111,22 @@ form input {
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  font-size: 16px;
-  color: #555;
+  color: rgba(255,255,255,0.65);
+  display: flex;
+  align-items: center;
+  transition: 0.3s;
 }
 
+.toggle-password:hover {
+  color: white;
+}
 /* Forgot password */
 .forgot {
   display: block;
   text-align: right;
   font-size: 13px;
   margin: 5px 0 15px;
-  color: #8c7c72;
+  color: #ffffffb8;
   text-decoration: none;
 }
 
@@ -117,31 +136,30 @@ form input {
 
 /* Login button */
 .login-btn {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 8px;
-  background: #5a4a42;
-  color: #fff;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  color: white;
 }
 
 .login-btn:hover {
-  background: #463730;
+  background-color: #d0a65c42;
 }
-
 /* Signup text */
 .signup-text {
   margin-top: 20px;
   font-size: 14px;
-  color: #555;
+   color: rgba(255,255,255,0.7);
 }
 
 .signup-text a {
-  color: #463730;
+  color: #d0a55c;
   font-weight: 600;
   text-decoration: none;
 }
@@ -153,6 +171,8 @@ form input {
   </style>
 </head>
 <body>
+
+  <%- include('../partials/user/header') %>
   <div class="wrapper">
 
     <!-- Google login button -->
@@ -164,7 +184,7 @@ form input {
     <div class="divider"><span>or</span></div>
 
     <!-- Brand / Logo -->
-    <h1 class="brand">elfè Lorienveil</h1>
+    <h1 class="brand">Login</h1>
 <% if (typeof message !== 'undefined' && message) { %>
   <p style="color: rgb(122, 23, 23); margin-bottom: 2px; font-size: small;"><%= message %></p>
 <% } %>
@@ -176,8 +196,12 @@ form input {
 
       <div class="password-wrapper">
         <input type="password" name="password" id="password" placeholder="Password"  required novalidate>
-        <span class="toggle-password" onclick="togglePassword()">👁</span>
-      </div>
+<span class="toggle-password" onclick="togglePassword()">
+  <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+</span>      </div>
 
       <a href="/forgot-password" class="forgot">Forget Password?</a>
 
@@ -190,10 +214,28 @@ form input {
   </div>
 
   <script>
-    function togglePassword() {
-      const pwd = document.getElementById("password");
-      pwd.type = pwd.type === "password" ? "text" : "password";
-    }
+function togglePassword() {
+  const pwd = document.getElementById("password");
+  const eyeIcon = document.getElementById("eyeIcon");
+
+  if (pwd.type === "password") {
+    pwd.type = "text";
+    eyeIcon.innerHTML = `
+      <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19C5 19 1 12 1 12a21.77 21.77 0 0 1 5.06-5.94"/>
+      <path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c7 0 11 7 11 7a21.8 21.8 0 0 1-3.22 4.31"/>
+      <path d="M1 1l22 22"/>
+    `;
+  } else {
+    pwd.type = "password";
+    eyeIcon.innerHTML = `
+      <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+      <circle cx="12" cy="12" r="3"/>
+    `;
+  }
+}
   </script>
+ <%- include('../partials/user/footer') %> 
 </body>
+
 </html>
+

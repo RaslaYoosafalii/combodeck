@@ -15,18 +15,49 @@
   font-family: "Poppins", sans-serif;
 }
 
-body{
-  padding:0;
-  margin:0;
-  background:#fff;
+body {
+  margin: 0;
+  background: #0a0e11;
+  color: white;
+}
+
+.page-wrapper {
+  max-width: 1100px;
+  margin: 110px auto 60px;
+  padding: 0 20px;
+}
+
+.breadcrumb {
+  margin-bottom: 18px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 285px;
+      
+}
+
+.breadcrumb a {
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.breadcrumb a:hover {
+  color: white;
 }
 
 .card {
-  width: 480px;
-  background: #fff;
-  padding: 2.5rem;
-  border-radius: 20px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 520px;
+  margin: auto;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
   text-align: center;
 }
 
@@ -34,12 +65,12 @@ body{
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 12px;
-  color: #222;
+  color: white;
 }
 
 .card p {
   font-size: 14px;
-  color: #555;
+  color: rgba(255,255,255,0.75);
   margin-bottom: 20px;
 }
 
@@ -47,52 +78,67 @@ body{
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 15px;
+  margin-bottom: 18px;
 }
 
 .otp-inputs input {
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
   text-align: center;
   font-size: 18px;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 8px;
   outline: none;
-  transition: border 0.3s;
+  background: rgba(255,255,255,0.04);
+  color: white;
+  transition: 0.3s;
 }
 
 .otp-inputs input:focus {
-  border-color: #5a4a42;
+  border-color: rgba(255,255,255,0.15);
 }
 
 .confirm-btn {
-  width: 350px;
+  width: 100%;
   padding: 14px;
-  border: none;
-  border-radius: 12px;
-  background: #5a4a42;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
   color: white;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: 0.3s;
 }
 
 .confirm-btn:hover {
-  background: #463730;
+  background: #d0a65c42;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #ffffffb1;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: rgba(218, 182, 92, 0.738);
+  text-decoration: underline;
 }
 
 .timer {
   margin-top: 12px;
   font-size: 14px;
-  color: #555;
+  color: rgba(255,255,255,0.75);
 }
 
 .resend-btn {
   display: block;
   margin: 10px auto 0;
   font-size: 14px;
-  color: #615A5A;
+  color: rgba(255,255,255,0.75);
   background: none;
   border: none;
   cursor: pointer;
@@ -101,19 +147,13 @@ body{
 }
 
 .resend-btn:hover {
-  color: #463730;
+  color: rgba(218, 182, 92, 0.738);
 }
 
-.back-link {
-  display: inline-block;
-  margin-top: 20px;
-  font-size: 14px;
-  color: #555;
-  text-decoration: none;
-}
-
-.back-link:hover {
-  text-decoration: underline;
+.error-message {
+  color: #ff8b8b;
+  font-size: 13px;
+  margin-bottom: 10px;
 }
   </style>
 
@@ -122,13 +162,20 @@ body{
 <body>
   <!-- Navbar -->
   <%-include('../partials/user/header')%>
-  <div style="display:flex;justify-content:center;align-items:center; padding:60px 60px; margin-top: 170px;">
+
+<div class="page-wrapper">
+  <div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>›</span>
+    <span>Verify signup</span>
+  </div>
+
   <div class="card">
     <h2>Confirm with OTP</h2>
     <p>Please check your mail address for OTP</p>
 
     <form id="otpForm" action="/verify-otp" method="POST" onsubmit="return validateOtpForm()">
-      <div id= "otp" class="otp-inputs">
+      <div class="otp-inputs">
         <input type="text" maxlength="1" required>
         <input type="text" maxlength="1" required>
         <input type="text" maxlength="1" required>
@@ -138,12 +185,14 @@ body{
       <button type="submit" class="confirm-btn">Confirm</button>
     </form>
 
-    <div class="timer" id="timer">Resend OTPin 60s</div>
+    <div class="timer" id="timer">Resend OTP in 60s</div>
     <button class="resend-btn" id="resendBtn" onclick="resendOTP()">Resend OTP</button>
 
     <a href="/signup" class="back-link">Go back to Signup page</a>
   </div>
 </div>
+
+
 <script>
 const inputs = document.querySelectorAll('.otp-inputs input');
 const timerEl = document.getElementById('timer');
@@ -242,6 +291,6 @@ function validateOtpForm(){
 }
 </script>
 
-
+<%- include('../partials/user/footer') %>
 </body>
 </html>

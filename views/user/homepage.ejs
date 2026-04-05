@@ -1,364 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Elfé Lorienveil</title>
-  <style>
-    /* General Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Arial', sans-serif;
-      
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
- body {
-  color: #615A5A;
-  background: #fff;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+<title>Combodeck</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
 }
 
-main {
-  flex: 1;
+body{
+height:100vh;
+background:#0a0e11;
+font-family:'Inter',sans-serif;
+color:white;
 }
 
-    /* Navbar */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 60px;
-      background: #fff;
-      position: sticky;
-     top: 0;
-     z-index: 1000;
-    }
+/* MAIN UI CONTAINER */
 
-    .navbar .logo {
-      font-size: 40px;
-      font-weight: 37;
-      color: #B2A9A1;
-    }
-
-    .navbar ul {
-      display: flex;
-      list-style: none;
-      gap: 25px;
-      
-    }
-
-    .navbar a {
-      text-decoration: none;
-      color: #615A5A;
-      font-size: 15px;
-    }
-
-    .navbar .btn {
-      padding: 8px 15px;
-      border-radius: 5px;
-      background: #484848;
-      color: #fff;
-    }
-
-    /* Hero */
-    .hero {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-    @media (max-width: 992px) {
-  .hero {
-    grid-template-columns: 1fr;
-  }
-
-  .hero img {
-    border-radius: 0;
-  }
+.wrapper{
+margin:0 auto;
+width:1500px;
+height:800px;
+  margin-bottom: 60px;
+  margin-top: 30px;
+border-radius:28px;
+position:relative;
+overflow:hidden;
+background-image: url("/images/finalHome.png");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+box-shadow:0 40px 100px rgba(0,0,0,0.7);
+padding:30px;
 }
 
-    .hero img {
-      width: 100%;
-        border-radius: 5px;
-    }
+/* TOP BAR */
 
-    .hero .center {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
+/* .top-bar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+} */
+/* 
+.logo{
+font-family:'Orbitron',sans-serif;h
+font-size:28px;
+letter-spacing:3px;
+} */
 
-    .hero h2 {
-      font-size: 28px;
-      font-weight: bold;
-    }
+/* .tech-pill{
+border:1px solid rgba(255,255,255,0.2);
+padding:12px 22px;
+border-radius:30px;
+font-size:13px;
+letter-spacing:2px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(3px);
+} */
+.tech-pill:hover{
+  color: rgb(220, 173, 102);
 
-    .hero h2 span {
-      font-size: 40px;
-    }
+}
+/* RIGHT GLASS CARDS */
 
-    .hero .btn {
-      margin-top: 15px;
-    }
-
-  /* Categories */
-    .categories {
-      text-align: center;
-      margin-top: 30px;
-      padding-top: 10px;
- 
-    }
-    @media (max-width: 992px) {
-  .category-list {
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-
-  .category {
-    width: 45%;
-  }
+.info-cards{
+position:absolute;
+right:60px;
+top:455px;
+display:flex;
+flex-direction:column;
+gap:25px;
 }
 
-@media (max-width: 576px) {
-  .category {
-    width: 100%;
-  }
+.card{
+width:260px;
+padding:22px;
+
+background:rgba(0, 0, 0, 0.05);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:16px;
+backdrop-filter:blur(10px);
+}
+.card:hover{
+opacity:1;
+color: rgb(220, 173, 102);
 }
 
-    .categories .btn {
-      margin: 15px 0;
-    }
-
-    .category-list {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-      
-    }
-
-    .category img {
-      width: 100%;
-    }
-
-    .category p {
-      margin-top: 10px;
-      font-weight: bold;
-      text-align: left;
-       margin-bottom: 60px;
-       
-    }
-    .category p:hover {
-     text-decoration: underline;
-       
-    }
-    /* New Arrivals */
-    .new-arrivals {
-      text-align: center;
-      padding: 50px 60px;
-    }
-
-    .products {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 20px;
-    }
-   @media (max-width: 992px) {
-  .products {
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-
-  .product img {
-    width: 100%;
-    max-width: 260px;
-  }
-}
-    .product img {
-      width: 220px;
-      border-radius: 8px;
-    }
-
-    .product h3 {
-      font-size: 15px;
-      margin: 10px 0 5px;
-    }
-
-    .product p {
-      font-size: 13px;
-      color: #555;
-    }
-
-    .product span {
-      font-weight: bold;
-    }
-
-    /* Footer */
-    footer {
-      margin-top: 40px;
-      background: #f6f6f6;
-      padding: 40px 60px;
-      color: #666;
-    }
-     .footer .logo {
-      font-size: 60px;
-      font-weight: 37;
-      color: #B2A9A1;
-    }
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-
-    .footer-top h4 {
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    .footer-top input {
-      padding: 8px;
-      width: 200px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    .footer-bottom {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 12px;
-    }
-        /* Home Video Section */
-.home-video {
-  width: 100%;
-  padding: 0;
+.card h4{
+font-size:13px;
+letter-spacing:2px;
+margin-bottom:10px;
 }
 
-.home-video video {
-  width: 100%;
-  
-  display: block;
-  pointer-events: none; /* disables interaction */
-}
-@media (max-width: 768px) {
-  footer {
-    padding: 30px 20px;
-  }
-
-  .footer-top {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .footer .logo {
-    font-size: 40px;
-  }
+.card p{
+font-size:12px;
+opacity:.7;
+line-height:1.6;
 }
 
-  </style>
+/* LEFT TEXT */
+
+.left-info{
+position:absolute;
+left:60px;
+bottom:30px;
+}
+
+.left-info h2{
+font-size:22px;
+letter-spacing:3px;
+line-height:1.5;
+}
+
+.arrow{
+margin-top:18px;
+width:42px;
+height:42px;
+border-radius:50%;
+background:rgba(255,255,255,0.08);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:20px;
+}
+
+/* BOTTOM NAV */
+
+/* .bottom-nav{
+margin-left:auto;
+margin-right:20px; */
+/* 
+border:1px solid rgba(255,255,255,0.08); */
+/* } */
+
+/* .bottom-nav ul{
+display:flex;
+gap:60px;
+list-style:none;
+}
+
+.bottom-nav a{
+text-decoration:none;
+color:white;
+font-size:15px;
+opacity:.85;
+transition:.3s;
+}
+
+.bottom-nav a:hover{
+opacity:1;
+color: rgb(220, 173, 102);
+} */
+
+</style>
 </head>
 
 <body>
-  <main>
-  <!-- Navbar -->
-  <%-include('../partials/user/header')%>
-<!-- hero section -->
-  <section class="hero" style="margin-bottom: 30px; margin-left: 8px; margin-right: 8px;">
-    <div class="hero-item">
-      <img src="/images/IMG_9763.png" alt="Hero Image 1">
-    </div>
-    <div class="hero-item center" style="padding-top: 0; ">
-     <img src="/images/image.png" alt="Hero Image 2">
-        <a href="/products" style="opacity: 90%; border-radius: 6px; background-color: #898078;padding: 20px; margin: 20px; position: absolute; color: #ffffff; font-size: 18px; font-weight: lighter;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">EXPLORE SHOP</a>
-     </div>
-    <div class="hero-item">
-      <img src="/images/heroimage3.png" alt="Hero Image 3">
-    </div>
-  </section>
+<%- include('../partials/user/header') %>
+<div class="wrapper">
 
-<!-- Auto Playing Video Section -->
-<section class="home-video">
-  <video 
-    autoplay 
-    muted 
-    loop 
-    playsinline 
-    preload="auto"
-    disablePictureInPicture
-    controlslist="nodownload nofullscreen noremoteplayback"
-    oncontextmenu="return false;"
-  >
-    <source src="/videos/home.webm" type="video/webm">
-    Your browser does not support the video tag.
-  </video>
-</section>
+<!-- <div class="top-bar">
 
-  <!-- New Arrivals -->
-  <section class="new-arrivals" >
-    <h2>NEW ARRIVALS</h2>
-    <div class="products" style="gap: 2px; text-align: left; ">
-  <% if (latestProducts && latestProducts.length > 0) { %>
-    <% latestProducts.forEach(function(product) { %>
-      <div class="product" style="gap: 0;">
-        <a href="/product/<%= product._id %>" style="text-decoration:none; color:inherit;">
-          <img 
-            src="<%= product.images && product.images.length > 0 ? imageUrl(product.images[0]) : '/images/product1.png' %>" 
-            alt="<%= product.productName %>" style="border-radius: 0px;">
-          <h3><%= product.productName %></h3>
-        
-          <span style=" font-weight:550; font-size: 15px;">Rs. <%= product.finalPrice ? product.finalPrice.toFixed(2) : '0.00' %></span>
-        </a>
-      </div>
-    <% }) %>
-  <% } else { %>
-    <p>No new arrivals available.</p>
-  <% } %>
+<div class="logo">
+COMBODECK
 </div>
-  </section>
-    <!-- Explore by Category -->
-<section class="categories" style="padding-left: 10px ; padding-right: 10px ;">
-  <h1>EXPLORE BY CATEGORY</h1>
-     <div class="category-list">
-  <% if (categories && categories.length > 0) { %>
-    <% categories.forEach(function(cat) { %>
-      <div class="category">
-        <a href="/products?category=<%= cat._id %>" style="text-decoration:none; color:inherit;">
-          <img 
-  src="<%= cat.image ?  imageUrl(cat.image) : '/images/catimage1.png' %>" 
-  alt="<%= cat.name %>">
-          <p style="margin-bottom: 0; text-decoration: none;"><%= cat.name.toUpperCase() %></p>
-          <p style=" margin-top: 2px; font-size: 14px; font-weight: lighter;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">EXPLORE</p>
-        </a>
-      </div>
-    <% }) %>
-  <% } else { %>
-    <p>No categories available</p>
-  <% } %>
+<nav class="bottom-nav" >
+<ul>
+<li><a href="/">Home</a></li>
+<li><a href="#">About</a></li>
+<li><a href="/products">Shop</a></li>
+<li><a href="/cart" style="margin-right: 15px;">Cart</a></li>
+</ul>
+</nav>
+<div class="tech-pill">
+DMF TECHNOLOGY
 </div>
-  </section>
 
-  <!-- Footer -->
-  <%-include('../partials/user/footer')%>
-</main>
+</div> -->
 
-  
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<% if (typeof blocked !== 'undefined' || (typeof query !== 'undefined' && query.blocked)) { %>
-<script>
-  Swal.fire({
-    icon: 'error',
-    title: 'Access Restricted',
-    text: "You've been blocked by the admin.",
-    confirmButtonColor: '#4a4745'
-  });
-</script>
-<% } %>
+<div class="info-cards">
 
+<div class="card">
+<h4>ADVANCED TECHNOLOGY</h4>
+<p>
+Leverage the latest in audio technology with our state-of-the-art
+features and functionalities.
+</p>
+</div>
+
+<div class="card">
+<h4>FUTURISTIC DESIGN</h4>
+<p>
+Step into the future with our sleek, minimalist design that fits
+seamlessly into any environment.
+</p>
+</div>
+
+</div>
+
+
+<div class="left-info">
+
+<h2>
+UNMATCHED <br>
+SOUND QUALITY
+</h2>
+
+
+</div>
+</div>
+
+  <%- include('../partials/user/footer') %>
 </body>
 </html>

@@ -1,43 +1,77 @@
-  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
   <style>
-    footer {
-      margin-top: 40px;
-      background: #f6f6f6;
-      padding: 40px 60px;
-      color: #666;
-    }
-     .footer .logo {
-      font-size: 60px;
-      font-weight: 37;
-      color: #B2A9A1;
-    }
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
+/* Footer - homepage matching dark glass theme */
+footer {
+  margin-top: 60px;
+  background: rgba(255,255,255,0.03);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  padding: 50px 60px;
+  color: rgba(255,255,255,0.7);
+}
 
-    .footer-top h4 {
-      margin-bottom: 10px;
-      color: #333;
-    }
+.footer {
+  background: transparent;
+}
 
-    .footer-top input {
-      padding: 8px;
-      width: 200px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+.footer .logo {
+  font-size: 60px;
+  font-weight: 400;
+  color: white;
+  font-family:'Orbitron',sans-serif;
+  letter-spacing: 3px;
+}
 
-    .footer-bottom {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 12px;
-    }
+.footer-top {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.footer-top h4 {
+  margin-bottom: 12px;
+  color: white;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.footer-top p,
+.footer-top a {
+  color: rgba(255,255,255,0.65);
+  font-size: 14px;
+  line-height: 1.8;
+  text-decoration: none;
+}
+
+.footer-top a:hover {
+  color: rgb(220, 173, 102);
+}
+
+.footer-top input {
+  padding: 10px 14px;
+  width: 220px;
+  border-radius: 8px;
+  outline: none;
+  background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+}
   </style>
+
   <footer>
     <div class="footer-top">
-      <div class="logo">Elfè Lorienveil</div>
+      <div class="logo">Combodeck</div>
       <div class="info">
         <h4>Info</h4>
         <p>Contact us<br>About us</p>
@@ -52,6 +86,79 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2026 | elfein | The content of this site is copyright-protected and is the property of elfé Lorienveil.</p>
+      <p>© 2026 | Combodeck | The content of this site is copyright-protected and is the property of Combodeck.</p>
     </div>
   </footer>
+
+<!-- Glass orb loader with floating bubbles (top & bottom) -->
+<div id="globalLoader" style="display:none;">
+  <div class="logo-loader">
+    <div class="ring"></div>
+<img src="/images/combodecklogo.png" alt="Combodeck Logo" />
+  </div>
+</div>
+<style>
+  /* Loader overlay */
+#globalLoader {
+  position: fixed;
+  top:0; left:0;
+  width:100vw; height:100vh;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+.ring {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.1);
+  border-top: 2px solid rgba(255,255,255,0.6);
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+/* Logo container */
+.logo-loader {
+  width: 140px;
+  height: 140px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* Logo animation */
+.logo-loader img {
+  width: 100%;
+  height: auto;
+  animation: 
+    pulseGlow 2s ease-in-out infinite,
+    slightRotate 4s linear infinite;
+}
+
+/* Glow + pulse */
+@keyframes pulseGlow {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 25px rgba(255,255,255,0.6));
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
+    opacity: 0.8;
+  }
+}
+
+
+</style>

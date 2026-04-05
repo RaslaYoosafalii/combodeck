@@ -10,76 +10,33 @@
       font-family: "Arial", sans-serif;
     }
 
-    body {
-      margin: 0;
-      background-color: #ffffff;
-      color: #333;
-    }
+body {
+  margin: 0;
+  background: #0a0e11;
+  color: white;
+}
 
     /* ===== LAYOUT ===== */
     .profile-wrapper {
       display: flex;
       padding: 40px 60px;
+      margin-top: 110px;
       gap: 40px;
        align-items: flex-start; 
     }
 
-    /* ===== SIDEBAR (UNCHANGED) ===== */
-    .sidebar {
-      width: 260px;
-      border: 1px solid #ddd;
-    }
-
-    .sidebar-header {
-      background: #5a5553;
-      color: #fff;
-      padding: 18px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .sidebar-header .avatar-small {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #d9d9d9;
-    }
-
-    .sidebar-menu {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .sidebar-menu li {
-      border-top: 1px solid #ddd;
-    }
-
-    .sidebar-menu a {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 18px;
-      color: #333;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    .sidebar-menu a:hover,
-    .sidebar-menu .active {
-      background-color: #f3f3f3;
-      font-weight: 600;
-    }
 
     /* ===== ADDRESS CARD ===== */
     .profile-card {
-      flex: 1;
-      background: #fff;
-      border-radius: 12px;
-      padding: 40px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-      position: relative;
+     flex: 1;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
     }
 
     .profile-title {
@@ -89,38 +46,39 @@
       margin-bottom: 40px;
     }
 
-    .add-address-btn {
-      position: absolute;
-      top: 40px;
-      right: 40px;
-      background: rgb(90, 85, 83);
-      color: #fff;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      font-size: 13px;
-      cursor: pointer;
-    }
+.add-address-btn {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
 
     /* ===== ADDRESS LIST ===== */
-    .address-card {
-      background: #f3f3f3;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      position: relative;
-    }
+.address-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  position: relative;
+}
 
     .address-name {
       font-weight: 700;
       margin-bottom: 6px;
     }
 
-    .address-text {
-      font-size: 14px;
-      color: #555;
-      line-height: 1.6;
-    }
+.address-text {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+}
 
     .address-actions {
       position: absolute;
@@ -131,14 +89,15 @@
       gap: 6px;
     }
 
-    .address-actions button {
-      background: #fff;
-      border: 1px solid #aaa;
-      padding: 4px 10px;
-      font-size: 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
+.address-actions button {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: white;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
     .address-type {
       position: absolute;
@@ -150,15 +109,16 @@
       border-radius: 6px;
       color: #444;
     }
-    .address-type-btn {
-     background: #e0e0e0;
-     font-size: 12px;
-     padding: 3px 10px;
-     border-radius: 6px;
-     margin-left: 10px;
-     color: #444;
-     font-weight: 500;
-     }
+.address-type-btn {
+ background: rgba(255,255,255,0.06);
+ border: 1px solid rgba(255,255,255,0.08);
+ font-size: 12px;
+ padding: 3px 10px;
+ border-radius: 6px;
+ margin-left: 10px;
+ color: white;
+ font-weight: 500;
+}
      .address-actions button:last-child {
      background: red;
      border-color: red;
@@ -243,8 +203,7 @@
 
   <div class="address-actions">
     <% if (!addr.isDefault) { %>
-  <button onclick="setDefaultAddress('<%= index %>')" style="background-color: #acacac; color: #ffffff;">
-    Set Default
+<button onclick="setDefaultAddress('<%= index %>')" style="background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.08);">    Set Default
   </button>
 <% } %>
     <button onclick="location.href='/address/edit/<%= index %>'">Edit</button>
@@ -254,7 +213,7 @@
 </div>
         <% }) %>
       <% } else { %>
-        <p style="text-align:center;color:#777;">No addresses found</p>
+        <p style="text-align:center;color:rgba(255,255,255,0.6);">No addresses found</p>
       <% } %>
     </section>
   </div>

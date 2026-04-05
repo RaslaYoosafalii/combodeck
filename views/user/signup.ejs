@@ -14,31 +14,32 @@
 }
 
 body {
+  min-height: 100vh;
+  background: #0a0e11;
+  color: white;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: #fff;
+  flex-direction: column;
 }
-
 .wrapper {
-  width: 350px;
+  margin: auto;
+  margin-top:110px;
+  width: 420px;
   text-align: center;
+  padding: 35px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
 }
 
 h2 {
   font-size: 28px;
-  color: #444;
+  color: rgba(255,255,255,0.85);
   margin-bottom: 20px;
 }
 
 /* Google button */
 .google-btn {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -47,20 +48,30 @@ h2 {
   justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  color: white;
 }
 
 .google-btn img {
   width: 18px;
   height: 18px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
 }
-
+.google-btn:hover {
+  background-color: #d0a65c42;
+}
 /* Divider */
 .divider {
   display: flex;
   align-items: center;
   text-align: center;
   margin: 15px 0;
-  color: #777;
+  color: rgba(255,255,255,0.6);
   font-size: 14px;
 }
 
@@ -69,7 +80,7 @@ h2 {
   content: "";
   flex: 1;
   height: 1px;
-  background: #ccc;
+  background: rgba(255,255,255,0.08);
   margin: 0 10px;
 }
 
@@ -78,46 +89,48 @@ form input {
   width: 100%;
   padding: 12px;
   margin: 8px 0;
-  border: 1px solid #ddd;
+  border: 1px solid rgba(255,255,255,0.08);
   border-radius: 8px;
   font-size: 14px;
+  background: rgba(255,255,255,0.04);
+  color: white;
 }
 
 .referral-text {
   font-size: 12px;
-  color: #555;
+  color: rgba(255,255,255,0.7);
   margin: 10px 0 5px;
   text-align: left;
 }
 
 /* Signup button */
 .signup-btn {
-  width: 100%;
-  padding: 12px;
-  margin-top: 15px;
-  border: none;
-  border-radius: 8px;
-  background: #5a4a42;
-  color: #fff;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s;
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.04);
+  color: white;
 }
 
 .signup-btn:hover {
-  background: #463730;
+  background-color: #d0a65c42;
 }
 
 /* Login link */
 .login-text {
   margin-top: 15px;
   font-size: 14px;
-  color: #555;
+  color: rgba(255,255,255,0.7);
 }
 
 .login-text a {
-  color: #463730;
+  color: #d0a55c;
   font-weight: 600;
   text-decoration: none;
 }
@@ -135,6 +148,7 @@ form input {
   </style>
 </head>
 <body>
+   <%- include('../partials/user/header') %>
   <div class="wrapper">
     <h2>Create Account</h2>
 
@@ -176,6 +190,7 @@ form input {
       Already have account ? <a href="/login">Login</a>
     </p>
   </div>
+   <%- include('../partials/user/footer') %> 
 </body>
 <script>
 const emailid = document.getElementById("email");

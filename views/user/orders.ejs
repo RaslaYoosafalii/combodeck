@@ -7,11 +7,15 @@
 
 <style>
 * { box-sizing: border-box; font-family: Arial, sans-serif; }
-body { margin:0; background:#fff; color:#222; }
+body {
+  margin: 0;
+  background: #0a0e11;
+  color: white;
+}
 
 .container {
   max-width:1200px;
-  margin:40px auto;
+  margin-top: 110px;
   padding:0 20px;
 }
 
@@ -27,26 +31,38 @@ body { margin:0; background:#fff; color:#222; }
   gap:10px;
 }
 .search-box input {
-  flex:1;
-  padding:10px 14px;
-  border-radius:25px;
-  border:1px solid #ccc;
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 25px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  color: white;
+  outline: none;
 }
+.search-box input::placeholder {
+  color: rgba(255,255,255,0.45);
+}
+
 .search-box button {
-  padding:10px 20px;
-  border-radius:25px;
-  border:none;
-  background:#222;
-  color:#fff;
-  cursor:pointer;
+  padding: 10px 20px;
+  border-radius: 25px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  color: white;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+.search-box button:hover {
+  background: rgba(255,255,255,0.08);
 }
 
 /* ORDER CARD */
 .order-card {
-  border:1px solid #ddd;
-  border-radius:12px;
-  padding:20px;
-  margin-bottom:20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
 .order-header {
@@ -61,33 +77,38 @@ body { margin:0; background:#fff; color:#222; }
 }
 
 .status {
-  padding:5px 14px;
-  border-radius:20px;
-  font-size:13px;
-  background:#eee;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
 }
 
-.status.delivered { background:#d4f5d4; }
-.status.cancelled { background:#ffd6d6; }
-.status.pending { background:#fff3cd; }
+.status.delivered { background:#618461; }
 
 .order-meta {
-  margin-top:10px;
-  font-size:14px;
-  color:#555;
+  margin-top: 10px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
 }
 
 /* ITEMS */
 .item {
-  display:flex;
-  gap:12px;
   margin-top:15px;
+  padding: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.02);
+  display:flex;
+  gap:15px;
+  margin-bottom:20px;
+  padding:16px;
+  border-radius:12px;
 }
 .item img {
-  width:70px;
-  height:90px;
+  width:80px;
+  height:100px;
   object-fit:cover;
-  border-radius:6px;
+  border-radius:8px;
 }
 
 /* ACTIONS */
@@ -99,36 +120,44 @@ body { margin:0; background:#fff; color:#222; }
 }
 
 .btn {
-  padding:8px 18px;
-  border-radius:20px;
-  border:none;
-  cursor:pointer;
-  font-size:14px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  color: white;
 }
 
-.btn-dark { background:#222; color:#fff; }
+.btn-dark {
+  background: rgba(255,255,255,0.08);
+  color: white;
+}
+
 .btn-outline {
-  background:#fff;
-  border:1px solid #222;
+  background: rgba(255,255,255,0.04);
+  color: white;
 }
 
 /* MODAL */
 .modal {
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  z-index:1000;
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  z-index: 1000;
 }
 
 .modal-content {
-  background:#fff;
-  max-width:700px;
-  margin:50px auto;
-  border-radius:10px;
-  padding:25px;
-  max-height:85vh;
-  overflow:auto;
+  background: rgba(20,20,20,0.95);
+  border: 1px solid rgba(255,255,255,0.08);
+  max-width: 700px;
+  width: 90%;
+  border-radius: 16px;
+  padding: 25px;
+  max-height: 85vh;
+  overflow: auto;
+  color: rgba(255, 255, 255, 0.595);
 }
 
 .close-btn {
@@ -137,6 +166,7 @@ body { margin:0; background:#fff; color:#222; }
   cursor:pointer;
   border:none;
   background:none;
+  color: white;
 }
 textarea {
   width:100%;
@@ -153,16 +183,16 @@ textarea {
 }
 
 .page-btn {
-  padding:8px 14px;
-  border-radius:20px;
-  border:1px solid #ccc;
-  text-decoration:none;
-  color:#222;
-  font-size:14px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  text-decoration: none;
+  color: white;
+  font-size: 14px;
+  background: rgba(255,255,255,0.04);
 }
-
 .page-btn:hover {
-  background:#f2f2f2;
+  background: rgba(255,255,255,0.08);
 }
 
 
@@ -170,6 +200,7 @@ textarea {
 .profile-wrapper {
   display: flex;
   padding: 40px 60px;
+  margin-top: 110px;
   gap: 40px;
   align-items: flex-start; 
 }
@@ -177,13 +208,16 @@ textarea {
 
 .profile-card {
   flex: 1;
-  background: #fff;
-  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
   padding: 40px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-  min-height: 520px; 
-  display: flex;        
-  flex-direction: column;  
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
 }
 /* Centered empty-search message */
 #noResultsMsg {
@@ -191,34 +225,19 @@ textarea {
   padding-top: 90px;
   text-align: center;
   font-size: 16px;
-  color: #666;
+ color: rgba(255,255,255,0.6);
 }
 .orders-content {
-  flex: 1; /* ✅ pushes pagination to bottom */
-  display: flex;              /* ✅ ADD */
-  flex-direction: column;     /* ✅ ADD */
+  flex: 1;
+  display: flex;            
+  flex-direction: column;    
 }
 
 .pagination {
-  margin-top: auto;   /* ✅ THIS pushes it to the bottom */
+  margin-top: auto; 
 }
 
 
-/* RESPONSIVE – same as profile */
-@media (max-width: 900px) {
-  .profile-wrapper {
-    flex-direction: column;
-    padding: 20px;
-  }
-
-  .sidebar {
-    width: 100%;
-  }
-
-  .profile-card {
-    padding: 25px;
-  }
-}
 
 .page-btn.active {
   background-color: #000 !important;
@@ -256,7 +275,7 @@ textarea {
       </button>
 
     </div>
-<p id="noResultsMsg" style="display:none;color:#666;margin-top:20px;">
+<p id="noResultsMsg" style="display:none;color:rgba(255,255,255,0.6);margin-top:20px;">
 No orders found matching your search.
 </p>
 
@@ -269,7 +288,7 @@ No orders found matching your search.
     <div class="order-card" data-orderid="<%= order.orderId %>">
       <div class="order-header">
         <div class="order-id">Order ID: <%= order.orderId %></div>
-        <div class="status <%= order.orderStatus %>"><%= order.orderStatus %></div>
+        <div class="status <%= order.orderStatus%>"><%= order.orderStatus %></div>
       </div>
 
       <div class="order-meta">
@@ -479,16 +498,25 @@ function returnOrder(orderId) {
 }
 
 function viewDetails(orderId){
+  const modal = document.getElementById('detailModal');
+  const modalContent = modal.querySelector('.modal-content');
+
   fetch(`/orders/${orderId}`)
-    .then(r=>r.text())
-    .then(html=>{
+    .then(r => r.text())
+    .then(html => {
       document.getElementById('modalBody').innerHTML = html;
-      document.getElementById('detailModal').style.display='block';
+
+      modal.style.display = 'block';
+
+      modalContent.style.position = 'absolute';
+      modalContent.style.left = '50%';
+      modalContent.style.transform = 'translateX(-50%)';
+      modalContent.style.top = `${window.scrollY + 60}px`;
     });
 }
 
 function closeModal(){
-  document.getElementById('detailModal').style.display='none';
+  document.getElementById('detailModal').style.display = 'none';
 }
 
 function downloadInvoice(orderId){
@@ -604,7 +632,15 @@ fetch('/orders/cancel-return', {
     })
     .then(html => {
       document.getElementById('modalBody').innerHTML = html;
-      document.getElementById('detailModal').style.display = 'block';
+    const modal = document.getElementById('detailModal');
+const modalContent = modal.querySelector('.modal-content');
+
+modal.style.display = 'block';
+modalContent.style.position = 'absolute';
+modalContent.style.left = '50%';
+modalContent.style.transform = 'translateX(-50%)';
+modalContent.style.top = `${window.scrollY + 60}px`;
+
 
       // Push clean /orders URL (no ?open=) so BACK works correctly
       history.replaceState({}, '', '/orders');

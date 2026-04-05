@@ -74,17 +74,20 @@
     /* -------------------------
    CROPPER CONTAINER (FIX SIZE)
 --------------------------*/
+/* -------------------------
+   CROPPER CONTAINER (FIX SIZE)
+--------------------------*/
 .cropper-wrapper {
-  width: 300px;
-  height: 400px;
+  width: 500px;      /* Increased from 300px */
+  height: 600px;     /* Increased from 400px */
+  max-width: 90vw;   /* Ensure it doesn’t overflow screen */
+  max-height: 80vh;  /* Responsive to viewport height */
   margin-bottom: 15px;
   display: none;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #ddd;
   background: #fafafa;
-
-
 }
 
 #imagePreview {
@@ -365,14 +368,18 @@ input.addEventListener('change', (e) => {
   preview.onload = () => {
     if (cropper) cropper.destroy();
 
-    cropper = new Cropper(preview, {
-      aspectRatio: 3/4,
-      viewMode: 1,
-      autoCropArea: 1,
-      responsive: false,
-      background: false,
-      center: true
-    });
+cropper = new Cropper(preview, {
+  aspectRatio: 3/4,        
+  viewMode: 1,
+  autoCropArea: 1,
+  responsive: true,        
+  background: false,
+  center: true,
+  movable: true,
+  zoomable: true,
+  rotatable: false,
+  scalable: false
+});
   };
 
   preview.src = url;

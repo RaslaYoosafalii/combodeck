@@ -267,20 +267,7 @@ const addProduct = [
         }
 
 
-        if (!/^[A-Za-z]+$/.test(size) && !/^[0-9]+$/.test(size)) {
-          (req.files || []).forEach(f => safeUnlink(f.path));
-          return res.status(STATUS_CODES.BAD_REQUEST).render('product-add', {
-            allowRender: true,
-            categories: await Category.find({ isDeleted: { $ne: true }, isListed: true }).lean(),
-            subcategories: await SubCategory.find().lean(),
-            message: 'Size must contain only letters or only numbers (no symbols allowed)',
-            categoryId,
-            subcategoryId,
-            variantsData: variantList,
-            productName,
-            description
-          });
-        }
+
 
         //if size is not xs s like that
         if (/^\d+$/.test(size)) {
@@ -711,53 +698,27 @@ const updateProduct = [
           });
         }
         //no symbols allowed
-        if (!/^[A-Za-z]+$/.test(size) && !/^[0-9]+$/.test(size)) {
+        // if (!/^[A-Za-z]+$/.test(size) && !/^[0-9]+$/.test(size)) {
 
-          (req.files || []).forEach(f => safeUnlink(f.path));
+        //   (req.files || []).forEach(f => safeUnlink(f.path));
 
-          const productObj = product.toObject();
-          productObj.productName = productName;
-          productObj.description = description;
-          productObj.categoryId = String(categoryId);
-          productObj.subcategoryId = String(subcategoryId);
+        //   const productObj = product.toObject();
+        //   productObj.productName = productName;
+        //   productObj.description = description;
+        //   productObj.categoryId = String(categoryId);
+        //   productObj.subcategoryId = String(subcategoryId);
 
-          return res.status(STATUS_CODES.BAD_REQUEST).render('product-edit', {
-            allowRender: true,
-            product: productObj,
-            variants: await Variant.find({ productId: id }).lean(),
-            categories: await Category.find({ isDeleted: { $ne: true }, isListed: true }).lean(),
-            subcategories: await SubCategory.find().lean(),
-            message: 'Size must contain only letters or only numbers (no symbols allowed)'
-          });
-        }
+        //   return res.status(STATUS_CODES.BAD_REQUEST).render('product-edit', {
+        //     allowRender: true,
+        //     product: productObj,
+        //     variants: await Variant.find({ productId: id }).lean(),
+        //     categories: await Category.find({ isDeleted: { $ne: true }, isListed: true }).lean(),
+        //     subcategories: await SubCategory.find().lean(),
+        //     message: 'Size must contain only letters or only numbers (no symbols allowed)'
+        //   });
+        // }
         //if size is not xs s like that
-        if (/^\d+$/.test(size)) {
-          const numericSize = Number(size);
-          if (
-            !Number.isInteger(numericSize) ||
-    numericSize <= 0 ||
-    numericSize < 2 ||
-    numericSize > 24 ||
-    numericSize % 2 !== 0
-          ) {
-            (req.files || []).forEach(f => safeUnlink(f.path));
-
-            const productObj = product.toObject();
-            productObj.productName = productName;
-            productObj.description = description;
-            productObj.categoryId = String(categoryId);
-            productObj.subcategoryId = String(subcategoryId);
-
-            return res.status(STATUS_CODES.BAD_REQUEST).render('product-edit', {
-              allowRender: true,
-              product: productObj,
-              variants: await Variant.find({ productId: id }).lean(),
-              categories: await Category.find({ isDeleted: { $ne: true }, isListed: true }).lean(),
-              subcategories: await SubCategory.find().lean(),
-              message: 'Numeric size must be a positive even number between 2 and 24'
-            });
-          }
-        }
+ 
 
         // duplicate size check (case-insensitive)
         const sizeKey = size.toLowerCase();

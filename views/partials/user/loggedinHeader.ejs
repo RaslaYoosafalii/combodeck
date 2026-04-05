@@ -1,54 +1,93 @@
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-      .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 60px;
-      background: #fff;
-      position: sticky;
-     top: 0;
-     z-index: 1000;
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 60px;
+background:transparent;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+backdrop-filter:blur(1px);
+z-index:1000;
+}
 
-    }
+.logo a{
+font-family:'Orbitron',sans-serif;
+font-size:34px;
+letter-spacing:3px;
+color:white;
+text-decoration: none;
+}
 
-    .navbar .logo {
-      font-size: 40px;
-      font-weight: 37;
-      color: #B2A9A1;
-    }
+.bottom-nav{
+margin-left:auto;
+margin-right:20px;
+}
 
-    .navbar ul {
-      display: flex;
-      list-style: none;
-      gap: 25px;
-    }
-   
-    .navbar a {
-      text-decoration: none;
-      color: #615A5A;
-      font-size: 15px;
-    }
+.bottom-nav ul{
+display:flex;
+gap:60px;
+list-style:none;
 
-    .navbar .btn {
-      padding: 8px 15px;
-      border-radius: 5px;
-      background: #484848;
-      color: #fff;
-    }
+}
+
+.bottom-nav a{
+text-decoration:none;
+color:white;
+font-size:15px;
+opacity:.85;
+transition:.3s;
+font-family: 'Arial', sans-serif;
+}
+
+.bottom-nav a:hover{
+opacity:1;
+color: rgb(220, 173, 102);
+}
+
+.tech-pill{
+border:1px solid rgba(255,255,255,0.2);
+padding:12px 22px;
+border-radius:30px;
+font-size:13px;
+font-family: 'Arial', sans-serif;
+letter-spacing:2px;
+background:rgba(255,255,255,0.05);
+color:white;
+}
+
+.tech-pill:hover{
+  color: rgb(220, 173, 102);
+}
 </style>
+
 <header class="navbar">
-    <div class="logo">Elfé Lorienveil</div>
-    <nav>
-      <ul>
+
+<div class="logo">
+<a href="/">COMBODECK</a>
+</div>
+
+<nav class="bottom-nav">
+<ul>
         <li><a href="/">Home</a></li>
-        <li><a href="/products">All Products</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="/products">Shop</a></li>
         <li><a href="/wishlist">Wishlist</a></li>
         <li><a href="/cart">Your Cart</a></li>
-        <li><a href="/profile">Profile</a></li>
-        <li><a href="/logout" class="btn logout-btn">Logout</a></li>
-      </ul>
-    </nav>
-  </header>
+        <li><a href="/profile"   style="margin-right:15px;">Profile</a></li>
+        <!-- <li><a href="/logout" class="btn logout-btn">Logout</a></li> -->
+</ul>
+</nav>
+
+<div class="tech-pill">
+DMF TECHNOLOGY
+</div>
+
+</header>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
    <script>
@@ -84,6 +123,35 @@
       }
     });
   });
+</script>
+<script>
+  // Show loader on initial page load
+  window.addEventListener('beforeunload', function() {
+    document.getElementById('globalLoader').style.display = 'flex';
+  });
+</script>
+</header>
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  const toggle = document.querySelector(".menu-toggle");
+  const menu = document.getElementById("mobileMenu");
+
+  toggle.addEventListener("click", function() {
+    menu.classList.toggle("active");
+  });
+});
+</script> 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('a[href]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const href = link.getAttribute('href');
+      if (!href.startsWith('#') && !link.hasAttribute('target')) {
+        document.getElementById('globalLoader').style.display = 'flex';
+      }
+    });
+  });
+});
 </script>
 
 

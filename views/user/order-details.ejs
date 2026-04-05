@@ -3,28 +3,75 @@
 <head>
 <meta charset="UTF-8">
 <title>Order Details</title>
-
 <style>
-.container{max-width:1000px;margin:40px auto;font-family:Arial}
-.item{display:flex;gap:15px;margin-bottom:15px}
-.item img{width:80px;height:100px;object-fit:cover;border-radius:6px}
-.badge{padding:4px 10px;border-radius:14px;background:#eee}
+.container{
+  max-width:1000px;
+  margin:0;
+  font-family:Arial;
+  color:white;
+}
+
+h2, h3 {
+  color: white;
+  margin-bottom: 14px;
+}
+
+p {
+  color: rgba(255,255,255,0.75);
+  line-height: 1.7;
+}
+
+.item{
+  display:flex;
+  gap:15px;
+  margin-bottom:20px;
+  padding:16px;
+  border:1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  border-radius:12px;
+}
+
+.item img{
+  width:80px;
+  height:100px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+.badge{
+  padding:4px 10px;
+  border-radius:14px;
+  background: rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.08);
+  color:white;
+  font-size:13px;
+}
+
 .btn{
   padding:8px 16px;
   border-radius:20px;
-  border:none;
+  border:1px solid rgba(255,255,255,0.08);
   cursor:pointer;
   font-size:14px;
-}
-.btn-dark{
-  background:#222;
-  color:#fff;
-}
-.btn-outline{
-  background:#fff;
-  border:1px solid #222;
+  background: rgba(255,255,255,0.04);
+  color:white;
+  transition:0.3s ease;
 }
 
+.btn:hover{
+  background: rgba(255,255,255,0.08);
+}
+
+.btn-dark{
+  background: rgba(255,255,255,0.08);
+  color:#fff;
+}
+
+.btn-outline{
+  background: rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  color:white;
+}
 </style>
 </head>
 

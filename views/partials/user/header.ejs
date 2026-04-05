@@ -1,99 +1,95 @@
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 60px;
-  background: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+.navbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 60px;
+background:transparent;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+backdrop-filter:blur(1px);
+z-index:1000;
 }
 
-.navbar .logo {
-  font-size: 40px;
-  color: #B2A9A1;
+.logo a{
+font-family:'Orbitron',sans-serif;
+font-size:34px;
+letter-spacing:3px;
+color:white;
+text-decoration: none;
 }
 
-.navbar ul {
-  display: flex;
-  list-style: none;
-  gap: 25px;
+.bottom-nav{
+margin-left:auto;
+margin-right:20px;
 }
 
-.navbar a {
-  text-decoration: none;
-  color: #615A5A;
-  font-size: 15px;
+.bottom-nav ul{
+display:flex;
+gap:60px;
+list-style:none;
+
 }
 
-.navbar .btn {
-  padding: 8px 15px;
-  border-radius: 5px;
-  background: #484848;
-  color: #fff;
+.bottom-nav a{
+text-decoration:none;
+color:white;
+font-size:15px;
+opacity:.85;
+transition:.3s;
+font-family: 'Arial', sans-serif;
 }
 
-/* Hamburger */
-.menu-toggle {
-  display: none;
-  font-size: 26px;
-  cursor: pointer;
+.bottom-nav a:hover{
+opacity:1;
+color: rgb(220, 173, 102);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+.tech-pill{
+border:1px solid rgba(255,255,255,0.2);
+padding:12px 22px;
+border-radius:30px;
+font-size:13px;
+font-family: 'Arial', sans-serif;
+letter-spacing:2px;
+background:rgba(255,255,255,0.05);
+color:white;
+}
 
-  .navbar {
-    padding: 15px 20px;
-  }
-
-  .menu-toggle {
-    display: block;
-  }
-
-  .navbar nav {
-    position: absolute;
-    top: 70px;
-    right: 0;
-    width: 200px;
-    background: #fff;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    display: none;
-    flex-direction: column;
-  }
-
-  .navbar nav.active {
-    display: flex;
-  }
-
-  .navbar ul {
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .navbar li {
-    border-bottom: 1px solid #eee;
-  }
-
-  .navbar li a {
-    padding: 12px 20px;
-    display: block;
-  }
+.tech-pill:hover{
+  color: rgb(220, 173, 102);
 }
 </style>
+
 <header class="navbar">
-    <div class="logo">Elfé Lorienveil</div>
-    <div class="menu-toggle">&#9776;</div>
-    <nav id="mobileMenu">
-      <ul>
-        <li><a href="/">Home</a></li>
-         <li><a href="/products">All Products</a></li>
-        <li><a href="/login">Sign In</a></li>
-        <li><a href="/signup" class="btn">Sign Up</a></li>
-      </ul>
-    </nav>
-  </header>
+
+<div class="logo">
+<a href="/">COMBODECK</a>
+</div>
+
+<nav class="bottom-nav">
+<ul>
+<li><a href="/">Home</a></li>
+<li><a href="#">About</a></li>
+<li><a href="/products">Shop</a></li>
+<li><a href="/login"  style="margin-right:15px;">Sign In</a></li>
+</ul>
+</nav>
+
+<div class="tech-pill">
+DMF TECHNOLOGY
+</div>
+<script>
+  // Show loader on initial page load
+  window.addEventListener('beforeunload', function() {
+    document.getElementById('globalLoader').style.display = 'flex';
+  });
+</script>
+</header>
   <script>
 document.addEventListener("DOMContentLoaded", function() {
   const toggle = document.querySelector(".menu-toggle");
@@ -101,6 +97,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
   toggle.addEventListener("click", function() {
     menu.classList.toggle("active");
+  });
+});
+</script> 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('a[href]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const href = link.getAttribute('href');
+      if (!href.startsWith('#') && !link.hasAttribute('target')) {
+        document.getElementById('globalLoader').style.display = 'flex';
+      }
+    });
   });
 });
 </script>

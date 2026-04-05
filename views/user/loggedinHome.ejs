@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Elfè Lorienveil</title>
+  <title>Combodeck</title>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,56 +19,19 @@
       font-family: 'Arial', sans-serif;
       
     }
-
- body {
-  color: #615A5A;
-  background: #fff;
+body {
+  color: #ffffff;
+  background: #0a0e11;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
-
 main {
   flex: 1;
 }
 
-    /* Navbar */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 60px;
-      background: #fff;
-      position: sticky;
-     top: 0;
-     z-index: 1000;
-    }
 
-    .navbar .logo {
-      font-size: 40px;
-      font-weight: 37;
-      color: #B2A9A1;
-    }
-
-    .navbar ul {
-      display: flex;
-      list-style: none;
-      gap: 25px;
-      
-    }
-
-    .navbar a {
-      text-decoration: none;
-      color: #615A5A;
-      font-size: 15px;
-    }
-
-    .navbar .btn {
-      padding: 8px 15px;
-      border-radius: 5px;
-      background: #484848;
-      color: #fff;
-    }
+   
 
     /* Hero */
     .hero {
@@ -76,15 +39,6 @@ main {
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
     }
-    @media (max-width: 992px) {
-  .hero {
-    grid-template-columns: 1fr;
-  }
-
-  .hero img {
-    border-radius: 0;
-  }
-}
 
     .hero img {
       width: 100%;
@@ -119,22 +73,9 @@ main {
       padding-top: 10px;
  
     }
-    @media (max-width: 992px) {
-  .category-list {
-    flex-wrap: wrap;
-    gap: 20px;
-  }
 
-  .category {
-    width: 45%;
-  }
-}
 
-@media (max-width: 576px) {
-  .category {
-    width: 100%;
-  }
-}
+
 
     .categories .btn {
       margin: 15px 0;
@@ -174,17 +115,7 @@ main {
       gap: 30px;
       margin-top: 20px;
     }
-   @media (max-width: 992px) {
-  .products {
-    flex-wrap: wrap;
-    gap: 20px;
-  }
 
-  .product img {
-    width: 100%;
-    max-width: 260px;
-  }
-}
     .product img {
       width: 220px;
       border-radius: 8px;
@@ -195,112 +126,134 @@ main {
       margin: 10px 0 5px;
     }
 
-    .product p {
-      font-size: 13px;
-      color: #555;
-    }
+.product p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+}
 
     .product span {
       font-weight: bold;
     }
 
-    /* Footer */
-    footer {
-      margin-top: 40px;
-      background: #f6f6f6;
-      padding: 40px 60px;
-      color: #666;
-    }
-     .footer .logo {
-      font-size: 60px;
-      font-weight: 37;
-      color: #B2A9A1;
-    }
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
+.new-arrivals,
+.categories {
+  background: rgba(255,255,255,0.02);
+}
 
-    .footer-top h4 {
-      margin-bottom: 10px;
-      color: #333;
-    }
 
-    .footer-top input {
-      padding: 8px;
-      width: 200px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    .footer-bottom {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 12px;
-    }
-        /* Home Video Section */
-.home-video {
+.wrapper{
+  margin: 0 auto;
   width: 100%;
-  padding: 0;
+  margin-bottom: 60px;
+  margin-top: 30px;
+  max-width: 1500px;
+  height: 800px;
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  background-image: url("/images/finalHome.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.7);
+  padding: 30px;
 }
 
-.home-video video {
-  width: 100%;
-  
-  display: block;
-  pointer-events: none; /* disables interaction */
-}
-@media (max-width: 768px) {
-  footer {
-    padding: 30px 20px;
-  }
-
-  .footer-top {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .footer .logo {
-    font-size: 40px;
-  }
+.info-cards{
+  position: absolute;
+  right: 60px;
+  top: 455px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
 }
 
+.info-cards{
+position:absolute;
+right:60px;
+top:455px;
+display:flex;
+flex-direction:column;
+gap:25px;
+}
+
+.card{
+width:260px;
+padding:22px;
+
+background:rgba(0, 0, 0, 0.05);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:16px;
+backdrop-filter:blur(10px);
+}
+.card:hover{
+opacity:1;
+color: rgb(220, 173, 102);
+}
+
+.card h4{
+font-size:13px;
+letter-spacing:2px;
+margin-bottom:10px;
+}
+
+.card p{
+font-size:12px;
+opacity:.7;
+line-height:1.6;
+}
+
+
+
+.left-info{
+  position: absolute;
+  left: 60px;
+  bottom: 30px;
+  color: white;
+}
+
+.left-info h2{
+  font-size: 22px;
+  letter-spacing: 3px;
+  line-height: 1.5;
+}
   </style>
 </head>
 <body>
   <!-- Navbar -->
   <%-include('../partials/user/loggedinHeader')%>
 <!-- hero section -->
-  <section class="hero" style="margin-bottom: 30px; margin-left: 8px; margin-right: 8px;">
-    <div class="hero-item">
-      <img src="/images/IMG_9763.png" alt="Hero Image 1">
+<!-- Hero section -->
+
+  <div class="wrapper">
+
+    <div class="info-cards">
+      <div class="card">
+        <h4>ADVANCED TECHNOLOGY</h4>
+        <p>
+          Leverage the latest in audio technology with our state-of-the-art
+          features and functionalities.
+        </p>
+      </div>
+
+      <div class="card">
+        <h4>FUTURISTIC DESIGN</h4>
+        <p>
+          Step into the future with our sleek, minimalist design that fits
+          seamlessly into any environment.
+        </p>
+      </div>
     </div>
-    <div class="hero-item center" style="padding-top: 0; ">
-     <img src="/images/image.png" alt="Hero Image 2">
-        <a href="/products" style="opacity: 90%; border-radius: 6px; background-color: #898078;padding: 20px; margin: 20px; position: absolute; color: #ffffff; font-size: 18px; font-weight: lighter;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">EXPLORE SHOP</a>
-     </div>
-    <div class="hero-item">
-      <img src="/images/heroimage3.png" alt="Hero Image 3">
+
+    <div class="left-info">
+      <h2>
+        UNMATCHED <br>
+        SOUND QUALITY
+      </h2>
     </div>
-  </section>
-  
-<!-- Auto Playing Video Section -->
-<section class="home-video">
-  <video 
-    autoplay 
-    muted 
-    loop 
-    playsinline 
-    preload="auto"
-    disablePictureInPicture
-    controlslist="nodownload nofullscreen noremoteplayback"
-    oncontextmenu="return false;"
-  >
-    <source src="/videos/home.webm" type="video/webm">
-    Your browser does not support the video tag.
-  </video>
-</section>
+  </div>
+
+
 
   <!-- New Arrivals -->
   <section class="new-arrivals" >

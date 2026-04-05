@@ -13,13 +13,14 @@
 
 body {
   margin: 0;
-  background: #fff;
-  color: #333;
+  background: #0a0e11;
+  color: white;
+  font-family: 'Inter', sans-serif;
 }
 
 .container {
   max-width: 1200px;
-  margin: 40px auto;
+    margin:120px auto 40px;
   padding: 0 20px;
 }
 
@@ -38,14 +39,18 @@ body {
 
 /* ADDRESS */
 .address-box {
-  border: 1px solid #ddd;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 16px;
   margin-bottom: 25px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
 .address-item {
-  border: 1px solid #eee;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.025);
   padding: 14px;
   border-radius: 6px;
   margin-bottom: 12px;
@@ -66,16 +71,27 @@ body {
   border-radius: 20px;
   border: none;
   cursor: pointer;
+
+  padding: 12px 22px;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: white;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
 }
 
 .btn-dark {
-  background: #222;
+  background: rgba(255,255,255,0.04);
   color: white;
+  border: 1px solid rgba(255,255,255,0.12);
 }
 
 .btn-outline {
-  background: white;
-  border: 1px solid #222;
+  background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.12);
 }
 
 /* PRODUCTS */
@@ -97,6 +113,12 @@ body {
   border: 1px solid #ddd;
   padding: 20px;
   border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 20px;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
 .summary-row {
@@ -106,15 +128,17 @@ body {
 }
 
 .place-btn {
-  margin-top: 15px;
-  width: 100%;
   padding: 14px;
-  background: black;
-  color: white;
-  border: none;
   border-radius: 30px;
   font-size: 15px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: white;
   cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
+  width: 100%;
+  margin-top: 15px;
 }
  /* ===== MAIN CARD ===== */
     .profile-card {
@@ -123,6 +147,9 @@ body {
       border-radius: 12px;
       padding: 40px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+        background: transparent;
+  border-radius: 12px;
+  padding: 40px;
     }
 
     .profile-title {
@@ -143,6 +170,7 @@ body {
       display: flex;
       flex-direction: column;
       gap: 6px;
+  
     }
 
     .form-group.full {
@@ -150,25 +178,36 @@ body {
     }
 
     .form-group label {
-      font-size: 14px;
-      color: #555;
+        font-size: 14px;
+  color: rgba(255,255,255,0.75);
     }
 
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      padding: 10px 12px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-      font-size: 14px;
-      background: #f5f5f5;
-    }
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  font-size: 14px;
+  background: rgba(255,255,255,0.04);
+  color: white;
+  outline: none;
+  backdrop-filter: blur(10px);
+    border-color: rgba(220, 173, 102, 0.25);
+  background: rgba(220, 173, 102, 0.06);
+}
+
 
     textarea {
       resize: none;
       height: 80px;
     }
-
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: rgba(220, 173, 102, 0.25);
+  background: rgba(220, 173, 102, 0.06);
+}
     /* ===== RADIO ===== */
     .radio-group {
       display: flex;
@@ -205,6 +244,15 @@ body {
       padding: 8px 22px;
       border-radius: 6px;
       cursor: pointer;
+
+        padding: 12px 22px;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: white;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
     }
 
     .btn-cancel {
@@ -242,7 +290,179 @@ body {
   display: none;
 }
 
+.btn:hover,
+.place-btn:hover,
+.btn-save:hover {
+  background: rgba(220, 173, 102, 0.18);
+  color: rgb(220, 173, 102);
+  border-color: rgba(220, 173, 102, 0.25);
+}
 
+/* ===== MODAL CONTAINER GLASS ===== */
+#addAddressModal > div,
+#editAddressModal > div {
+  background: rgba(22, 22, 22, 0.76) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.48);
+  border-radius: 20px !important;
+}
+
+/* ===== INNER CARD ===== */
+.profile-card {
+  background: transparent;
+  border-radius: 18px;
+  padding: 40px;
+}
+
+/* ===== LABEL ===== */
+.form-group label {
+  font-size: 14px;
+  color: rgba(255,255,255,0.72);
+  font-weight: 500;
+}
+
+/* ===== INPUTS / SELECT / TEXTAREA ===== */
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  font-size: 14px;
+  background: rgba(255,255,255,0.03) !important;
+  color: white;
+  outline: none;
+  backdrop-filter: blur(14px);
+  transition: all 0.25s ease;
+}
+
+/* ===== PLACEHOLDER ===== */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: rgba(255,255,255,0.35);
+}
+
+/* ===== FOCUS ===== */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: rgba(255,255,255,0.14) !important;
+  background: rgba(255,255,255,0.05) !important;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.025);
+}
+/* ===== SELECT OPTION ===== */
+.form-group select option {
+  background: #1a1a1a;
+  color: white;
+}
+
+/* ===== BUTTONS ===== */
+.btn-save,
+.btn-cancel {
+  padding: 12px 22px;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: white;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
+}
+
+/* ===== BUTTON HOVER ===== */
+.btn-save:hover,
+.btn-cancel:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.16);
+  color: white;
+}
+
+/* ===== CLOSE BUTTON ===== */
+#addAddressModal button,
+#editAddressModal button {
+  color: rgba(255,255,255,0.75);
+}
+
+#addAddressModal button:hover,
+#editAddressModal button:hover {
+  color: white;
+}
+/* ===== APPLIED COUPON SUCCESS CARD ===== */
+.coupon-applied-box {
+  margin-top: 12px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(66, 102, 61, 0.22);
+  background: rgba(46, 125, 70, 0.10);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.coupon-success-text {
+  font-size: 13px;
+  color: rgba(108, 161, 95, 0.9);
+  margin-bottom: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.coupon-applied-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.88);
+}
+
+.coupon-applied-row strong {
+  color: rgba(108, 161, 95, 0.9);
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.coupon-remove-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(54, 78, 48, 0.9);
+  background: rgba(255,255,255,0.04);
+  color: #caffdd;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.25s ease;
+}
+
+.coupon-remove-btn:hover {
+  background:rgba(105, 143, 96, 0.9);
+  border-color: rgba(9, 121, 50, 0.28);
+}
+
+.apply-btn{
+  padding: 12px 22px;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: white;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.25s ease;
+  background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.apply-btn:hover{
+    background:rgba(105, 143, 96, 0.9);
+  border-color: rgba(9, 121, 50, 0.28);
+}
+.coupon-success-text::before {
+  content: "●";
+  margin-right: 8px;
+  color: #7dffaf;
+  font-size: 10px;
+}
 </style>
 </head>
 
@@ -254,7 +474,7 @@ body {
   <div class="checkout-title">Checkout</div>
 <!-- BREADCRUMBS -->
 <nav style="margin-bottom:20px;font-size:14px;">
-  <a href="/cart" style="color:#555;text-decoration:none;">Cart</a>
+  <a href="/cart" style="color:rgba(255,255,255,0.7);text-decoration:none;">Cart</a>
   <span style="margin:0 6px;">›</span>
   <strong>Checkout</strong>
 </nav>
@@ -397,18 +617,32 @@ if (summary && summary.couponDiscount > 0 && summary.finalTotal) {
 
 <% if (summary) { %>
 
-<div id="coupon-section" style="margin-bottom:15px; width: 754px; border:1px solid #ddd;padding:20px;border-radius:6px;margin-bottom:8px;">
+<div id="coupon-section" style="
+margin-bottom:15px;
+width:754px;
+background:rgba(255,255,255,0.03);
+border:1px solid rgba(255,255,255,0.08);
+padding:20px;
+border-radius:16px;
+backdrop-filter:blur(10px);
+">
 <h3 style="margin-bottom:10px;font-weight:bold;">Available Coupons</h3>
   <% if (summary.appliedCoupon) { %>
 
-    <div style="color:green;font-weight: light; margin-bottom:10px; ">
-      Coupon Applied: <%= summary.appliedCoupon %>
-      <button onclick="removeCoupon()" 
-      class="btn btn-dark" 
-      style="margin: 5px; padding: 5px; font-size: 12px; border: 1px solid rgb(104, 103, 103); margin-left:10px; background-color:#ffffff; color: #424141; border-radius: 5px;">
+<div class="coupon-applied-box">
+  <div class="coupon-success-text">Coupon applied successfully</div>
+
+  <div class="coupon-applied-row">
+    <span>
+      Applied coupon:
+      <strong><%= summary.appliedCoupon %></strong>
+    </span>
+
+    <button onclick="removeCoupon()" class="coupon-remove-btn">
       Remove
     </button>
-    </div>
+  </div>
+</div>
 
   <% } else { %>
     
@@ -425,7 +659,7 @@ const disabled =
           <strong><%= coupon.code %></strong>
 
 <button 
-  class="btn btn-dark"
+  class="apply-btn"
   style="margin-top: 4px; margin-bottom: 10px; font-size: 10px; margin-left: 200px;padding:6px 12px; border-radius: 5px;"
   onclick="<%= disabled 
       ? `showMinPurchaseMessage(this, ${coupon.minimumPurchase})` 
@@ -522,6 +756,10 @@ const disabled =
     position:relative;
     max-height:90vh;
     overflow:auto;
+    background: rgba(18, 22, 26, 0.92);
+border: 1px solid rgba(255,255,255,0.08);
+backdrop-filter: blur(18px);
+box-shadow: 0 20px 60px rgba(0,0,0,0.45);
   ">
 
     <button onclick="closeAddAddressModal()"
@@ -531,7 +769,7 @@ const disabled =
 
 
  <form id="addAddressForm" novalidate>
-    <section class="profile-card">
+    <section class="profile-card" >
       <h2 class="profile-title">ADD NEW ADDRESS</h2>
         <div class="form-grid">
           <div class="form-group">
@@ -665,7 +903,7 @@ const disabled =
   z-index:1000;
 ">
   <div style="
-    background:#fff;
+ 
     max-width:700px;
     margin:40px auto;
     border-radius:8px;
@@ -673,6 +911,10 @@ const disabled =
     position:relative;
     max-height:90vh;
     overflow:auto;
+    background: rgba(18, 22, 26, 0.92);
+border: 1px solid rgba(255,255,255,0.08);
+backdrop-filter: blur(18px);
+box-shadow: 0 20px 60px rgba(0,0,0,0.45);
   ">
 
     <button onclick="closeEditAddressModal()"

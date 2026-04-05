@@ -14,44 +14,16 @@
       font-family: 'Arial', sans-serif;
     }
 
-    body {
-      color: #2b2b2b;
-      background: #fff;
-    }
+body {
+  color: var(--text-main);
+  background: #0a0e11;
+}
 
     /* Navbar */
     .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 60px;
-      background: #fff;
+        background: #0a0e11!important;
     }
 
-    .navbar .logo {
-      font-size: 40px;
-      font-weight: 37;
-      color: #B2A9A1;
-    }
-
-    .navbar ul {
-      display: flex;
-      list-style: none;
-      gap: 25px;
-    }
-
-    .navbar a {
-      text-decoration: none;
-      color: #615A5A;
-      font-size: 15px;
-    }
-
-    .navbar .btn {
-      padding: 8px 15px;
-      border-radius: 5px;
-      background: #484848;
-      color: #fff;
-    }
 
     /* Hero */
     .hero {
@@ -181,27 +153,37 @@
       margin-top: 20px;
       font-size: 12px;
     }
-  
-    :root{
-      --max-w: 1400px;
-      --muted: #808080;
-      --accent: #111;
-      --chip-border: #d3d3d3;
-      --line: #e6e6e6;
-      --bg: #fff;
-      --shadow: 0 6px 18px rgba(17,17,17,0.03);
-      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
+  :root{
+  --max-w: 1400px;
+  --muted: rgba(255,255,255,0.65);
+  --accent: rgb(220, 173, 102);
+  --chip-border: rgba(255,255,255,0.12);
+  --line: rgba(255,255,255,0.08);
+  --bg: #0a0e11;
+  --card-bg: rgba(255,255,255,0.03);
+  --surface: rgba(255,255,255,0.04);
+  --text-main: #ffffff;
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+--font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
 
-    html,body{height:100%; margin:0; font-family:var(--font-sans); color:#222; background:var(--bg); -webkit-font-smoothing:antialiased;}
+
+    html,body{  
+    height:100%;
+  margin:0;
+  font-family:var(--font-sans);
+  color:var(--text-main);
+  background:var(--bg);
+   -webkit-font-smoothing:antialiased;
+  }
     a{color:inherit; text-decoration:none;}
     img{display:block; max-width:100%;}
 
-    .container{
-      max-width:var(--max-w);
-      margin:40px auto;
-      padding:0 20px 70px;
-    }
+.container{
+  max-width:var(--max-w);
+  margin:120px auto 40px; /* ⬅️ FIX: push content below fixed header */
+  padding:0 20px 70px;
+}
 
     /* Header area (page title + subtitle + chips) */
     .page-head{
@@ -233,18 +215,21 @@
     .chip{
       display:inline-block;
       padding:8px 12px;
-      border:1px solid var(--chip-border);
       border-radius:6px;
       font-size:13px;
       letter-spacing:0.4px;
-      background:#fff;
+        background: var(--surface);
+       color: white;
+       border: 0.2px solid var(--chip-border);
+       backdrop-filter: blur(8px);
       transition:all .18s ease;
     }
     .chip.active{
-      background:#3a3939;
-      color:#fff;
-      border-color:#3a3939;
+  background: rgba(114, 100, 79, 0.18);
+  color: rgb(220, 173, 102);
+  /* border-color: rgb(220, 173, 102); */
     }
+
     .chip:hover{ transform:translateY(-2px); box-shadow:var(--shadow); }
 
     /* Search + sort row on the right */
@@ -257,23 +242,29 @@
     }
     .controls-row input[type="text"]{
       padding:9px 12px;
-      border:1px solid #ddd;
       border-radius:20px;
       min-width:200px;
       font-size:14px;
+        background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
     }
     .controls-row select{
       padding:9px 12px;
-      border:1px solid #ddd;
+
       border-radius:8px;
       font-size:14px;
-      background:#fff;
+        background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
     }
     .controls-row button{
       padding:9px 12px;
       border-radius:8px;
-      border:1px solid #ccc;
-      background:#fff;
+ 
+        background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
       cursor:pointer;
       font-size:14px;
     }
@@ -281,10 +272,15 @@
     /* Main layout - left sidebar + product area */
     .layout{ display:flex; gap:28px; align-items:flex-start; }
     aside.filters{
-      width:240px;
-      min-width:190px;
-      font-size:13px;
-      color:#3a3939;
+  width:240px;
+  min-width:190px;
+  font-size:13px;
+  color:white;
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 18px;
+  backdrop-filter: blur(10px);
     }
     .filters .heading{
       font-weight:700;
@@ -306,7 +302,9 @@
     .filter-block input[type="number"]{
       width:100%;
       padding:8px 10px;
-      border:1px solid #e0e0e0;
+        background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
       border-radius:6px;
       font-size:13px;
       box-sizing:border-box;
@@ -347,7 +345,9 @@
     .product-thumb{
       width:100%;
       height:330px;
-      background:#f7f7f7;
+        background: rgba(255,255,255,0.04);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.06);
       display:block;
      
       overflow:hidden;
@@ -371,13 +371,14 @@
       font-size:13px;
       letter-spacing:0.4px;
       margin-bottom:6px;
-      color:#3a3939;
+     color:white;
       text-transform:uppercase;
     }
   .product-desc{
-  color:#808080;
+   color:rgba(255,255,255,0.65);
   font-size:13px;
   margin-bottom:8px;
+
   min-height:38px;
 }
 .product-price{
@@ -402,16 +403,16 @@
       min-width:34px;
       height:34px;
       border-radius:6px;
-      border:1px solid #e0e0e0;
-      background:#fff;
-      text-decoration:none;
-      color:#333;
+       background: rgba(255,255,255,0.04);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
+      text-decoration:none;  
       font-size:13px;
     }
     .pager a.active{
-      background:#3a3939;
-      color:#fff;
-      border-color:#3a3939;
+       background: rgba(220, 173, 102, 0.18);
+  color: rgb(220, 173, 102);
+  border-color: rgba(220, 173, 102, 0.18);
     }
     .pager a[aria-label="prev"], .pager a[aria-label="next"]{
       width:38px;
@@ -692,7 +693,7 @@ q=<%= encodeURIComponent(pagination?.search || '') %>
              <input type="hidden" name="subcategory" value="<%= pagination?.subcategory || '' %>" />
              <input type="hidden" name="minPrice" value="<%= pagination?.minPrice || '' %>" />
              <input type="hidden" name="maxPrice" value="<%= pagination?.maxPrice || '' %>" />
-            <label for="categorySelect">Category</label>
+            <label for="categorySelect">CATEGORY</label>
             <select id="categorySelect" name="category" onchange="document.getElementById('categoryFilter').submit()">
               <option value="">All</option>
               <% if (categories && categories.length) { %>
@@ -713,7 +714,7 @@ q=<%= encodeURIComponent(pagination?.search || '') %>
 
     <input type="hidden" name="minPrice" value="<%= pagination?.minPrice || '' %>" />
     <input type="hidden" name="maxPrice" value="<%= pagination?.maxPrice || '' %>" />
-    <label for="subcategorySelect">fit type</label>
+    <label for="subcategorySelect">SIZE RANGE</label>
     <select id="subcategorySelect"
             name="subcategory"
             onchange="document.getElementById('subcategoryFilter').submit()">
@@ -740,7 +741,7 @@ q=<%= encodeURIComponent(pagination?.search || '') %>
             <input type="hidden" name="sort" value="<%= (pagination && pagination.sort) ? pagination.sort : '' %>" />
             <input type="hidden" name="category" value="<%= (pagination && pagination.category) ? pagination.category : '' %>" />
             <input type="hidden" name="subcategory" value="<%= pagination?.subcategory || '' %>" />
-            <label>Price range</label>
+            <label>PRICE RANGE</label>
             <div class="price-row">
               <input type="number" name="minPrice" placeholder="Min" value="<%= (pagination && (typeof pagination.minPrice !== 'undefined')) ? pagination.minPrice : '' %>" />
               <input type="number" name="maxPrice" placeholder="Max" value="<%= (pagination && (typeof pagination.maxPrice !== 'undefined')) ? pagination.maxPrice : '' %>" />
@@ -827,7 +828,7 @@ q=<%= encodeURIComponent(pagination?.search || '') %>
   <%
     var pct = Math.round(((mrp - final) / mrp) * 100);
   %>
-  <span style="margin-left:10px;background:#f2f2f2;padding:4px 8px;border-radius:4px;font-size:12px;">
+  <span style="margin-left:10px;background:#3e3e3e;padding:4px 8px;border-radius:4px;font-size:12px;">
     -<%= pct %>%
   </span>
 <% } else { %>

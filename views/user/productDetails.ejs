@@ -13,44 +13,26 @@
       font-family: 'Arial', sans-serif;
     }
 
-    body {
-      color: #615A5A;
-      background: #fff;
-    }
+:root{
+  --bg: #0a0e11;
+  --text-main: #ffffff;
+  --muted: rgba(255,255,255,0.65);
+  --accent: rgb(220, 173, 102);
+  --card-bg: rgba(255,255,255,0.03);
+  --border: rgba(255,255,255,0.08);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-main);
+  font-family: 'Inter', sans-serif;
+}
 
     /* Navbar */
     .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 60px;
-      background: #fff;
+        background: #0a0e11!important;
     }
 
-    .navbar .logo {
-      font-size: 40px;
-      font-weight: 37;
-      color: #B2A9A1;
-    }
-
-    .navbar ul {
-      display: flex;
-      list-style: none;
-      gap: 25px;
-    }
-
-    .navbar a {
-      text-decoration: none;
-      color: #615A5A;
-      font-size: 15px;
-    }
-
-    .navbar .btn {
-      padding: 8px 15px;
-      border-radius: 5px;
-      background: #484848;
-      color: #fff;
-    }
 
     /* Hero */
     .hero {
@@ -145,62 +127,33 @@
       font-weight: bold;
     }
 
-    /* Footer */
-    footer {
-      margin-top: 40px;
-      background: #f6f6f6;
-      padding: 40px 60px;
-      color: #666;
-    }
-     .footer .logo {
-      font-size: 60px;
-      font-weight: 37;
-      color: #B2A9A1;
-    }
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
 
-    .footer-top h4 {
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    .footer-top input {
-      padding: 8px;
-      width: 200px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    .footer-bottom {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 12px;
-    }
 body {
     font-family: Arial, sans-serif;
     color: #222;
 }
 
 .container {
-    max-width: 1250px;
-    margin: 40px auto;
-    padding: 0 20px;
+  max-width: 1250px;
+  margin: 120px auto 40px;
+  padding: 20px;
+  background: transparent;
 }
 
 .breadcrumbs {
     font-size: 14px;
     margin-bottom: 20px;
-    color: #777;
+    color: var(--muted);
 }
 
 .breadcrumbs a {
-    color: #777;
+    color: var(--muted);
     text-decoration: none;
 }
+.breadcrumbs a:hover {
+  color: var(--accent);
+}
+
 
 .details-layout {
     display: flex;
@@ -215,7 +168,10 @@ body {
 .main-img-wrap {
     width: 100%;
     height: 600px;
-    overflow: hidden;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
     
 }
 
@@ -245,10 +201,15 @@ body {
     cursor: pointer;
     opacity: 0.8;
     transition: 0.2s;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.thumbnail-grid img:hover{
+   transform: scale(1.08);
 }
 
 .thumbnail-active {
-    outline: 2px solid black;
+    outline: 2px solid var(--accent);
     opacity: 1 !important;
 }
 
@@ -258,27 +219,33 @@ body {
 }
 
 .product-title {
-    font-size: 26px;
-    font-weight: bold;
+  font-size: 26px;
+  font-weight: 600;
+  color: white;
 }
 
 .product-price {
     font-size: 22px;
     font-weight: bold;
     margin-top: 10px;
+    color: white;
 }
 
 
 .mrp-text {
     font-size: 12px;
     margin-top: 5px;
-    color: gray;
+    color: var(--muted);
 }
 
 .color-text {
     margin-top: 15px;
     font-size: 13px;
     font-weight: bold;
+    color: var(--muted);
+}
+.subcat-text {
+  color: var(--muted);
 }
 
 .size-box-wrap {
@@ -296,34 +263,47 @@ body {
 }
 
 .size-option {
-    padding: 10px 18px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
+  padding: 10px 18px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  background: rgba(255,255,255,0.04);
+  transition: 0.2s;
 }
 
 .size-option.disabled {
     opacity: 0.3;
     cursor: not-allowed;
+    border-color: var(--accent);
 }
 
 .size-option.active {
-    background: #000;
-    color: #fff;
+  background: rgba(220, 173, 102, 0.2);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .add-btn {
     margin-top: 25px;
     width: 240px;
     padding: 15px;
-    background: black;
-    color: white;
-    border-radius: 30px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 15px;
+      background: #91857326;
+  color: white;
+  border: 0.1px solid grey;
+  border-radius: 30px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 15px;
+  backdrop-filter: blur(10px);
+  transition: 0.2s;
 }
+.add-btn:hover {
+  background: rgba(220, 173, 102, 0.3);
+  color: var(--accent);
+  border-color: var(--accent);
 
+}
 /* DESCRIPTION SECTION */
 .desc-section {
     margin-top: 40px;
@@ -332,6 +312,7 @@ body {
 .desc-title {
     font-weight: bold;
     font-size: 16px;
+    color: white;
 }
 
 .desc-text {
@@ -339,19 +320,23 @@ body {
     font-size: 14px;
     line-height: 1.6;
     white-space: pre-line;
+    color: var(--muted);
 }
 
 .recommend-title {
     margin-top: 60px;
     font-size: 20px;
     font-weight: bold;
+    color: #e4e4e4;
 }
 
 .recommend-grid {
     margin-top: 20px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-   margin-bottom: 80px;
+    margin-bottom: 80px;
+    border-radius: 14px;
+    
 }
 
 .recommend-grid img {
@@ -359,13 +344,15 @@ body {
     height: 400px;
     object-fit: cover;
 }
+
 .recommend-grid a {
     text-decoration: none;
     color: inherit;
     
 }
 .unavailable-box {
-  background:#f8f8f8;
+  border: 0.1px solid grey;
+ background: #91857326;
   padding:20px;
   border-radius:10px;
   margin-bottom:20px;
@@ -378,6 +365,13 @@ button[disabled] {
   opacity: 0.4;
   cursor: not-allowed;
   pointer-events: auto; /* allow click so message logic still works */
+}
+#wishlistIcon {
+  transition: 0.2s ease;
+}
+
+#wishlistIcon:hover {
+  transform: scale(1.12);
 }
 
 </style>
@@ -439,7 +433,7 @@ button[disabled] {
                  <span style="font-weight:700; font-size:20px;">Rs. <%= vDisc.toLocaleString('en-IN') %></span>
                  <span style="margin-left:10px; color:#777; text-decoration:line-through;">Rs. <%= vPrice.toLocaleString('en-IN') %></span>
                  <% var pcent = Math.round(((vPrice - vDisc) / vPrice) * 100); %>
-                 <span style="margin-left:12px; background:#f3f3f3; padding:4px 8px; border-radius:4px;">-<%= pcent %>%</span>
+                 <span style="margin-left:12px; background:#4d4c4c; padding:4px 8px; border-radius:4px;">-<%= pcent %>%</span>
                <% } else { %>
                  <span style="font-weight:700; font-size:20px;">Rs. <%= vPrice.toLocaleString('en-IN') %></span>
                <% } %>
@@ -453,7 +447,7 @@ button[disabled] {
   </div>
 <% } %>
 <% if (subcategory && subcategory.fitName) { %>
-  <div class="subcat-text" style="margin-top:6px;color:#666;font-size:14px;">
+  <div class="subcat-text" style="margin-top:6px;font-size:14px;">
     <%= subcategory.fitName %>
   </div>
 <% } %>
@@ -479,9 +473,9 @@ button[disabled] {
  <input type="hidden" id="selectedVariantId" value="">
 
 <% if (isUnavailable) { %>
-  <div class="unavailable-box" style="color:#c00">
+  <div class="unavailable-box" style="color:rgb(143, 53, 53)">
     <h2>This product is currently unavailable</h2>
-    <p style="color: #222;">
+    <p style="color: #797979;">
       It may have been removed or is out of stock.<br>
       Explore similar products you might like.
     </p>
@@ -511,7 +505,7 @@ button[disabled] {
     height="26"
     viewBox="0 0 24 24"
     fill="none"
-    stroke="#111"
+    stroke="#fff"
     stroke-width="1.5"
     stroke-linecap="round"
     stroke-linejoin="round"
@@ -540,7 +534,7 @@ button[disabled] {
 
   <button
     id="readMoreBtn"
-    style="margin-top:14px;background:none;border:none;color:#000; font-size: 12px ;font-weight: normal;cursor:pointer;display:none; text-decoration: underline;"
+    style="margin-top:14px;background:none;border:none;font-size: 12px ;color:white;font-weight: normal;cursor:pointer;display:none; text-decoration: underline;"
   >
     READ MORE
   </button>
@@ -548,16 +542,16 @@ button[disabled] {
 
 
     <!-- RECOMMENDATIONS -->
-    <div class="recommend-title">You May Also Like</div>
+    <div class="recommend-title" >You May Also Like</div>
 
 <div class="recommend-grid">
     <% recommendations.forEach(function(r) { %>
         <div onclick="window.location.href='/product/<%= r._id %>'" style="cursor:pointer;">
             <img src="<%= imageUrl(r.images[0]) %>">
-            <div style="color:#222; text-decoration:none; margin-top:6px;">
+            <div style="color: white; text-decoration:none; margin-top:6px;">
                 <%= r.productName %>
             </div>
-<strong>
+<strong style="color: #8b8b8b ">
   Rs. <%= (typeof r.finalPrice === 'number' ? r.finalPrice : 0).toLocaleString('en-IN') %>
 </strong>
 
@@ -620,7 +614,7 @@ function selectSize(el, size, stock, variantId) {
       var pct = Math.round(((vPrice - vDisc) / vPrice) * 100);
       priceEl.innerHTML = '<span style="font-weight:700; font-size:20px;">Rs. ' + vDisc.toLocaleString('en-IN') + '</span>' +
                           '<span style="margin-left:10px; color:#777; text-decoration:line-through;">Rs. ' + vPrice.toLocaleString('en-IN') + '</span>' +
-                          '<span style="margin-left:12px; background:#f3f3f3; padding:4px 8px; border-radius:4px;">-' + pct + '%</span>';
+                          '<span style="margin-left:12px; background:#4d4c4c; padding:4px 8px; border-radius:4px;">-' + pct + '%</span>';
     } else {
       priceEl.innerHTML = '<span style="font-weight:700; font-size:20px;">Rs. ' + vPrice.toLocaleString('en-IN') + '</span>';
     }
@@ -709,8 +703,16 @@ const productId = "<%= product._id %>";
 
 function updateHeart(active) {
   const icon = document.getElementById('wishlistIcon');
-  icon.setAttribute('fill', active ? '#111' : 'none');
-  icon.setAttribute('stroke', '#111');
+
+  if (active) {
+    icon.setAttribute('fill', '#d14b4b');
+    icon.setAttribute('stroke', '#d14b4b');
+    icon.setAttribute('stroke-width', active ? '2' : '1.5');
+  } else {
+    icon.setAttribute('fill', 'none');
+    icon.setAttribute('stroke', 'rgba(255,255,255,0.6)');
+  }
+
   isWishlisted = active;
 }
 

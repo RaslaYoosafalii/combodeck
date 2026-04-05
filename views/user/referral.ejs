@@ -3,93 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <title>My Referral Code</title>
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: "Arial", sans-serif;
+  }
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: "Arial", sans-serif;
-    }
+  body {
+    margin: 0;
+    background: #0a0e11;
+    color: white;
+  }
 
-    body {
-      margin: 0;
-      background-color: #ffffff;
-      color: #333;
-    }
+  .profile-wrapper {
+    display: flex;
+    padding: 40px 60px;
+    margin-top: 110px;
+    gap: 40px;
+    align-items: flex-start;
+  }
 
+  .referral-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ===== REFERRAL CARD ===== */
+  .referral-card {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 60px;
+    min-height: 480px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    backdrop-filter: blur(10px);
+    text-align: center;
+    position: relative;
+  }
+
+  .referral-title {
+    font-size: 28px;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    color: white;
+  }
+
+  .referral-description {
+    font-size: 14px;
+    color: rgba(255,255,255,0.72);
+    max-width: 680px;
+    margin: 0 auto 50px;
+    line-height: 1.8;
+  }
+
+  .code-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(10px);
+    padding: 25px 40px;
+    border-radius: 14px;
+    min-width: 420px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    transition: 0.3s ease;
+  }
+
+  .code-container:hover {
+    background: rgba(255,255,255,0.07);
+  }
+
+  .referral-code {
+    font-size: 22px;
+    letter-spacing: 4px;
+    color: white;
+    font-weight: bold;
+  }
+
+  .copy-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: white;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.25s ease;
+  }
+
+  .copy-btn:hover {
+    background: rgba(255,255,255,0.08);
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 900px) {
     .profile-wrapper {
-      display: flex;
-      padding: 40px 60px;
-      gap: 40px;
-      align-items: flex-start;
+      flex-direction: column;
+      padding: 20px;
     }
 
-    /* ===== MAIN CARD ===== */
     .referral-card {
-      flex: 1;
-      background: #fff;
-      border-radius: 12px;
-      padding: 60px;
-      min-height: 480px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-      text-align: center;
-    }
-
-    .referral-title {
-      font-size: 28px;
-      letter-spacing: 2px;
-      margin-bottom: 20px;
-    }
-
-    .referral-description {
-      font-size: 14px;
-      color: #666;
-      max-width: 680px;
-      margin: 0 auto 50px;
-      line-height: 1.6;
+      padding: 30px;
     }
 
     .code-container {
-      display: inline-flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      background: #777;
-      padding: 25px 40px;
-      border-radius: 12px;
-      min-width: 420px;
-      position: relative;
+      min-width: 100%;
+      width: 100%;
     }
-
-    .referral-code {
-      font-size: 22px;
-      letter-spacing: 4px;
-      color: #fff;
-      font-weight: bold;
-    }
-
-    .copy-btn {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: #fff;
-      font-size: 20px;
-    }
-
-    .copy-btn:hover {
-      opacity: 0.7;
-    }
-
-    @media (max-width: 900px) {
-      .profile-wrapper {
-        flex-direction: column;
-        padding: 20px;
-      }
-
-      .code-container {
-        min-width: 100%;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 
 <body>
@@ -100,6 +126,7 @@
 
   <%- include('../partials/user/profileSidebar') %>
 
+<div class="referral-main">
   <section class="referral-card">
     <h2 class="referral-title">MY REFERRAL CODE</h2>
 
@@ -117,7 +144,7 @@
       </button>
     </div>
   </section>
-
+</div>
 </div>
 
 <%- include('../partials/user/footer') %>

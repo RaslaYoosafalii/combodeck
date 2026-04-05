@@ -97,7 +97,7 @@ const sendVerificationEmail = async (email, otp) => {
     await transporter.sendMail({
       from: process.env.NODEMAILER_EMAIL,
       to: email,
-      subject: 'Admin Password Reset OTP',
+      subject: 'Admin Password Reset OTP - combodeck',
       html: `<b>Your admin OTP is ${otp}</b>`
     });
 

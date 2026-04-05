@@ -1041,7 +1041,7 @@ const downloadInvoice = async (req, res) => {
     doc
       .font('Helvetica')
       .fontSize(22)
-      .text('ELFE LOREINVEIL', { align: 'center' });
+      .text('COMBODECK', { align: 'center' });
 
     doc
       .font('Helvetica-Bold')
@@ -1263,7 +1263,7 @@ const downloadInvoice = async (req, res) => {
       .fontSize(9)
       .fillColor('#888')
       .text(
-        'www.elfein.com',
+        'www.combodeck.com',
         { align: 'center' }
       )
       .fillColor('#000'); // reset color
