@@ -259,7 +259,7 @@ const downloadSalesReport = async (req, res) => {
       /* ================= HEADER ================= */
 
       sheet.mergeCells('A1:I1');
-      sheet.getCell('A1').value = 'www.elfein.in';
+      sheet.getCell('A1').value = 'www.combodeck.in';
       sheet.getCell('A1').alignment = { horizontal: 'center' };
       sheet.getCell('A1').font = { size: 12 };
 
@@ -468,7 +468,7 @@ const downloadSalesReport = async (req, res) => {
       doc
         .fontSize(10)
         .fillColor('#555')
-        .text('www.elfein.in', margin, 50, { align: 'center' });
+        .text('www.combodeck.in', margin, 50, { align: 'center' });
 
       doc
         .fontSize(28)

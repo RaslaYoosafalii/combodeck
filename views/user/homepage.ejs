@@ -26,16 +26,15 @@ color:white;
 /* MAIN UI CONTAINER */
 
 .wrapper{
-margin:0 auto;
-width:1500px;
-height:800px;
-  margin-bottom: 60px;
-  margin-top: 30px;
+margin:30px auto 60px;
+width:min(1500px, calc(100% - 20px));
+min-height:800px;
+height:auto;
 border-radius:28px;
 position:relative;
 overflow:hidden;
-background-image: url("/images/finalHome.png");
-background-size:cover;
+background-image:url("/images/finalHome.png");
+background-size:contain;
 background-position:center;
 background-repeat:no-repeat;
 box-shadow:0 40px 100px rgba(0,0,0,0.7);
@@ -159,7 +158,105 @@ transition:.3s;
 opacity:1;
 color: rgb(220, 173, 102);
 } */
+@media(max-width:1024px){
+  .wrapper{
+    min-height:700px;
+    padding:24px;
+    padding-top:0px;
+  }
 
+  .info-cards{
+    right:30px;
+    top:auto;
+    bottom:30px;
+    gap:18px;
+  }
+
+  .card{
+    width:220px;
+    padding:18px;
+  }
+
+  .left-info{
+    left:30px;
+    bottom:30px;
+  }
+
+  .left-info h2{
+    font-size:18px;
+  }
+}
+
+@media(max-width:768px){
+  .wrapper{
+    min-height:650px;
+    background-size:contain;
+    background-position:center top;
+    padding:20px;
+    padding-top:0px;
+  }
+
+  .info-cards{
+    position:static;
+    margin-top:280px;
+    display:flex;
+    gap:16px;
+    width:100%;
+  }
+
+  .card{
+    width:100%;
+  }
+
+  /* .left-info{
+    position:static;
+    margin-top:20px;
+  } */
+
+  .left-info h2{
+   display: none;
+  }
+}
+
+@media(max-width:480px){
+  .wrapper{
+    width:calc(100% - 12px);
+    min-height:auto;
+    padding:16px;
+    padding-top:0px;
+    border-radius:18px;
+    background-size:contain;
+    background-position:center top;
+  }
+
+  .info-cards{
+    margin-top:180px;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  .card{
+    width:100%;
+    padding:16px;
+  }
+
+  .card h4{
+    font-size:11px;
+  }
+
+  .card p{
+    font-size:11px;
+    line-height:1.5;
+  }
+
+  /* .left-info{
+    margin-top:18px;
+  } */
+
+  .left-info h2{
+   display: none;
+  }
+}
 </style>
 </head>
 

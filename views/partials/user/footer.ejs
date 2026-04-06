@@ -9,6 +9,9 @@ footer {
   backdrop-filter: blur(10px);
   padding: 50px 60px;
   color: rgba(255,255,255,0.7);
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .footer {
@@ -66,6 +69,48 @@ footer {
   border-top: 1px solid rgba(255,255,255,0.08);
   font-size: 13px;
   color: rgba(255,255,255,0.55);
+}
+.footer-top > div{
+  min-width: 0;
+}
+
+.newsletter input{
+  max-width: 100%;
+  width: 220px;
+  box-sizing: border-box;
+}
+
+@media(max-width:768px){
+  footer{
+    padding: 40px 20px;
+  }
+
+  .footer-top{
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .footer .logo{
+    font-size: 40px;
+  }
+
+  .newsletter input{
+    width: 100%;
+  }
+}
+
+@media(max-width:480px){
+  .footer .logo{
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+
+  .footer-top h4,
+  .footer-top p,
+  .footer-top a,
+  .footer-bottom{
+    font-size: 13px;
+  }
 }
   </style>
 

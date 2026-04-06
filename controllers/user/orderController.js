@@ -1263,7 +1263,7 @@ const downloadInvoice = async (req, res) => {
       .fontSize(9)
       .fillColor('#888')
       .text(
-        'www.combodeck.com',
+        'www.combodeck.in',
         { align: 'center' }
       )
       .fillColor('#000'); // reset color

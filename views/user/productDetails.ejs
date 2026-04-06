@@ -34,99 +34,6 @@ body {
     }
 
 
-    /* Hero */
-    .hero {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      padding: 40px 60px;
-    }
-
-    .hero img {
-      width: 100%;
-      border-radius: 8px;
-    }
-
-    .hero .center {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-
-    .hero h2 {
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .hero h2 span {
-      font-size: 40px;
-    }
-
-    .hero .btn {
-      margin-top: 15px;
-    }
-
-    /* Categories */
-    .categories {
-      text-align: center;
-      padding: 50px 60px;
-    }
-
-    .categories .btn {
-      margin: 15px 0;
-    }
-
-    .category-list {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 20px;
-    }
-
-    .category img {
-      width: 200px;
-      border-radius: 8px;
-    }
-
-    .category p {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    /* New Arrivals */
-    .new-arrivals {
-      text-align: center;
-      padding: 50px 60px;
-    }
-
-    .products {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-top: 20px;
-    }
-
-    .product img {
-      width: 220px;
-      border-radius: 8px;
-    }
-
-    .product h3 {
-      font-size: 15px;
-      margin: 10px 0 5px;
-    }
-
-    .product p {
-      font-size: 13px;
-      color: #555;
-    }
-
-    .product span {
-      font-weight: bold;
-    }
-
 
 body {
     font-family: Arial, sans-serif;
@@ -373,7 +280,240 @@ button[disabled] {
 #wishlistIcon:hover {
   transform: scale(1.12);
 }
+/* ================= PRODUCT DETAILS RESPONSIVE FIX ================= */
 
+/* Prevent any accidental horizontal overflow */
+html, body {
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+}
+/* ADD TO BAG + WISHLIST */
+.action-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin-top: 25px;
+}
+
+.add-btn {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  margin-top: 0;
+}
+
+.wishlist-btn {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+#wishlistIcon {
+  width: 24px;
+  height: 24px;
+}
+/* Laptop / smaller desktop */
+@media (max-width: 1200px) {
+  .container {
+    max-width: 100%;
+    padding: 18px;
+  }
+
+  .details-layout {
+    gap: 28px;
+  }
+
+  .main-img-wrap {
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+
+  .thumbnail-grid img {
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+
+  .recommend-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .recommend-grid img {
+    height: auto;
+    aspect-ratio: 3 / 4;
+  }
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+  .container {
+    margin: 100px auto 30px;
+    padding: 16px;
+  }
+
+  .details-layout {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .left-images,
+  .right-info {
+    width: 100%;
+  }
+
+  .main-img-wrap {
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+
+  .thumbnail-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  .thumbnail-grid img {
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  .product-title {
+    font-size: 22px;
+  }
+
+  .product-price {
+    font-size: 20px;
+  }
+
+  .size-btns {
+    flex-wrap: wrap;
+  }
+
+  .recommend-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .container {
+    margin: 90px auto 20px;
+    padding: 12px;
+  }
+
+  .breadcrumbs {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .product-title {
+    font-size: 18px;
+    line-height: 1.4;
+  }
+
+  .product-price {
+    font-size: 18px;
+  }
+
+  .mrp-text,
+  .color-text,
+  .subcat-text,
+  .desc-text {
+    font-size: 13px;
+  }
+
+  .main-img-wrap {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+
+  .main-img-wrap img {
+    object-fit: cover;
+  }
+
+  .thumbnail-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .thumbnail-grid img {
+    height: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  .size-btns {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .size-option {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .add-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .desc-section {
+    margin-top: 28px;
+  }
+
+  .recommend-title {
+    margin-top: 40px;
+    font-size: 18px;
+  }
+
+  .recommend-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .recommend-grid img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
+  }
+
+
+/* add to bag + wishlist must always stay in one row */
+.right-info > div[style*="display:flex"] {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.add-btn {
+  flex: 1;
+  width: auto;
+  min-width: 0;
+  padding: 14px 18px;
+  font-size: 14px;
+}
+
+.right-info > div[style*="display:flex"] > div:last-child {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 42px;
+}
+}
 </style>
 
 </head>
@@ -454,7 +594,7 @@ button[disabled] {
 
             <!-- SIZE SELECTOR -->
             <div class="size-box-wrap">
-                <h4>SELECT A SIZE</h4>
+                <h4 style="color: #dfdfdf;">SELECT A SIZE</h4>
 
                 <div class="size-btns">
                     <% sizeVariants.forEach(function(s) { %>
@@ -482,7 +622,7 @@ button[disabled] {
   </div>
 <% } %>
             <!-- ADD TO BAG -->
-<div style="display:flex; align-items:center; gap:14px; margin-top:25px;">
+<div class="action-row" style="margin-top:25px;">
  <div
   class="add-btn <%= isUnavailable ? 'disabled-action' : '' %>"
   onclick="addToCart()"
@@ -492,9 +632,8 @@ button[disabled] {
 
 
 <div
+  class="wishlist-btn <%= isUnavailable ? 'disabled-action' : '' %>"
   onclick="toggleWishlist()"
-  class="<%= isUnavailable ? 'disabled-action' : '' %>"
-  style="cursor:pointer;display:flex;align-items:center;margin-top:21px;"
   title="Wishlist"
 >
 
@@ -524,7 +663,7 @@ button[disabled] {
 
     <!-- DESCRIPTION -->
   <div class="desc-section">
-  <div class="desc-title">DESCRIPTION & FIT</div>
+  <div class="desc-title">DESCRIPTION & PRODUCT SPECIFICATIONS</div>
 
   <div
     class="desc-text"
