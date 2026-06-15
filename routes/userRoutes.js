@@ -14,7 +14,6 @@ import { upload } from '../config/upload.js';
 router.get('/pageNotFound', userController.pageNotFound);
 
 router.get('/', noCache, userController.loadHome);
-
 router.get('/signup',userController.loadSignupPage);
 router.post('/signup', (req, res, next) => { console.log('POST /signup', req.body?.email); next(); }, userController.signup);
 
@@ -121,8 +120,11 @@ router.post('/coupon/apply', userAuth, orderController.applyCoupon);
 router.delete('/coupon/remove', userAuth, orderController.removeCoupon);
 
 
+//dmf
+router.get('/dmf',noCache, userController.loadDmf); 
 
-
-
+//contant/about
+router.get('/about',noCache, userController.loadAbout);
+router.post('/contact/send', userController.sendContactMail);
 
 export default router;

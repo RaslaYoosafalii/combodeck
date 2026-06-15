@@ -42,7 +42,29 @@ const pageNotFound = async (req, res) => {
     res.redirect('/pageNotFound');
   }
 };
+const loadDmf = async (req, res) => {
+  try {
+    return res.render('dmf');
+  } catch (error) {
+    console.log(error);
+    logger.error(`load pageNoteFound error: ${error.message}`);
+    res.redirect('/pageNotFound');
+  }
+};
 
+const loadAbout = async (req,res)=>{
+  try{
+
+    return res.render('about',{
+      mail:req.query.mail || ''
+    });
+
+  }catch(error){
+
+    console.log(error);
+    res.redirect('/pageNotFound');
+  }
+};
 
 
 const loadHome = async (req, res) => {
@@ -1831,6 +1853,86 @@ const loadReferralPage = async (req, res) => {
   }
 };
 
+const sendContactMail = async(req,res)=>{
+
+  try{
+
+    let { name, email, subject, message } = req.body;
+
+    name = name?.trim();
+    email = email?.trim().toLowerCase();
+    subject = subject?.trim();
+    message = message?.trim();
+
+    // Required fields
+    if(!name || !email || !subject || !message){
+      return res.redirect('/about?mail=missing');
+    }
+
+    // Name validation
+    if(name.length < 2){
+      return res.redirect('/about?mail=invalid-name');
+    }
+
+    // Email validation
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if(!emailRegex.test(email)){
+      return res.redirect('/about?mail=invalid-email');
+    }
+
+    // Subject validation
+    if(subject.length < 3){
+      return res.redirect('/about?mail=invalid-subject');
+    }
+
+    // Message validation
+    if(message.length < 10){
+      return res.redirect('/about?mail=short-message');
+    }
+
+    const transporter = nodemailer.createTransport({
+      service:'gmail',
+      auth:{
+        user:process.env.NODEMAILER_EMAIL,
+        pass:process.env.NODEMAILER_PASSWORD
+      }
+    });
+
+    await transporter.sendMail({
+
+      from: process.env.NODEMAILER_EMAIL,
+
+      replyTo: email,
+
+      to: process.env.NODEMAILER_EMAIL,
+
+      subject: `Website Enquiry - ${subject}`,
+
+      html: `
+        <h2>New Enquiry</h2>
+
+        <p><b>Name:</b> ${name}</p>
+        <p><b>Email:</b> ${email}</p>
+        <p><b>Subject:</b> ${subject}</p>
+
+        <p><b>Message:</b></p>
+
+        <p>${message}</p>
+      `
+    });
+
+    res.redirect('/about?mail=success');
+
+  }catch(error){
+
+    console.log(error);
+
+    res.redirect('/about?mail=failed');
+  }
+};
+
 
 const logout = async (req, res) => {
   try {
@@ -1855,6 +1957,8 @@ const logout = async (req, res) => {
 
 export {
   loadHome,
+  loadDmf,
+  loadAbout,
   pageNotFound,
   loadSignupPage,
   forgotPasswordRequest,
@@ -1886,6 +1990,7 @@ export {
   loadEditAddress,
   editAddress,
   deleteAddress,
+  sendContactMail,
   logout,
   loadReferralPage
 };
@@ -1893,6 +1998,8 @@ export {
 export default{
   pageNotFound,
   loadHome,
+  loadDmf,
+  loadAbout,
   loadSignupPage,
   forgotPasswordRequest,
   forgotVerifyOtp,
@@ -1923,6 +2030,7 @@ export default{
   loadEditAddress,
   editAddress,
   deleteAddress,
+  sendContactMail,
   logout,
   loadReferralPage
 };

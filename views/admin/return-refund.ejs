@@ -163,7 +163,9 @@
               <td>
                 <div class="product">
                   <% if (item.productImages?.length) { %>
-                    <img src="/uploads/products/<%= item.productImages[0] %>">
+                    <!-- <img src="/uploads/products/<%= item.productImages[0] %>"> -->
+                     <img src="<%= imageUrl(product.images[0]) %>">
+                     
                   <% } %>
                   <div>
                     <strong><%= item.productName %></strong><br>

@@ -27,7 +27,11 @@ text-decoration: none;
 margin-left:auto;
 margin-right:20px;
 }
-
+.nav-right-group{
+display:flex;
+align-items:center;
+gap:10px;
+}
 .bottom-nav ul{
 display:flex;
 gap:60px;
@@ -66,11 +70,11 @@ color:white;
 
 .menu-toggle{
 display:none;
-font-size:28px;
+font-size:26px;
 color:white;
 cursor:pointer;
-margin-left:20px;
 z-index:1200;
+flex-shrink:0;
 }
 
 .mobile-menu{
@@ -114,8 +118,53 @@ transition:.3s;
 .mobile-menu a:hover{
 color:rgb(220, 173, 102);
 }
+.profile-toggle{
+display:none;
+width:22px;
+height:20px;
 
-@media(max-width:992px){
+align-items:center;
+justify-content:center;
+padding-top: 5px;
+cursor:pointer;
+margin-left:10px; /* fixed consistent gap */
+z-index:1200;
+flex-shrink:0;
+}
+.profile-toggle:hover{
+border-radius: 5px;
+border:1px solid rgba(255,255,255,0.05);
+color:rgb(220, 173, 102);
+}
+.profile-mobile-panel{
+position:fixed;
+top:0;
+right:-320px;
+width:280px;
+height:100vh;
+background:rgba(15,15,15,0.75);
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+border-left:1px solid rgba(255,255,255,0.08);
+padding:100px 20px 20px;
+transition:right 0.35s ease;
+z-index:1150;
+overflow-y:auto;
+}
+
+.profile-mobile-panel.active{
+right:0;
+}
+@media(min-width:1300px){
+  .profile-mobile-panel{
+    display:none !important;
+  }
+
+  .profile-toggle{
+    display:none !important;
+  }
+}
+@media(max-width:1300px){
 .navbar{
 padding:18px 20px;
 }
@@ -135,7 +184,9 @@ font-size:11px;
 letter-spacing:1px;
 margin-left:auto;
 }
-
+.profile-toggle{
+display:flex;
+}
 .menu-toggle{
 display:block;
 }
@@ -143,7 +194,7 @@ display:block;
 
 @media(max-width:480px){
 .logo a{
-font-size:20px;
+font-size:22px;
 }
 
 .tech-pill{
@@ -165,7 +216,7 @@ margin-bottom:35px;
 width:fit-content;
 }
 
-@media(max-width:400px){
+@media(max-width:600px){
 .tech-pill{
 display:none;
 }
@@ -178,10 +229,30 @@ display:block;
 padding:16px 14px;
 }
 
-.logo a{
-font-size:18px;
-letter-spacing:1px;
+
 }
+.tech-pill{
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.mobile-tech-pill a{
+    text-decoration:none;
+    color:white;
+}
+
+.mobile-tech-pill a:hover{
+    color:rgb(220,173,102);
+}
+.tech-pill{
+    transition:.3s ease;
+}
+
+.tech-pill:hover{
+    color:rgb(220,173,102);
+    border-color:rgba(220,173,102,.3);
+    background:rgba(220,173,102,.08);
 }
 </style>
 
@@ -194,7 +265,7 @@ letter-spacing:1px;
 <nav class="bottom-nav">
 <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="#">About</a></li>
+        <li><a href="/about">About</a></li>
         <li><a href="/products">Shop</a></li>
         <li><a href="/wishlist">Wishlist</a></li>
         <li><a href="/cart">Your Cart</a></li>
@@ -203,23 +274,39 @@ letter-spacing:1px;
 </ul>
 </nav>
 
-<div class="tech-pill">
-DMF TECHNOLOGY
-</div>
-<div class="menu-toggle">
-☰
+<div class="nav-right-group">
+<a href="/dmf" class="tech-pill">
+  DMF TECHNOLOGY
+</a>
+
+
+  <div class="profile-toggle" id="profileToggle">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
+      <circle cx="12" cy="8" r="4"></circle>
+      <path d="M4 20c1.8-3.5 5-5 8-5s6.2 1.5 8 5"></path>
+    </svg>
+  </div>
+
+  <div class="menu-toggle">
+    ☰
+  </div>
 </div>
 
 <div class="mobile-menu" id="mobileMenu">
-  <div class="mobile-tech-pill">DMF TECHNOLOGY</div>
+  <div class="mobile-tech-pill">
+  <a href="/dmf">DMF TECHNOLOGY</a>
+</div>
+
   <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="#">About</a></li>
+        <li><a href="/about">About</a></li>
         <li><a href="/products">Shop</a></li>
         <li><a href="/wishlist">Wishlist</a></li>
         <li><a href="/cart">Your Cart</a></li>
-        <li><a href="/profile">Profile</a></li>
   </ul>
+</div>
+<div class="profile-mobile-panel" id="profileMobilePanel">
+  <%- include('../partials/user/profileSidebar') %>
 </div>
 </header>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -270,17 +357,38 @@ document.addEventListener("DOMContentLoaded", function() {
   const toggle = document.querySelector(".menu-toggle");
   const menu = document.getElementById("mobileMenu");
 
-  if (toggle && menu) {
-    toggle.addEventListener("click", function() {
-      menu.classList.toggle("active");
-    });
+  const profileToggle = document.getElementById("profileToggle");
+  const profilePanel = document.getElementById("profileMobilePanel");
 
-    document.addEventListener("click", function(e) {
-      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
-        menu.classList.remove("active");
-      }
+  if (toggle && menu) {
+    toggle.addEventListener("click", function(e) {
+      e.stopPropagation();
+      menu.classList.toggle("active");
+      profilePanel?.classList.remove("active");
     });
   }
+
+  if (profileToggle && profilePanel) {
+    profileToggle.addEventListener("click", function(e) {
+      e.stopPropagation();
+      profilePanel.classList.toggle("active");
+      menu?.classList.remove("active");
+    });
+  }
+
+  document.addEventListener("click", function(e) {
+    if (menu && !menu.contains(e.target) && !toggle.contains(e.target)) {
+      menu.classList.remove("active");
+    }
+
+    if (
+      profilePanel &&
+      !profilePanel.contains(e.target) &&
+      !profileToggle.contains(e.target)
+    ) {
+      profilePanel.classList.remove("active");
+    }
+  });
 });
 </script>
 <script>

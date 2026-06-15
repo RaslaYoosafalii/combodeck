@@ -72,23 +72,31 @@
     color: #ff7b7b !important;
     background: rgba(255, 107, 107, 0.08) !important;
   }
+  @media(max-width:992px){
+  .profile-mobile-panel .sidebar{
+    width:100%;
+    margin:0;
+  }
+}
 </style>
-</style>
-    </style>
-    <aside class="sidebar">
-      <div class="sidebar-header">
-         <% if (user?.profileImage) { %>
-    <img
-      src="<%= user.profileImage %>"
-      alt="Profile Image"
-      class="avatar-small"
-      style="object-fit: cover;"
-    />
-  <% } else { %>
-    <div class="avatar-small"></div>
-  <% } %>
-        <strong><%= user?.name || 'User' %></strong>
-      </div>
+
+<% const sidebarUser = typeof user !== 'undefined' ? user : null; %>
+
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <% if (sidebarUser && sidebarUser.profileImage) { %>
+      <img
+        src="<%= sidebarUser.profileImage %>"
+        alt="Profile Image"
+        class="avatar-small"
+        style="object-fit: cover;"
+      />
+    <% } else { %>
+      <div class="avatar-small"></div>
+    <% } %>
+
+    <strong><%= sidebarUser?.name || 'User' %></strong>
+  </div>
 
       <ul class="sidebar-menu">
         <li><a href="/profile">Profile</a></li>

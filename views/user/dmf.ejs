@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DMF Technology</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#050505;
+  --panel:rgba(20,20,20,.55);
+  --yellow:rgb(208, 162, 93);;
+  --white:#F5F5F5;
+  --muted:#B8B8B8;
+  --border:rgba(255,212,0,.15);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--white);
+  overflow-x:hidden;
+
+background:
+radial-gradient(
+circle at top right,
+rgba(220,173,102,.04),
+transparent 40%
+),
+#0a0e11;
+}
+
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+  radial-gradient(circle at 20% 20%, rgba(63, 62, 58, 0.08), transparent 35%),
+  radial-gradient(circle at 80% 40%, rgba(18, 18, 17, 0.05), transparent 30%);
+  pointer-events:none;
+}
+
+.container{
+  width:min(1400px,92%);
+  margin:auto;
+}
+
+.glass{
+  background:var(--panel);
+  backdrop-filter:blur(24px);
+  border:1px solid var(--border);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:24px;
+  box-shadow:
+  inset 0 1px 0 rgba(255,255,255,.05),
+  0 0 40px rgba(255,212,0,.05);
+
+background:rgba(0, 0, 0, 0.05);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:16px;
+backdrop-filter:blur(10px);
+transition:.3s ease;
+}
+
+.glass:hover{
+  opacity:1;
+  color: rgb(220, 173, 102);
+
+}
+
+
+
+
+.btn{
+  padding:14px 24px;
+  border-radius:999px;
+  border:1px solid var(--yellow);
+  color:var(--white);
+  text-decoration:none;
+  transition:.3s;
+}
+
+.btn.primary{
+  background:var(--yellow);
+  color:#000;
+  font-weight:700;
+}
+
+.hero{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px;
+  align-items:center;
+  padding-top:120px;
+}
+
+.eyebrow{
+  color:var(--yellow);
+  letter-spacing:2px;
+  margin-bottom:16px;
+}
+
+.hero h1{
+  font-size:clamp(3rem,5vw,5.5rem);
+  line-height:1.05;
+}
+
+.hero p{
+  color:var(--muted);
+  margin:28px 0;
+  line-height:1.8;
+}
+
+.actions{
+  display:flex;
+  gap:16px;
+}
+
+.hero-visual{
+  position:relative;
+}
+
+.hero-visual img{
+  width:100%;
+  filter:drop-shadow(0 0 50px rgba(124, 120, 99, 0.2));
+}
+
+.callout{
+  position:absolute;
+  width:220px;
+  padding:18px;
+}
+
+
+.c1{top:10%;right:-30px;}
+.c2{top:45%;right:-50px;}
+.c3{bottom:10%;left:-40px;}
+
+
+section{
+  padding:120px 0;
+}
+
+.section-title{
+  text-align:center;
+  margin-bottom:50px;
+}
+
+.section-title h2{
+  font-size:3rem;
+}
+
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+}
+
+.compare-card{
+  padding:40px;
+}
+
+.compare-card ul{
+  margin-top:20px;
+  line-height:2;
+  color:var(--muted);
+}
+.compare-card ul:hover{
+  opacity:1;
+color: rgb(220, 173, 102);
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:24px;
+}
+
+.card{
+  padding:32px;
+  text-align:center;
+}
+
+.card h3{
+  color:var(--yellow);
+  margin:18px 0;
+}
+
+.visualization{
+  padding:50px;
+}
+
+.visual-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+  margin-top:40px;
+}
+
+.visual-box{
+  min-height:320px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+
+@media(max-width:992px){
+.hero,
+.compare,
+.cards,
+.visual-grid{
+grid-template-columns:1fr;
+}
+.callout{position:relative;inset:auto;margin-top:20px;width:100%;}
+}
+            .dmf-page{
+  background:#0a0e11;
+  color:white;
+}
+
+.container{
+  max-width:1400px;
+  margin:auto;
+  padding:0 20px;
+}
+
+.glass{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  backdrop-filter:blur(10px);
+}
+
+.hero-section{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  padding:140px 0 80px;
+}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px;
+  align-items:center;
+}
+
+.eyebrow{
+  display:inline-block;
+  color:rgb(220,173,102);
+  letter-spacing:2px;
+  font-size:.85rem;
+  margin-bottom:18px;
+}
+
+.hero-content h1{
+  font-size:clamp(3rem,6vw,5.5rem);
+  line-height:1.05;
+  margin-bottom:24px;
+}
+
+.hero-description{
+  color:rgba(255,255,255,.65);
+  line-height:1.9;
+  max-width:650px;
+}
+
+.hero-actions{
+  display:flex;
+  gap:15px;
+  margin-top:35px;
+}
+
+.btn-primary,
+.btn-secondary{
+  text-decoration:none;
+  padding:14px 24px;
+  border-radius:999px;
+  transition:.3s;
+}
+
+.btn-primary{
+  background:rgba(220,173,102,.18);
+  color:rgb(220,173,102);
+  border:1px solid rgba(220,173,102,.25);
+}
+
+.btn-secondary{
+  color:white;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.hero-stats{
+  display:flex;
+  gap:15px;
+  margin-top:40px;
+}
+
+.stat-card{
+  padding:20px;
+  min-width:140px;
+}
+
+.stat-number{
+  display:block;
+  color:rgb(220,173,102);
+  font-size:1.5rem;
+  font-weight:700;
+}
+
+.stat-label{
+  color:rgba(255,255,255,.65);
+  font-size:.85rem;
+}
+
+.hero-image{
+  height:100%;
+  overflow:hidden;
+  
+}
+
+.hero-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius: 10px;
+}
+
+.floating-tags{
+  display:flex;
+  gap:15px;
+  margin-top:20px;
+}
+
+.tag{
+  padding:14px 18px;
+  color:rgb(220,173,102);
+}
+
+.section-header{
+  text-align:center;
+  margin-bottom:60px;
+}
+
+.section-header span{
+  color:rgb(220,173,102);
+  font-size:.85rem;
+  letter-spacing:2px;
+}
+
+.section-header h2{
+  font-size:3rem;
+  margin:15px 0;
+}
+
+.section-header p{
+  color:rgba(255,255,255,.65);
+}
+
+.technology-section{
+  padding:120px 0;
+}
+
+.technology-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:40px;
+}
+
+.technology-media{
+  min-height:650px;
+}
+
+.placeholder{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:rgba(255,255,255,.45);
+}
+
+.content-card{
+  padding:35px;
+  margin-bottom:20px;
+}
+
+.content-card h3{
+  margin-bottom:20px;
+  color:rgb(220,173,102);
+}
+
+.content-card p{
+  line-height:1.9;
+  color:rgba(255,255,255,.65);
+  margin-bottom:15px;
+}
+
+@media(max-width:992px){
+
+.hero-grid,
+.technology-grid{
+  grid-template-columns:1fr;
+}
+
+.hero-stats{
+  flex-direction:column;
+}
+
+.floating-tags{
+  flex-direction:column;
+}
+
+}
+.breakdown-section{
+  padding:120px 0;
+}
+
+.breakdown-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+}
+
+.breakdown-card{
+  padding:35px;
+  transition:.3s;
+  cursor:pointer;
+}
+
+.breakdown-card:hover{
+  transform:translateY(-8px);
+  border-color:rgba(220,173,102,.35);
+}
+
+.step{
+  display:block;
+  font-size:2rem;
+  font-weight:700;
+  color:rgb(220,173,102);
+  margin-bottom:15px;
+}
+
+.breakdown-card h3{
+  margin-bottom:15px;
+}
+
+.breakdown-card p{
+  color:rgba(255,255,255,.65);
+  line-height:1.8;
+}
+
+.comparison-section{
+  padding:120px 0;
+}
+
+.comparison-showcase{
+  display:grid;
+  grid-template-columns:1fr 90px 1fr;
+  gap:20px;
+  align-items:center;
+}
+
+.compare-card{
+  padding:30px;
+}
+
+.compare-card h3{
+  margin-bottom:25px;
+  font-size:1.9rem;
+}
+
+.compare-card.dmf h3{
+  color:rgb(220,173,102);
+}
+
+.compare-content{
+  display:grid;
+  grid-template-columns:240px 1fr;
+  gap:20px;
+  align-items:center;
+}
+
+.compare-image{
+  height:220px;
+}
+
+.compare-image img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  
+}
+
+.compare-points{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.point{
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  font-size:1rem;
+  color:rgba(255,255,255,.78);
+
+  white-space:nowrap;
+}
+
+.icon{
+  width:28px;
+  height:28px;
+
+  flex-shrink:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+  font-size:.9rem;
+  font-weight:700;
+}
+
+.icon.negative{
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.04);
+  color:white;
+}
+
+.icon.positive{
+  border:1px solid rgba(220,173,102,.3);
+  background:rgba(220,173,102,.08);
+  color:rgb(220,173,102);
+}
+
+.vs-circle{
+  width:90px;
+  height:90px;
+
+
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:2rem;
+  font-weight:700;
+
+  color:rgb(220,173,102);
+
+
+}
+
+@media(max-width:1200px){
+
+  .comparison-showcase{
+    grid-template-columns:1fr;
+  }
+
+  .compare-content{
+    grid-template-columns:1fr;
+  }
+
+  .compare-image{
+    height:200px;
+  }
+
+  .point{
+    white-space:normal;
+  }
+}
+
+.visualization-section{
+  padding:120px 0;
+}
+
+.visual-layout{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:25px;
+}
+
+.visual-image{
+  min-height:700px;
+}
+
+.visual-stats{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:20px;
+}
+
+.visual-stat{
+  padding:35px;
+}
+
+.visual-stat h3{
+  color:rgb(220,173,102);
+  font-size:2rem;
+  margin-bottom:10px;
+}
+
+.visual-stat p{
+  color:rgba(255,255,255,.65);
+}
+
+@media(max-width:992px){
+
+.breakdown-grid{
+  grid-template-columns:1fr;
+}
+
+.visual-layout{
+  grid-template-columns:1fr;
+}
+
+.comparison-row{
+  grid-template-columns:1fr;
+}
+
+}
+.advantages-section{
+  padding:120px 0;
+}
+
+.advantages-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+}
+
+.advantage-card{
+  padding:35px;
+  transition:.3s;
+}
+
+.advantage-card:hover{
+  transform:translateY(-8px);
+  border-color:rgba(220,173,102,.3);
+}
+
+.advantage-icon{
+  width:55px;
+  height:55px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(220,173,102,.12);
+  color:rgb(220,173,102);
+  margin-bottom:20px;
+  font-weight:700;
+}
+
+.advantage-card h3{
+  margin-bottom:15px;
+}
+
+.advantage-card p{
+  color:rgba(255,255,255,.65);
+  line-height:1.8;
+}
+
+.benefits-section{
+  padding:120px 0;
+}
+
+.benefits-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:20px;
+}
+
+.benefit-card{
+  padding:35px;
+  min-height:220px;
+  transition:.3s;
+}
+
+.benefit-card:hover{
+  transform:translateY(-8px);
+  border-color:rgba(220,173,102,.3);
+}
+
+.benefit-card h3{
+  color:rgb(220,173,102);
+  margin-bottom:15px;
+}
+
+.benefit-card p{
+  color:rgba(255,255,255,.65);
+  line-height:1.8;
+}
+
+.cta-section{
+  padding:120px 0;
+}
+
+.cta-wrapper{
+  padding:60px;
+  display:grid;
+  grid-template-columns:1fr 500px;
+  gap:50px;
+  overflow:hidden;
+}
+
+.cta-content span{
+  color:rgb(220,173,102);
+  letter-spacing:2px;
+  font-size:.85rem;
+}
+
+.cta-content h2{
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  line-height:1.1;
+  margin:20px 0;
+}
+
+.cta-content p{
+  color:rgba(255,255,255,.65);
+  line-height:1.9;
+  max-width:700px;
+}
+
+.cta-actions{
+  display:flex;
+  gap:15px;
+  margin-top:35px;
+}
+
+.cta-image{
+  min-height:420px;
+}
+
+@media(max-width:992px){
+
+.advantages-grid{
+  grid-template-columns:1fr;
+}
+
+.benefits-grid{
+  grid-template-columns:1fr;
+}
+
+.cta-wrapper{
+  grid-template-columns:1fr;
+  padding:35px;
+}
+
+}
+.visual-image{
+  padding:30px;
+}
+
+.dmf-video{
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+  display:block;
+  border-radius:18px;
+}
+.hero-section{
+  padding:180px 0 10px;
+}
+
+.hero-center{
+  max-width:900px;
+  margin:auto;
+  text-align:center;
+}
+
+.eyebrow{
+  display:inline-block;
+  color:rgb(220,173,102);
+  font-size:13px;
+  font-weight:600;
+  letter-spacing:3px;
+  margin-bottom:24px;
+}
+
+.hero-title{
+  font-size:clamp(3rem,6vw,5rem);
+  line-height:1.08;
+  font-weight:700;
+  color:#fff;
+  margin-bottom:28px;
+}
+
+.hero-description{
+  max-width:750px;
+  margin:0 auto 40px;
+  color:rgba(255,255,255,0.65);
+  font-size:18px;
+  line-height:1.9;
+}
+
+.hero-actions{
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  margin-bottom:60px;
+  flex-wrap:wrap;
+}
+
+.btn-primary{
+  padding:14px 26px;
+  border-radius:12px;
+  background:rgba(220,173,102,.18);
+  color:rgb(220,173,102);
+  border:1px solid rgba(220,173,102,.25);
+  text-decoration:none;
+  transition:.3s;
+}
+
+.btn-primary:hover{
+  transform:translateY(-2px);
+}
+
+.btn-secondary{
+  padding:14px 26px;
+  border-radius:12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  color:#fff;
+  text-decoration:none;
+  transition:.3s;
+}
+
+.btn-secondary:hover{
+  background:rgba(255,255,255,.08);
+}
+
+.hero-stats{
+  display:flex;
+  justify-content:center;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.stat-card{
+  min-width:180px;
+  padding:24px;
+  text-align:center;
+}
+
+.stat-number{
+  display:block;
+  font-size:32px;
+  font-weight:700;
+  color:rgb(220,173,102);
+  margin-bottom:8px;
+}
+
+.stat-label{
+  font-size:14px;
+  color:rgba(255,255,255,.65);
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+@media(max-width:768px){
+
+  .hero-section{
+    padding:140px 0 80px;
+  }
+
+  .hero-description{
+    font-size:16px;
+  }
+
+  .hero-stats{
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .stat-card{
+    width:100%;
+    max-width:300px;
+  }
+}
+.technology-media{
+  min-height:650px;
+  overflow:hidden;
+}
+
+.technology-img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.info-card{
+  position:absolute;
+
+  width:250px;
+  padding:18px;
+
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(7px);
+
+  border-radius:16px;
+}
+
+.info-card h4{
+  color:rgb(220,173,102);
+  margin-bottom:8px;
+  font-size:15px;
+}
+
+.info-card p{
+  font-size:13px;
+  line-height:1.6;
+  color:rgba(255,255,255,.65);
+}
+.card-1{
+  top:20%;
+  right:20px;
+}
+
+.card-2{
+  top:60%;
+  left:20px;
+  transform:translateY(-50%);
+}
+
+.card-3{
+  bottom:40px;
+  left:20px;
+}
+.info-card{
+  transition:.3s ease;
+}
+
+.info-card:hover{
+  transform:translateY(-4px);
+
+  border-color:rgba(193, 151, 89, 0.25);
+
+  background: rgba(128, 108, 64, 0.06);
+}
+</style>
+</head>
+    <body>
+        <%- include('../partials/user/header') %>
+<main class="dmf-page">
+
+<section class="hero-section">
+
+  <div class="container">
+
+    <div class="hero-center">
+
+      <span class="eyebrow">
+        PATENTED INNOVATION
+      </span>
+
+
+    <div  class="hero-title" >
+      <h1 style="opacity: 90%;font-size: 80px;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
+      DMF Technology:
+      </h1>
+      <div style="opacity: 70%;"> The Future of High-Fidelity Audio Engineering</div>
+    </div>
+
+
+      <p class="hero-description">
+        Welcome to a revolutionary breakthrough in acoustic reproduction.
+        DMF (Dual Magnetic Field) Technology is a patented next-generation
+        speaker motor design engineered to eliminate the physical limitations
+        of conventional loudspeakers.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#technology" class="btn-primary">
+          Explore Technology
+        </a>
+
+        <a href="#visualization" class="btn-secondary">
+          Watch Animation
+        </a>
+      </div>
+
+      <div class="hero-stats">
+
+        <div class="stat-card glass">
+          <span class="stat-number">2X</span>
+          <span class="stat-label">Magnetic Fields</span>
+        </div>
+
+        <div class="stat-card glass">
+          <span class="stat-number">0%</span>
+          <span class="stat-label">Flux Leakage</span>
+        </div>
+
+        <div class="stat-card glass">
+          <span class="stat-number">MAX</span>
+          <span class="stat-label">Efficiency</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section id="technology" class="technology-section">
+
+  <div class="container">
+
+    <div class="section-header">
+      <span>THE SCIENCE</span>
+
+      <h2>
+        What Is DMF Technology?
+      </h2>
+
+      <p>
+        A revolutionary approach to magnetic field control.
+      </p>
+    </div>
+
+    <div class="technology-grid">
+ 
+<div class="technology-media glass">
+
+  <img
+    src="/images/dmfhead.png"
+    alt="DMF Technology"
+    class="technology-img"
+  >
+
+  <div class="glass info-card card-1">
+    <h4>Dual Magnetic Field</h4>
+    <p>
+      Two opposing magnetic systems create a concentrated flux zone.
+    </p>
+  </div>
+
+  <div class="glass info-card card-2">
+    <h4>Strong Magnetic Gap</h4>
+    <p>
+      Hyper-dense magnetic energy focused at the center.
+    </p>
+  </div>
+
+  <div class="glass info-card card-3">
+    <h4>Precision Voice Coil</h4>
+    <p>
+      Uniform magnetic control across the entire excursion range.
+    </p>
+  </div>
+
+</div>
+
+      <div class="technology-content">
+
+        <div class="glass content-card">
+
+          <h3>
+            The Problem With Traditional Loudspeakers
+          </h3>
+
+          <p>
+            At the heart of every conventional loudspeaker sits a single
+            magnetic circuit driven by one permanent magnet.
+            While functional, traditional motor structures inevitably
+            suffer from magnetic flux leakage and reduced control over
+            the voice coil during extreme excursion.
+          </p>
+
+          <p>
+            As the cone moves farther from its resting position,
+            the voice coil can leave the strongest portion of the magnetic
+            field. This results in distortion, reduced efficiency,
+            energy loss, and compromised sonic accuracy.
+          </p>
+
+        </div>
+
+        <div class="glass content-card">
+
+          <h3>
+            How DMF Changes Everything
+          </h3>
+
+          <p>
+            DMF Technology completely rewrites the traditional blueprint.
+            Instead of relying on a single magnet,
+            DMF uses two high-grade permanent magnets positioned with
+            identical poles facing one another.
+          </p>
+
+          <p>
+            Because like poles naturally repel, the two magnetic fields
+            compress against each other, forcing magnetic energy into
+            a tightly concentrated zone known as the
+            <strong>Strong Magnetic Gap.</strong>
+          </p>
+
+          <p>
+            The voice coil is positioned directly inside this hyper-dense
+            magnetic region, allowing it to harness maximum magnetic
+            energy with exceptional precision and virtually no wasted force.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+<section class="breakdown-section">
+
+  <div class="container">
+
+    <div class="section-header">
+      <span>HOW IT WORKS</span>
+
+      <h2>
+        Engineering The Perfect Magnetic Field
+      </h2>
+
+      <p>
+        DMF Technology follows a precisely engineered sequence
+        that transforms magnetic energy into pure acoustic control.
+      </p>
+    </div>
+
+    <div class="breakdown-grid">
+
+      <div class="glass breakdown-card">
+        <span class="step">01</span>
+
+        <h3>Dual Magnet Structure</h3>
+
+        <p>
+          Two high-grade permanent magnets form the foundation
+          of the DMF motor architecture.
+        </p>
+      </div>
+
+      <div class="glass breakdown-card">
+        <span class="step">02</span>
+
+        <h3>Opposing Alignment</h3>
+
+        <p>
+          Identical poles face one another, creating powerful
+          magnetic repulsion.
+        </p>
+      </div>
+
+      <div class="glass breakdown-card">
+        <span class="step">03</span>
+
+        <h3>Flux Compression</h3>
+
+        <p>
+          Repelling magnetic fields compress energy into a highly
+          concentrated region.
+        </p>
+      </div>
+
+      <div class="glass breakdown-card">
+        <span class="step">04</span>
+
+        <h3>Strong Magnetic Gap</h3>
+
+        <p>
+          The voice coil operates inside a hyper-dense magnetic
+          zone with maximum efficiency.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+<section class="comparison-section">
+
+  <div class="container">
+
+    <div class="section-header">
+      <span>TECHNOLOGY COMPARISON</span>
+      <h2>Conventional vs DMF Technology</h2>
+      <p>A quantum leap in acoustic engineering.</p>
+    </div>
+
+    <div class="comparison-showcase">
+
+      <!-- LEFT -->
+
+      <div class="glass compare-card">
+
+        <h3>Conventional Speaker</h3>
+
+        <div class="compare-content">
+
+          <div class="compare-image">
+            <img src="/images/conventional.png">
+          </div>
+
+          <div class="compare-points">
+
+            <div class="point">
+              <span class="icon negative">✕</span>
+              <span>Flux Leakage</span>
+            </div>
+
+            <div class="point">
+              <span class="icon negative">✕</span>
+              <span>Single Magnet</span>
+            </div>
+
+            <div class="point">
+              <span class="icon negative">✕</span>
+              <span>Uneven Coil Control</span>
+            </div>
+
+            <div class="point">
+              <span class="icon negative">✕</span>
+              <span>Energy Loss</span>
+            </div>
+
+            <div class="point">
+              <span class="icon negative">✕</span>
+              <span>Higher Distortion</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="vs-circle">
+        VS
+      </div>
+
+      <!-- RIGHT -->
+
+      <div class="glass compare-card dmf">
+
+        <h3>DMF Technology</h3>
+
+        <div class="compare-content">
+
+          <div class="compare-image">
+            <img src="/images/dmf.png">
+          </div>
+
+          <div class="compare-points">
+
+            <div class="point">
+              <span class="icon positive">✓</span>
+              <span>Zero Leakage</span>
+            </div>
+
+            <div class="point">
+              <span class="icon positive">✓</span>
+              <span>Dual Opposing Magnets</span>
+            </div>
+
+            <div class="point">
+              <span class="icon positive">✓</span>
+              <span>Symmetrical Control</span>
+            </div>
+
+            <div class="point">
+              <span class="icon positive">✓</span>
+              <span>Maximum Efficiency</span>
+            </div>
+
+            <div class="point">
+              <span class="icon positive">✓</span>
+              <span>Ultra-Low Distortion</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+<section id="visualization" class="visualization-section">
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <span>VISUALIZATION</span>
+
+      <h2>
+        See The Magnetic Difference
+      </h2>
+
+      <p>
+        Observe how DMF compresses and controls magnetic energy
+        compared to traditional loudspeaker architectures.
+      </p>
+
+    </div>
+
+    <div class="visual-layout">
+
+      <div class="glass visual-image">
+
+        <!-- IMAGE / VIDEO -->
+       
+    <video
+      class="dmf-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      poster="/images/dmf-poster.jpg"
+    >
+      <source src="/videos/video.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
+      </div>
+
+      <div class="visual-stats">
+
+        <div class="glass visual-stat">
+          <h3>0%</h3>
+          <p>Flux Leakage</p>
+        </div>
+
+        <div class="glass visual-stat">
+          <h3>2X</h3>
+          <p>Magnetic Density</p>
+        </div>
+
+        <div class="glass visual-stat">
+          <h3>MAX</h3>
+          <p>Energy Utilization</p>
+        </div>
+
+        <div class="glass visual-stat">
+          <h3>FAST</h3>
+          <p>Transient Response</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+<section class="advantages-section">
+
+  <div class="container">
+
+    <div class="section-header">
+      <span>PERFORMANCE ADVANTAGES</span>
+
+      <h2>
+        Engineered For Pure Acoustic Performance
+      </h2>
+
+      <p>
+        Every aspect of DMF Technology has been designed to maximize
+        control, efficiency, and sonic accuracy.
+      </p>
+    </div>
+
+    <div class="advantages-grid">
+
+      <div class="glass advantage-card">
+        <div class="advantage-icon">01</div>
+
+        <h3>Ultra-Low Distortion</h3>
+
+        <p>
+          No matter how aggressively the cone moves,
+          the voice coil remains under uniform magnetic control.
+          This minimizes harmonic distortion and preserves clarity.
+        </p>
+      </div>
+
+      <div class="glass advantage-card">
+        <div class="advantage-icon">02</div>
+
+        <h3>Lightning-Fast Response</h3>
+
+        <p>
+          The compressed magnetic gap allows the voice coil to
+          start and stop with exceptional speed, producing
+          tighter bass and cleaner transients.
+        </p>
+      </div>
+
+      <div class="glass advantage-card">
+        <div class="advantage-icon">03</div>
+
+        <h3>Maximum Acoustic Efficiency</h3>
+
+        <p>
+          Magnetic energy is concentrated where it matters most,
+          ensuring more amplifier power becomes usable sound.
+        </p>
+      </div>
+
+      <div class="glass advantage-card">
+        <div class="advantage-icon">04</div>
+
+        <h3>Massive Power Handling</h3>
+
+        <p>
+          DMF maintains consistent control even under demanding
+          operating conditions, enabling higher output levels.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+<section class="benefits-section">
+
+  <div class="container">
+
+    <div class="section-header">
+
+      <span>WHO BENEFITS</span>
+
+      <h2>
+        Designed For Those Who Demand More
+      </h2>
+
+      <p>
+        From critical listening environments to commercial audio
+        installations, DMF Technology delivers measurable benefits.
+      </p>
+
+    </div>
+
+    <div class="benefits-grid">
+
+      <div class="glass benefit-card">
+
+        <h3>Audiophiles</h3>
+
+        <p>
+          Experience greater realism, improved dynamics,
+          and exceptional detail retrieval.
+        </p>
+
+      </div>
+
+      <div class="glass benefit-card">
+
+        <h3>Sound Engineers</h3>
+
+        <p>
+          Achieve superior accuracy and confidence when mixing,
+          mastering, and monitoring.
+        </p>
+
+      </div>
+
+      <div class="glass benefit-card">
+
+        <h3>Commercial Audio</h3>
+
+        <p>
+          Deliver powerful sound reinforcement with greater
+          efficiency and reliability.
+        </p>
+
+      </div>
+
+      <div class="glass benefit-card">
+
+        <h3>Home Theatre Enthusiasts</h3>
+
+        <p>
+          Experience cinematic impact and immersive sound
+          reproduction unlike conventional systems.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+<section class="cta-section">
+
+  <div class="container">
+
+    <div class="glass cta-wrapper">
+
+      <div class="cta-content">
+
+        <span>
+          EXPERIENCE TRUE SOUND REALISM
+        </span>
+
+        <h2>
+          Don't Just Hear The Sound.
+          <br>
+          Feel The Realism.
+        </h2>
+
+        <p>
+          DMF Technology isn't about making music louder.
+          It's about preserving every detail, every emotion,
+          and every nuance exactly as the artist intended.
+        </p>
+
+        <div class="cta-actions">
+
+          <a href="/products" class="btn-primary">
+            Explore Products
+          </a>
+
+          <a href="/contact" class="btn-secondary">
+            Contact Us
+          </a>
+
+        </div>
+
+      </div>
+
+      <div class="cta-image">
+
+        <!-- CTA IMAGE -->
+        <div class="placeholder">
+          Premium Product Image
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+        <%- include('../partials/user/footer') %>
+</body>
+
+</html>

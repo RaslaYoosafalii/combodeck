@@ -9,25 +9,36 @@
     font-family: "Arial", sans-serif;
   }
 
-  body {
-    margin: 0;
-    background: #0a0e11;
-    color: white;
-  }
+html, body {
+  min-height: 100vh;
+}
 
-  .profile-wrapper {
-    display: flex;
-    padding: 40px 60px;
-    margin-top: 110px;
-    gap: 40px;
-    align-items: flex-start;
-  }
+body {
+  margin: 0;
+  background: #0a0e11;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-wrapper {
+  display: flex;
+  width: 100%;
+  margin: 110px auto 0;
+  padding: 40px 60px;
+  gap: 40px;
+  align-items: flex-start;
+}
 
   .referral-main {
     flex: 1;
     min-width: 0;
   }
-
+.profile-page {
+  flex: 1 0 auto;
+  display: flex;
+  width: 100%;
+}
   /* ===== REFERRAL CARD ===== */
   .referral-card {
     width: 100%;
@@ -99,7 +110,96 @@
     background: rgba(255,255,255,0.08);
     transform: scale(1.05);
   }
+ @media (max-width: 992px) {
+  .profile-wrapper {
+    padding: 20px;
+    margin-top: 100px;
+  }
 
+  .profile-wrapper > .sidebar {
+    display: none;
+  }
+
+  .referral-main {
+    margin-left: 80px;
+    margin-right: 80px;
+  }
+
+  .referral-card {
+    padding: 40px 30px;
+  }
+
+  .code-container {
+    min-width: 100%;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-wrapper {
+    padding: 16px;
+    gap: 20px;
+  }
+
+  .referral-main {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .referral-card {
+    padding: 28px 20px;
+    min-height: auto;
+  }
+
+  .referral-title {
+    font-size: 22px;
+  }
+
+  .code-container {
+    width: 100%;
+    min-width: 100%;
+    padding: 18px 16px;
+    gap: 12px;
+  }
+
+  .referral-code {
+    font-size: 18px;
+    letter-spacing: 2px;
+    word-break: break-all;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-wrapper {
+    padding: 12px;
+    margin-top: 90px;
+  }
+
+  .referral-card {
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+
+  .referral-title {
+    font-size: 20px;
+  }
+
+  .referral-description {
+    font-size: 13px;
+    margin-bottom: 30px;
+  }
+
+  .code-container {
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 100%;
+    gap: 14px;
+  }
+
+  .copy-btn {
+    width: 100%;
+  }
+}
 </style>
 </head>
 
@@ -107,6 +207,7 @@
 
 <%- include('../partials/user/loggedinHeader') %>
 
+<main class="profile-page">
 <div class="profile-wrapper">
 
   <%- include('../partials/user/profileSidebar') %>
@@ -131,6 +232,7 @@
   </section>
 </div>
 </div>
+</main>
 
 <%- include('../partials/user/footer') %>
 

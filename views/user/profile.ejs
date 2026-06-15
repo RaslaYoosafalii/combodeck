@@ -10,21 +10,28 @@
       font-family: "Arial", sans-serif;
     }
 
-    body {
-    margin: 0;
-    background: #0a0e11;
-    color: white;
-    }
+html, body {
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  background: #0a0e11;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
     
 
     /* ===== LAYOUT ===== */
-    .profile-wrapper {
-      display: flex;
-      padding: 40px 60px;
-      margin-top: 110px;
-      gap: 40px;
-       align-items: flex-start; 
-    }
+.profile-wrapper {
+  display: flex;
+  width: 100%;
+  margin: 110px auto 0;
+  padding: 40px 60px;
+  gap: 40px;
+  align-items: flex-start;
+}
 
   /* ===== SIDEBAR ===== */
   .sidebar {
@@ -82,14 +89,7 @@
 
     /* ===== MAIN PROFILE CARD ===== */
     .profile-card {
-      flex: 1;
-      background: #fff;
-      border-radius: 12px;
-      padding: 40px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
-      position: relative;
-
-        flex: 1;
+ flex: 1;
   background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 16px;
@@ -97,6 +97,7 @@
   box-shadow: 0 10px 30px rgba(0,0,0,0.35);
   backdrop-filter: blur(10px);
   position: relative;
+  min-width: 0;
     }
 
     .profile-title {
@@ -168,13 +169,14 @@
       border-radius: 6px;
       font-size: 14px;
 
-        flex: 1;
+  flex: 1;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
   color: white;
   padding: 10px 14px;
   border-radius: 6px;
   font-size: 14px;
+  word-break: break-word;
     }
 
     .change-password-btn {
@@ -196,16 +198,94 @@
   cursor: pointer;
   font-size: 14px;
     }
+.profile-page {
+  flex: 1 0 auto;
+  display: flex;
+  width: 100%;
+}
+ 
 
+@media (max-width: 992px) {
+  .profile-wrapper {
+    padding: 20px;
+    margin-top: 100px;
+  }
+
+  .profile-wrapper > .sidebar {
+    display: none;
+  }
+
+  .profile-card {
+    width: 100%;
+    padding: 24px;
+    margin-left: 80px;
+    margin-right: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-wrapper {
+    padding: 16px;
+    gap: 20px;
+  }
+
+  .profile-card {
+    padding: 20px;
+  }
+
+  .edit-profile-btn {
+    position: static;
+    display: block;
+    margin: 0 auto 25px;
+  }
+
+  .field-group {
+    max-width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .field-group label {
+    width: 100%;
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-wrapper {
+    padding: 12px;
+    margin-top: 90px;
+  }
+
+  .profile-card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .profile-title {
+    font-size: 22px;
+    margin-bottom: 24px;
+  }
+
+  .avatar-large {
+    width: 90px;
+    height: 90px;
+  }
+
+  .change-password-btn,
+  .edit-profile-btn {
+    width: 100%;
+  }
+}
   
-
-
   </style>
 </head>
 
 <body>
   <%- include('../partials/user/loggedinHeader') %>
-  <div class="profile-wrapper">
+  <main class="profile-page">
+    <div class="profile-wrapper">
 
     <!-- ===== SIDEBAR ===== -->
 <%- include('../partials/user/profileSidebar') %>
@@ -258,8 +338,10 @@
       </div>
     </section>
 
-  </div>
-<%- include('../partials/user/footer') %>
+    </div>
+  </main>
+
+  <%- include('../partials/user/footer') %>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

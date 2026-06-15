@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 import logger from '../../config/logger.js';
 import STATUS_CODES from '../../utils/statusCodes.js';
 
-const MAX_QTY_PER_PRODUCT = 5;
+const MAX_QTY_PER_PRODUCT = 200;
 
 async function resolveFinalPrice(variant) {
   if (!variant) return 0;

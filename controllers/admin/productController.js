@@ -110,7 +110,7 @@ const loadAddProduct = async (req, res) => {
 
 
 const addProduct = [
-  // multer middleware: accept up to 10 images (we require >=3)
+  // multer middleware: accept up to 10 images (we require >=2)
   (req, res, next) => {
     upload.array('productImages', 10)(req, res, async function(err) {
       if (err) {
@@ -395,15 +395,15 @@ const addProduct = [
         v.stock = stock;
       }
 
-      // images validation: at least 3 images
+      // images validation: at least 2 images
       const files = req.files || [];
-      if (files.length < 3) {
+      if (files.length < 2) {
         files.forEach(f => fs.unlinkSync(f.path));
         return res.status(STATUS_CODES.BAD_REQUEST).render('product-add', {
           allowRender: true, 
           categories: await Category.find({ isDeleted: { $ne: true }, isListed: true }).lean(),
           subcategories: await SubCategory.find().lean(),
-          message: 'At least 3 images are required',
+          message: 'At least 2 images are required',
           categoryId,
           subcategoryId,
           variantsData: variantList,
@@ -939,7 +939,7 @@ const updateProduct = [
       const finalImages = [...keep, ...savedNewFilenames];
 
       // STRICT VALIDATION FIRST
-      if (finalImages.length < 3) {
+      if (finalImages.length < 2) {
 
         // remove only newly uploaded processed images
         // savedNewFilenames.forEach(fn => {
@@ -957,7 +957,7 @@ const updateProduct = [
           variants: await Variant.find({ productId: id }).lean(),
           categories: await Category.find({ isDeleted: { $ne: true }, isListed: true }).lean(),
           subcategories: await SubCategory.find().lean(),
-          message: 'At least 3 images must remain for the product'
+          message: 'At least 2 images must remain for the product'
         });
       }
 

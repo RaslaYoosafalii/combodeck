@@ -183,6 +183,29 @@ font-size:18px;
 letter-spacing:1px;
 }
 }
+.tech-pill{
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.mobile-tech-pill a{
+    text-decoration:none;
+    color:white;
+}
+
+.mobile-tech-pill a:hover{
+    color:rgb(220,173,102);
+}
+.tech-pill{
+    transition:.3s ease;
+}
+
+.tech-pill:hover{
+    color:rgb(220,173,102);
+    border-color:rgba(220,173,102,.3);
+    background:rgba(220,173,102,.08);
+}
 </style>
 
 <header class="navbar">
@@ -194,24 +217,28 @@ letter-spacing:1px;
 <nav class="bottom-nav">
 <ul>
 <li><a href="/">Home</a></li>
-<li><a href="#">About</a></li>
+<li><a href="/about">About</a></li>
 <li><a href="/products">Shop</a></li>
 <li><a href="/login"  style="margin-right:15px;">Sign In</a></li>
 </ul>
 </nav>
 
-<div class="tech-pill">
-DMF TECHNOLOGY
-</div>
+<a href="/dmf" class="tech-pill">
+  DMF TECHNOLOGY
+</a>
+
 <div class="menu-toggle">
 ☰
 </div>
 
 <div class="mobile-menu" id="mobileMenu">
-  <div class="mobile-tech-pill">DMF TECHNOLOGY</div>
+  <div class="mobile-tech-pill">
+  <a href="/dmf">DMF TECHNOLOGY</a>
+</div>
+
   <ul>
     <li><a href="/">Home</a></li>
-    <li><a href="#">About</a></li>
+    <li><a href="/about">About</a></li>
     <li><a href="/products">Shop</a></li>
     <li><a href="/login">Sign In</a></li>
   </ul>
